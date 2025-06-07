@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, abort
 from datetime import datetime
+import os
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -12,7 +13,7 @@ from .models import db, Item, Order, OrderItem, Category, ORDER_STATUSES
 def create_app(config_object=None):
     app = Flask(__name__)
     app.config.update({
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///airservice.db',
+        'SQLALCHEMY_DATABASE_URI': os.getenv('DATABASE_URL', 'sqlite:///airservice.db'),
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,
         'ADMIN_USERNAME': 'admin',
         'ADMIN_PASSWORD_HASH': generate_password_hash('admin'),
@@ -56,6 +57,10 @@ def create_app(config_object=None):
             qs = qs.filter(Item.price <= price_max)
         if request.args.get('available') == '1':
             qs = qs.filter(Item.available.is_(True))
+        if request.args.get('service') == '1':
+            qs = qs.filter(Item.is_service.is_(True))
+        elif request.args.get('service') == '0':
+            qs = qs.filter(Item.is_service.is_(False))
         query = request.args.get('q')
         if query:
             like = f"%{query}%"
@@ -68,6 +73,7 @@ def create_app(config_object=None):
                 'description': i.description,
                 'price': i.price,
                 'available': i.available,
+                'service': i.is_service,
                 'category': i.category.name if i.category else None,
             }
             for i in items
@@ -162,6 +168,7 @@ def create_app(config_object=None):
             data = request.get_json() or {}
             item = Item(name=data.get('name'), description=data.get('description'),
                         price=data.get('price', 0.0), available=data.get('available', True),
+                        is_service=data.get('service', False),
                         category_id=data.get('category_id'))
             db.session.add(item)
             db.session.commit()
@@ -170,6 +177,7 @@ def create_app(config_object=None):
         items = Item.query.all()
         return jsonify([{ 'id': i.id, 'name': i.name, 'description': i.description,
                           'price': i.price, 'available': i.available,
+                          'service': i.is_service,
                           'category_id': i.category_id } for i in items])
 
     @app.route('/admin/items/<int:item_id>', methods=['PUT', 'DELETE'])
@@ -184,6 +192,8 @@ def create_app(config_object=None):
                 item.price = data['price']
             if 'available' in data:
                 item.available = data['available']
+            if 'service' in data:
+                item.is_service = data['service']
             if 'category_id' in data:
                 item.category_id = data['category_id']
             db.session.commit()
@@ -223,6 +233,31 @@ def create_app(config_object=None):
         db.session.commit()
         logging.info('category_deleted %s', cat.id)
         return '', 204
+
+    @app.route('/admin/reports/sales')
+    def sales_report():
+        auth_required()
+        year = request.args.get('year', type=int)
+        qs = db.session.query(
+            db.func.extract('year', Order.created_at).label('year'),
+            db.func.extract('month', Order.created_at).label('month'),
+            db.func.sum(OrderItem.quantity * Item.price).label('total'),
+            Item.is_service
+        ).join(OrderItem, Order.id == OrderItem.order_id)
+        qs = qs.join(Item, Item.id == OrderItem.item_id)
+        if year:
+            qs = qs.filter(db.func.extract('year', Order.created_at) == year)
+        qs = qs.group_by('year', 'month', Item.is_service).order_by('year', 'month')
+        rows = qs.all()
+        result = {}
+        for r in rows:
+            key = f"{int(r.year):04d}-{int(r.month):02d}"
+            result.setdefault(key, {'goods': 0, 'services': 0})
+            if r.is_service:
+                result[key]['services'] += float(r.total or 0)
+            else:
+                result[key]['goods'] += float(r.total or 0)
+        return jsonify(result)
 
     return app
 
