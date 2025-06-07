@@ -1,3 +1,5 @@
 __pycache__/
 *.pyc
 airservice.db
+airservice.log
+instance/
