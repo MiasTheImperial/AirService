@@ -21,6 +21,7 @@ class Item(db.Model):
     description = db.Column(db.Text)
     price = db.Column(db.Float, nullable=False)
     available = db.Column(db.Boolean, default=True)
+    is_service = db.Column(db.Boolean, default=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category')
 

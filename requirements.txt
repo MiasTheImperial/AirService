@@ -4,3 +4,4 @@ Werkzeug
 Flask-Limiter
 Flask-Babel
 Flasgger
+psycopg2-binary
