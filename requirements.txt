@@ -1,3 +1,6 @@
 Flask
 Flask-SQLAlchemy
 Werkzeug
+Flask-Limiter
+Flask-Babel
+Flasgger
