@@ -1,6 +1,9 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
+# allowed order statuses
+ORDER_STATUSES = ['new', 'forming', 'done', 'cancelled']
+
 
 db = SQLAlchemy()
 
@@ -8,12 +11,16 @@ db = SQLAlchemy()
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
+    parent_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    parent = db.relationship('Category', remote_side=[id])
 
 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
+    description = db.Column(db.Text)
     price = db.Column(db.Float, nullable=False)
+    available = db.Column(db.Boolean, default=True)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category')
 
@@ -21,8 +28,9 @@ class Item(db.Model):
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     seat = db.Column(db.String(10), nullable=False)
+    idempotency_key = db.Column(db.String(64), unique=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    status = db.Column(db.String(20), default='pending')
+    status = db.Column(db.String(20), default='new')
 
 
 class OrderItem(db.Model):
