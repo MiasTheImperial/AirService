@@ -240,3 +240,32 @@ def test_catalog_availability_filter(client, sample_data):
     rv = client.get('/catalog?available=0')
     names = {i['name'] for i in rv.get_json()}
     assert 'Wine' in names
+
+
+def test_catalog_price_and_service_filters(client, sample_data):
+    rv = client.get('/catalog?price_min=5&price_max=10')
+    assert rv.status_code == 200
+    data = rv.get_json()
+    names = {i['name'] for i in data}
+    assert names == {'Sandwich', 'Salad', 'Wine', 'WiFi'}
+    prices = {i['name']: i['price'] for i in data}
+    assert prices == {
+        'Sandwich': 5.0,
+        'Salad': 7.0,
+        'Wine': 8.0,
+        'WiFi': 10.0,
+    }
+
+    rv = client.get('/catalog?service=0')
+    assert rv.status_code == 200
+    data = rv.get_json()
+    prices = {i['name']: i['price'] for i in data}
+    assert prices == {
+        'Sandwich': 5.0,
+        'Salad': 7.0,
+        'Water': 1.5,
+        'Wine': 8.0,
+        'Coffee': 3.0,
+        'Blanket': 15.0,
+        'Headphones': 25.0,
+    }
