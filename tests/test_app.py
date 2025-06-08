@@ -191,6 +191,18 @@ def test_order_listing_and_filters(client, populate_orders):
     assert len(rv.get_json()) == 60
 
 
+def test_admin_order_filters_invalid_dates(client, populate_orders):
+    rv = client.get('/admin/orders?seat=11A', headers=auth_header())
+    assert rv.status_code == 200
+    data = rv.get_json()
+    assert data
+    assert {o['seat'] for o in data} == {'11A'}
+
+    rv = client.get('/admin/orders?from=bad&to=bad', headers=auth_header())
+    assert rv.status_code == 200
+    assert len(rv.get_json()) == 180
+
+
 
 def test_sales_report_multiple_years(client, populate_orders):
     rv = client.get('/admin/reports/sales?year=2022', headers=auth_header())
