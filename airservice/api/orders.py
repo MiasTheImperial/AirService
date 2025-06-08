@@ -3,9 +3,8 @@ import logging
 from flask_babel import gettext
 from marshmallow import ValidationError
 
-from ..models import db, Item, Order, OrderItem
 from ..schemas import OrderSchema
-from ..events import push_event
+from ..services import order_service
 
 orders_bp = Blueprint('orders', __name__)
 
@@ -19,27 +18,14 @@ def create_order():
     seat = payload['seat']
     items = payload['items']
     idem_key = request.headers.get('Idempotency-Key')
-    if idem_key:
-        existing = Order.query.filter_by(idempotency_key=idem_key).first()
-        if existing:
-            return jsonify({'order_id': existing.id}), 200
-    order = Order(seat=seat, idempotency_key=idem_key)
-    db.session.add(order)
-    db.session.commit()
-    for it in items:
-        item = db.session.get(Item, it.get('item_id'))
-        if item:
-            oi = OrderItem(order_id=order.id, item_id=item.id, quantity=it.get('quantity', 1))
-            db.session.add(oi)
-    db.session.commit()
-    logging.info('order_created %s seat=%s', order.id, order.seat)
-    push_event({'type': 'order_created', 'order_id': order.id})
-    return jsonify({'order_id': order.id}), 201
+    order, created = order_service.create_order(seat, items, idempotency_key=idem_key)
+    status_code = 201 if created else 200
+    return jsonify({'order_id': order.id}), status_code
 
 
 @orders_bp.route('/orders/<int:order_id>')
 def get_order(order_id):
-    order = db.session.get(Order, order_id)
+    order = order_service.get_order(order_id)
     if not order:
         abort(404)
     return jsonify({

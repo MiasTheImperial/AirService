@@ -9,6 +9,7 @@ from marshmallow import ValidationError
 from ..models import db, Item, Order, OrderItem, Category, ORDER_STATUSES
 from ..schemas import ItemSchema, CategorySchema
 from ..events import push_event
+from ..services import order_service, item_service
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -58,16 +59,13 @@ def list_orders():
 @admin_bp.route('/orders/<int:order_id>', methods=['PATCH'])
 def update_order(order_id):
     auth_required()
-    order = db.session.get(Order, order_id)
+    order = order_service.get_order(order_id)
     if not order:
         abort(404)
     data = request.get_json() or {}
     status = data.get('status')
     if status and status in ORDER_STATUSES:
-        order.status = status
-        db.session.commit()
-        logging.info('order_status_change %s status=%s', order.id, status)
-        push_event({'type': 'order_status_change', 'order_id': order.id, 'status': status})
+        order = order_service.update_order_status(order_id, status)
     return jsonify({'status': order.status})
 
 
@@ -79,13 +77,7 @@ def admin_items():
             data = ItemSchema().load(request.get_json() or {})
         except ValidationError as err:
             return jsonify(err.messages), 400
-        item = Item(name=data['name'], name_ru=data.get('name_ru'), name_en=data.get('name_en'),
-                    description=data.get('description'), price=data.get('price'),
-                    available=data.get('available', True), is_service=data.get('service', False),
-                    category_id=data.get('category_id'))
-        db.session.add(item)
-        db.session.commit()
-        logging.info('item_created %s', item.name)
+        item = item_service.create_item(data)
         return jsonify({'id': item.id}), 201
     items = Item.query.all()
     return jsonify([{ 'id': i.id, 'name': i.name, 'description': i.description,
@@ -105,28 +97,9 @@ def admin_item_detail(item_id):
             data = ItemSchema(partial=True).load(request.get_json() or {})
         except ValidationError as err:
             return jsonify(err.messages), 400
-        if 'name' in data:
-            item.name = data['name']
-        if 'name_ru' in data:
-            item.name_ru = data['name_ru']
-        if 'name_en' in data:
-            item.name_en = data['name_en']
-        if 'description' in data:
-            item.description = data['description']
-        if 'price' in data:
-            item.price = data['price']
-        if 'available' in data:
-            item.available = data['available']
-        if 'service' in data:
-            item.is_service = data['service']
-        if 'category_id' in data:
-            item.category_id = data['category_id']
-        db.session.commit()
-        logging.info('item_updated %s', item.id)
+        item = item_service.update_item(item, data)
         return jsonify({'id': item.id})
-    db.session.delete(item)
-    db.session.commit()
-    logging.info('item_deleted %s', item.id)
+    item_service.delete_item(item)
     return '', 204
 
 
