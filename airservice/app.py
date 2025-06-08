@@ -67,6 +67,8 @@ def create_app(config_object=None):
             qs = qs.filter(Item.price <= price_max)
         if request.args.get('available') == '1':
             qs = qs.filter(Item.available.is_(True))
+        elif request.args.get('available') == '0':
+            qs = qs.filter(Item.available.is_(False))
         if request.args.get('service') == '1':
             qs = qs.filter(Item.is_service.is_(True))
         elif request.args.get('service') == '0':
@@ -112,7 +114,7 @@ def create_app(config_object=None):
         db.session.add(order)
         db.session.commit()
         for it in items:
-            item = Item.query.get(it.get('item_id'))
+            item = db.session.get(Item, it.get('item_id'))
             if item:
                 oi = OrderItem(order_id=order.id, item_id=item.id, quantity=it.get('quantity', 1))
                 db.session.add(oi)
@@ -123,7 +125,9 @@ def create_app(config_object=None):
 
     @app.route('/orders/<int:order_id>')
     def get_order(order_id):
-        order = Order.query.get_or_404(order_id)
+        order = db.session.get(Order, order_id)
+        if not order:
+            abort(404)
         return jsonify({
             'id': order.id,
             'seat': order.seat,
@@ -169,7 +173,9 @@ def create_app(config_object=None):
     @app.route('/admin/orders/<int:order_id>', methods=['PATCH'])
     def update_order(order_id):
         auth_required()
-        order = Order.query.get_or_404(order_id)
+        order = db.session.get(Order, order_id)
+        if not order:
+            abort(404)
         data = request.get_json() or {}
         status = data.get('status')
         if status and status in ORDER_STATUSES:
@@ -204,7 +210,9 @@ def create_app(config_object=None):
     @app.route('/admin/items/<int:item_id>', methods=['PUT', 'DELETE'])
     def admin_item_detail(item_id):
         auth_required()
-        item = Item.query.get_or_404(item_id)
+        item = db.session.get(Item, item_id)
+        if not item:
+            abort(404)
         if request.method == 'PUT':
             try:
                 data = ItemSchema(partial=True).load(request.get_json() or {})
@@ -253,7 +261,9 @@ def create_app(config_object=None):
     @app.route('/admin/categories/<int:cat_id>', methods=['PUT', 'DELETE'])
     def admin_category_detail(cat_id):
         auth_required()
-        cat = Category.query.get_or_404(cat_id)
+        cat = db.session.get(Category, cat_id)
+        if not cat:
+            abort(404)
         if request.method == 'PUT':
             try:
                 data = CategorySchema(partial=True).load(request.get_json() or {})
@@ -322,7 +332,7 @@ def create_app(config_object=None):
     @app.route('/integration/ai', methods=['POST'])
     def send_to_ai():
         payload = request.get_json() or {}
-        msg = OutgoingMessage(payload=str(payload), target='ai')
+        msg = OutgoingMessage(payload=json.dumps(payload), target='ai')
         db.session.add(msg)
         db.session.commit()
         return jsonify({'queued': msg.id})
@@ -330,7 +340,7 @@ def create_app(config_object=None):
     @app.route('/integration/sync', methods=['POST'])
     def sync_ground():
         payload = request.get_json() or {}
-        msg = OutgoingMessage(payload=str(payload), target='ground')
+        msg = OutgoingMessage(payload=json.dumps(payload), target='ground')
         db.session.add(msg)
         db.session.commit()
         return jsonify({'queued': msg.id})
