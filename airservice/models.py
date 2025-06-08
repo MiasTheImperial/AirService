@@ -18,6 +18,8 @@ class Category(db.Model):
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
+    name_ru = db.Column(db.String(120))
+    name_en = db.Column(db.String(120))
     description = db.Column(db.Text)
     price = db.Column(db.Float, nullable=False)
     available = db.Column(db.Boolean, default=True)
@@ -41,3 +43,11 @@ class OrderItem(db.Model):
     item_id = db.Column(db.Integer, db.ForeignKey('item.id'))
     item = db.relationship('Item')
     quantity = db.Column(db.Integer, default=1)
+
+
+class OutgoingMessage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    payload = db.Column(db.Text, nullable=False)
+    target = db.Column(db.String(120))
+    sent = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

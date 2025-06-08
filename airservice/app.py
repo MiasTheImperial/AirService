@@ -1,13 +1,23 @@
 from flask import Flask, jsonify, request, abort
 from datetime import datetime
 import os
+import json
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_babel import Babel, gettext
 from flasgger import Swagger
+from marshmallow import ValidationError
+from .schemas import OrderSchema, ItemSchema, CategorySchema
+from queue import Queue
+
+subscribers = []
+
+def push_event(data):
+    for q in list(subscribers):
+        q.put(data)
 import logging
-from .models import db, Item, Order, OrderItem, Category, ORDER_STATUSES
+from .models import db, Item, Order, OrderItem, Category, OutgoingMessage, ORDER_STATUSES
 
 
 def create_app(config_object=None):
@@ -66,27 +76,33 @@ def create_app(config_object=None):
             like = f"%{query}%"
             qs = qs.filter(Item.name.ilike(like) | Item.description.ilike(like))
         items = qs.all()
-        data = [
-            {
+        lang = request.args.get('lang')
+        data = []
+        for i in items:
+            name = i.name
+            if lang == 'ru' and i.name_ru:
+                name = i.name_ru
+            elif lang == 'en' and i.name_en:
+                name = i.name_en
+            data.append({
                 'id': i.id,
-                'name': i.name,
+                'name': name,
                 'description': i.description,
                 'price': i.price,
                 'available': i.available,
                 'service': i.is_service,
                 'category': i.category.name if i.category else None,
-            }
-            for i in items
-        ]
+            })
         return jsonify(data)
 
     @app.route('/orders', methods=['POST'])
     def create_order():
-        data = request.get_json() or {}
-        seat = data.get('seat')
-        items = data.get('items', [])
-        if not seat or not isinstance(items, list):
-            return jsonify({'error': gettext('Invalid payload')}), 400
+        try:
+            payload = OrderSchema().load(request.get_json() or {})
+        except ValidationError as err:
+            return jsonify({'error': gettext('Invalid payload'), 'details': err.messages}), 400
+        seat = payload['seat']
+        items = payload['items']
         idem_key = request.headers.get('Idempotency-Key')
         if idem_key:
             existing = Order.query.filter_by(idempotency_key=idem_key).first()
@@ -102,6 +118,7 @@ def create_app(config_object=None):
                 db.session.add(oi)
         db.session.commit()
         logging.info('order_created %s seat=%s', order.id, order.seat)
+        push_event({'type': 'order_created', 'order_id': order.id})
         return jsonify({'order_id': order.id}), 201
 
     @app.route('/orders/<int:order_id>')
@@ -159,16 +176,20 @@ def create_app(config_object=None):
             order.status = status
             db.session.commit()
             logging.info('order_status_change %s status=%s', order.id, status)
+            push_event({'type': 'order_status_change', 'order_id': order.id, 'status': status})
         return jsonify({'status': order.status})
 
     @app.route('/admin/items', methods=['GET', 'POST'])
     def admin_items():
         auth_required()
         if request.method == 'POST':
-            data = request.get_json() or {}
-            item = Item(name=data.get('name'), description=data.get('description'),
-                        price=data.get('price', 0.0), available=data.get('available', True),
-                        is_service=data.get('service', False),
+            try:
+                data = ItemSchema().load(request.get_json() or {})
+            except ValidationError as err:
+                return jsonify(err.messages), 400
+            item = Item(name=data['name'], name_ru=data.get('name_ru'), name_en=data.get('name_en'),
+                        description=data.get('description'), price=data.get('price'),
+                        available=data.get('available', True), is_service=data.get('service', False),
                         category_id=data.get('category_id'))
             db.session.add(item)
             db.session.commit()
@@ -185,9 +206,18 @@ def create_app(config_object=None):
         auth_required()
         item = Item.query.get_or_404(item_id)
         if request.method == 'PUT':
-            data = request.get_json() or {}
-            item.name = data.get('name', item.name)
-            item.description = data.get('description', item.description)
+            try:
+                data = ItemSchema(partial=True).load(request.get_json() or {})
+            except ValidationError as err:
+                return jsonify(err.messages), 400
+            if 'name' in data:
+                item.name = data['name']
+            if 'name_ru' in data:
+                item.name_ru = data['name_ru']
+            if 'name_en' in data:
+                item.name_en = data['name_en']
+            if 'description' in data:
+                item.description = data['description']
             if 'price' in data:
                 item.price = data['price']
             if 'available' in data:
@@ -208,8 +238,11 @@ def create_app(config_object=None):
     def admin_categories():
         auth_required()
         if request.method == 'POST':
-            data = request.get_json() or {}
-            cat = Category(name=data.get('name'), parent_id=data.get('parent_id'))
+            try:
+                data = CategorySchema().load(request.get_json() or {})
+            except ValidationError as err:
+                return jsonify(err.messages), 400
+            cat = Category(name=data['name'], parent_id=data.get('parent_id'))
             db.session.add(cat)
             db.session.commit()
             logging.info('category_created %s', cat.name)
@@ -222,8 +255,12 @@ def create_app(config_object=None):
         auth_required()
         cat = Category.query.get_or_404(cat_id)
         if request.method == 'PUT':
-            data = request.get_json() or {}
-            cat.name = data.get('name', cat.name)
+            try:
+                data = CategorySchema(partial=True).load(request.get_json() or {})
+            except ValidationError as err:
+                return jsonify(err.messages), 400
+            if 'name' in data:
+                cat.name = data['name']
             if 'parent_id' in data:
                 cat.parent_id = data['parent_id']
             db.session.commit()
@@ -238,6 +275,7 @@ def create_app(config_object=None):
     def sales_report():
         auth_required()
         year = request.args.get('year', type=int)
+        as_csv = request.args.get('format') == 'csv'
         qs = db.session.query(
             db.func.extract('year', Order.created_at).label('year'),
             db.func.extract('month', Order.created_at).label('month'),
@@ -257,7 +295,66 @@ def create_app(config_object=None):
                 result[key]['services'] += float(r.total or 0)
             else:
                 result[key]['goods'] += float(r.total or 0)
+        if as_csv:
+            import csv
+            from io import StringIO
+            output = StringIO()
+            writer = csv.writer(output)
+            writer.writerow(['month', 'goods', 'services'])
+            for k, v in result.items():
+                writer.writerow([k, v['goods'], v['services']])
+            output.seek(0)
+            return app.response_class(output.read(), mimetype='text/csv')
         return jsonify(result)
+
+    @app.route('/admin/logs')
+    def search_logs():
+        auth_required()
+        query = request.args.get('q', '')
+        lines = []
+        if os.path.exists('airservice.log'):
+            with open('airservice.log') as f:
+                for ln in f:
+                    if query in ln:
+                        lines.append(ln.strip())
+        return jsonify(lines)
+
+    @app.route('/integration/ai', methods=['POST'])
+    def send_to_ai():
+        payload = request.get_json() or {}
+        msg = OutgoingMessage(payload=str(payload), target='ai')
+        db.session.add(msg)
+        db.session.commit()
+        return jsonify({'queued': msg.id})
+
+    @app.route('/integration/sync', methods=['POST'])
+    def sync_ground():
+        payload = request.get_json() or {}
+        msg = OutgoingMessage(payload=str(payload), target='ground')
+        db.session.add(msg)
+        db.session.commit()
+        return jsonify({'queued': msg.id})
+
+    @app.route('/retry_pending')
+    def retry_pending():
+        msgs = OutgoingMessage.query.filter_by(sent=False).all()
+        for m in msgs:
+            m.sent = True  # pretend send succeeds
+        db.session.commit()
+        return jsonify({'retried': len(msgs)})
+
+    @app.route('/notifications')
+    def notifications():
+        def stream():
+            q = Queue()
+            subscribers.append(q)
+            try:
+                while True:
+                    data = q.get()
+                    yield f"data: {json.dumps(data)}\n\n"
+            finally:
+                subscribers.remove(q)
+        return app.response_class(stream(), mimetype='text/event-stream')
 
     return app
 
