@@ -48,3 +48,18 @@ def catalog():
             'category': i.category.name if i.category else None,
         })
     return jsonify(data)
+
+
+@catalog_bp.route('/catalog/categories')
+def catalog_categories():
+    """Return category hierarchy with nested children."""
+    cats = Category.query.order_by(Category.id).all()
+    nodes = {c.id: {'id': c.id, 'name': c.name, 'children': []} for c in cats}
+    roots = []
+    for c in cats:
+        node = nodes[c.id]
+        if c.parent_id and c.parent_id in nodes:
+            nodes[c.parent_id]['children'].append(node)
+        else:
+            roots.append(node)
+    return jsonify(roots)
