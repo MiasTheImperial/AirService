@@ -3,57 +3,25 @@ import { View, StyleSheet } from 'react-native';
 import { Card, Text, ActivityIndicator, Button, useTheme } from 'react-native-paper';
 import { Order, OrderStatus } from '../types';
 import { useTranslation } from 'react-i18next';
-import { getOrderById } from '../data/orders';
+import { getOrder } from '../api/api';
 
 const OrderStatusScreen = ({ route, navigation }: any) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Эмуляция загрузки данных с сервера
     const loadOrder = async () => {
       try {
         setLoading(true);
-        // Имитация задержки сети
-        await new Promise(resolve => setTimeout(resolve, 800));
-        
-        // Получаем заказ из данных
-        const foundOrder = getOrderById(route.params.orderId);
-        
-        if (foundOrder) {
-          setOrder(foundOrder);
-        } else {
-          // Если заказ не найден в данных, создаем mock-заказ с ID из параметров
-          // Это для случая, когда мы приходим на экран после оплаты
-          const mockOrder: Order = {
-            id: route.params.orderId,
-            userId: 'user123',
-            items: [
-              {
-                productId: 'drinks-3',
-                name: 'Кофе Американо',
-                quantity: 2,
-                price: 280,
-              },
-              {
-                productId: 'food-1',
-                name: 'Куриное филе с овощами',
-                quantity: 1,
-                price: 750,
-              },
-            ],
-            totalAmount: 1310,
-            status: OrderStatus.PREPARING,
-            seatNumber: '12A',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          };
-          setOrder(mockOrder);
-        }
-      } catch (error) {
-        console.error('Ошибка при загрузке заказа:', error);
+        const data = await getOrder(route.params.orderId);
+        setOrder(data);
+      } catch (err: any) {
+        console.error('Ошибка при загрузке заказа:', err);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -112,6 +80,23 @@ const OrderStatusScreen = ({ route, navigation }: any) => {
     return (
       <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.errorContainer, { backgroundColor: theme.colors.background }]}>
+        <Text style={{ color: theme.colors.error }}>{error}</Text>
+        <Button
+          mode="contained"
+          onPress={() => navigation.goBack()}
+          style={styles.button}
+          buttonColor={theme.colors.primary}
+          textColor={theme.colors.onPrimary}
+        >
+          {t('common.back')}
+        </Button>
       </View>
     );
   }

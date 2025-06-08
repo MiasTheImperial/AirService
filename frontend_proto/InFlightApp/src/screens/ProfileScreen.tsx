@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Linking } from 'react-native';
 import { Card, Text, Switch, Button, List, Divider, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import DirectLinkButton from '../components/DirectLinkButton';
-import { getOrdersByUserId } from '../data/orders';
+import { listOrders } from '../api/api';
 
 const ProfileScreen = ({ navigation }: any) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -18,8 +18,19 @@ const ProfileScreen = ({ navigation }: any) => {
   };
 
   // Получаем количество заказов для отображения
-  const userOrders = getOrdersByUserId('user123');
-  const ordersCount = userOrders.length;
+  const [ordersCount, setOrdersCount] = useState(0);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const data = await listOrders();
+        setOrdersCount(data.length);
+      } catch (err) {
+        console.error('Ошибка при получении заказов:', err);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   const handleLogout = async () => {
     try {
