@@ -11,7 +11,10 @@
 2. При необходимости укажите строку подключения к БД через переменную `DATABASE_URL`.
    Пример для PostgreSQL:
    `postgresql://user:password@localhost/airservice`.
-3. Запустите приложение (можно указать `SSL_CERT` и `SSL_KEY` для HTTPS):
+3. Вы можете задать логин администратора через `ADMIN_USERNAME` и пароль
+   через `ADMIN_PASSWORD` или готовый `ADMIN_PASSWORD_HASH`.
+   По умолчанию используются значения `admin`/`admin`.
+4. Запустите приложение (можно указать `SSL_CERT` и `SSL_KEY` для HTTPS):
    ```bash
    python run.py
    ```
@@ -21,7 +24,8 @@
 - Получить каталог: `GET /catalog` с поддержкой фильтров `category`, `price_min`, `price_max`, `available`, `service`, поиска `q` и параметра `lang=ru|en` для локализации названий
 - Создать заказ: `POST /orders` c JSON `{"seat": "12A", "items": [{"item_id": 1, "quantity": 2}]}`
 - Получить заказ: `GET /orders/<id>`
-- Админ-операции требуют basic-auth (`admin`/`admin`):
+- Админ-операции требуют basic-auth (по умолчанию `admin`/`admin`,
+  задаётся через `ADMIN_USERNAME` и `ADMIN_PASSWORD`/`ADMIN_PASSWORD_HASH`):
   - Список заказов: `GET /admin/orders`
   - Обновить статус: `PATCH /admin/orders/<id>` с JSON `{"status": "done"}`
   - CRUD товаров и категорий через `/admin/items` и `/admin/categories`
