@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, abort
 from datetime import datetime
 import os
 import json
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_babel import Babel, gettext
@@ -10,6 +10,7 @@ from flasgger import Swagger
 from marshmallow import ValidationError
 from .schemas import OrderSchema, ItemSchema, CategorySchema
 from queue import Queue
+from .config import DevConfig
 
 subscribers = []
 
@@ -22,15 +23,15 @@ from .models import db, Item, Order, OrderItem, Category, OutgoingMessage, ORDER
 
 def create_app(config_object=None):
     app = Flask(__name__)
-    app.config.update({
-        'SQLALCHEMY_DATABASE_URI': os.getenv('DATABASE_URL', 'sqlite:///airservice.db'),
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False,
-        'ADMIN_USERNAME': 'admin',
-        'ADMIN_PASSWORD_HASH': generate_password_hash('admin'),
-        'BABEL_DEFAULT_LOCALE': 'ru',
-    })
-    if config_object:
-        app.config.from_object(config_object)
+    if config_object is None:
+        config_object = DevConfig
+
+    if isinstance(config_object, dict):
+        app.config.from_object(DevConfig())
+        app.config.update(config_object)
+    else:
+        cfg = config_object() if isinstance(config_object, type) else config_object
+        app.config.from_object(cfg)
 
     # configure logging
     logging.basicConfig(filename='airservice.log', level=logging.INFO)
