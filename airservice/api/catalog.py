@@ -7,6 +7,73 @@ catalog_bp = Blueprint('catalog', __name__)
 
 @catalog_bp.route('/catalog')
 def catalog():
+    """List items available for order.
+
+    ---
+    parameters:
+      - in: query
+        name: category
+        schema:
+          type: integer
+        description: Filter by category id
+      - in: query
+        name: price_min
+        schema:
+          type: number
+        description: Minimum item price
+      - in: query
+        name: price_max
+        schema:
+          type: number
+        description: Maximum item price
+      - in: query
+        name: available
+        schema:
+          type: integer
+          enum: [0, 1]
+        description: Filter by availability
+      - in: query
+        name: service
+        schema:
+          type: integer
+          enum: [0, 1]
+        description: Goods or services only
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: Search string
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum: [ru, en]
+        description: Localisation language
+    responses:
+      200:
+        description: List of catalog items
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  price:
+                    type: number
+                  available:
+                    type: boolean
+                  service:
+                    type: boolean
+                  category:
+                    type: string
+    """
     qs = Item.query
     category = request.args.get('category')
     if category:
@@ -52,7 +119,36 @@ def catalog():
 
 @catalog_bp.route('/catalog/categories')
 def catalog_categories():
-    """Return category hierarchy with nested children."""
+    """Return category hierarchy with nested children.
+
+    ---
+    responses:
+      200:
+        description: Category tree
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  children:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        children:
+                          type: array
+                          items: {}
+    """
     cats = Category.query.order_by(Category.id).all()
     nodes = {c.id: {'id': c.id, 'name': c.name, 'children': []} for c in cats}
     roots = []

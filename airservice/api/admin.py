@@ -26,6 +26,42 @@ def auth_required():
 
 @admin_bp.route('/orders')
 def list_orders():
+    """List orders with optional filters.
+
+    ---
+    parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: Filter by order status
+      - in: query
+        name: seat
+        schema:
+          type: string
+        description: Filter by seat number
+      - in: query
+        name: from
+        schema:
+          type: string
+          format: date-time
+        description: Start of creation period
+      - in: query
+        name: to
+        schema:
+          type: string
+          format: date-time
+        description: End of creation period
+    responses:
+      200:
+        description: List of orders
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+    """
     auth_required()
     qs = Order.query
     status_f = request.args.get('status')
@@ -59,6 +95,29 @@ def list_orders():
 
 @admin_bp.route('/orders/<int:order_id>', methods=['PATCH'])
 def update_order(order_id):
+    """Update order status.
+
+    ---
+    parameters:
+      - in: path
+        name: order_id
+        schema:
+          type: integer
+        required: true
+        description: Order ID
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+    responses:
+      200:
+        description: Updated order status
+    """
     auth_required()
     order = order_service.get_order(order_id)
     if not order:
@@ -72,6 +131,34 @@ def update_order(order_id):
 
 @admin_bp.route('/items', methods=['GET', 'POST'])
 def admin_items():
+    """List items or create a new one.
+
+    ---
+    parameters: []
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              price:
+                type: number
+              available:
+                type: boolean
+              service:
+                type: boolean
+              category_id:
+                type: integer
+    responses:
+      200:
+        description: Items returned
+      201:
+        description: Item created
+    """
     auth_required()
     if request.method == 'POST':
         try:
@@ -89,6 +176,40 @@ def admin_items():
 
 @admin_bp.route('/items/<int:item_id>', methods=['PUT', 'DELETE'])
 def admin_item_detail(item_id):
+    """Update or delete a specific item.
+
+    ---
+    parameters:
+      - in: path
+        name: item_id
+        schema:
+          type: integer
+        required: true
+        description: Item identifier
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              price:
+                type: number
+              available:
+                type: boolean
+              service:
+                type: boolean
+              category_id:
+                type: integer
+    responses:
+      200:
+        description: Item updated
+      204:
+        description: Item deleted
+    """
     auth_required()
     item = db.session.get(Item, item_id)
     if not item:
@@ -106,6 +227,25 @@ def admin_item_detail(item_id):
 
 @admin_bp.route('/categories', methods=['GET', 'POST'])
 def admin_categories():
+    """List or create categories.
+
+    ---
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              parent_id:
+                type: integer
+    responses:
+      200:
+        description: Category list
+      201:
+        description: Category created
+    """
     auth_required()
     if request.method == 'POST':
         try:
@@ -123,6 +263,32 @@ def admin_categories():
 
 @admin_bp.route('/categories/<int:cat_id>', methods=['PUT', 'DELETE'])
 def admin_category_detail(cat_id):
+    """Update or delete a category.
+
+    ---
+    parameters:
+      - in: path
+        name: cat_id
+        schema:
+          type: integer
+        required: true
+        description: Category ID
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              parent_id:
+                type: integer
+    responses:
+      200:
+        description: Category updated
+      204:
+        description: Category deleted
+    """
     auth_required()
     cat = db.session.get(Category, cat_id)
     if not cat:
@@ -147,6 +313,24 @@ def admin_category_detail(cat_id):
 
 @admin_bp.route('/reports/sales')
 def sales_report():
+    """Get monthly sales totals.
+
+    ---
+    parameters:
+      - in: query
+        name: year
+        schema:
+          type: integer
+        description: Filter report by year
+      - in: query
+        name: format
+        schema:
+          type: string
+        description: Return CSV when equal to 'csv'
+    responses:
+      200:
+        description: Sales data
+    """
     auth_required()
     year = request.args.get('year', type=int)
     as_csv = request.args.get('format') == 'csv'
@@ -184,6 +368,41 @@ def sales_report():
 
 @admin_bp.route('/logs')
 def search_logs():
+    """Search server logs.
+
+    ---
+    parameters:
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: Text to search
+      - in: query
+        name: user
+        schema:
+          type: string
+        description: Filter by username
+      - in: query
+        name: endpoint
+        schema:
+          type: string
+        description: Filter by endpoint path
+      - in: query
+        name: from
+        schema:
+          type: string
+          format: date-time
+        description: Start of time range
+      - in: query
+        name: to
+        schema:
+          type: string
+          format: date-time
+        description: End of time range
+    responses:
+      200:
+        description: Matching log entries
+    """
     auth_required()
     query = request.args.get('q')
     user_f = request.args.get('user')
