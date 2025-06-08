@@ -1,6 +1,8 @@
 import json
 from flask import Blueprint, jsonify, request, current_app
 
+from .admin import auth_required
+
 from ..models import db, OutgoingMessage
 from ..events import register_queue, unregister_queue
 from ..tasks import task_queue, process_outgoing_message
@@ -81,6 +83,7 @@ def notifications():
             schema:
               type: string
     """
+    auth_required()
     def stream():
         q = register_queue()
         try:
