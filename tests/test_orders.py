@@ -33,6 +33,23 @@ def test_create_order_invalid_payload(client):
     assert rv.status_code == 400
 
 
+def test_create_order_rejects_invalid_items(client, sample_data):
+    bad_id = max(sample_data['items'].values()) + 1
+    payload = {'seat': '22A', 'items': [{'item_id': bad_id}]}
+    rv = client.post('/orders', json=payload)
+    assert rv.status_code == 400
+
+    payload = {
+        'seat': '22B',
+        'items': [
+            {'item_id': sample_data['items']['Sandwich']},
+            {'item_id': bad_id},
+        ],
+    }
+    rv = client.post('/orders', json=payload)
+    assert rv.status_code == 400
+
+
 def test_update_order_status_validation(client, sample_data):
     item_id = sample_data['items']['Sandwich']
     rv = client.post('/orders', json={'seat': '15C', 'items': [{'item_id': item_id}], 'payment_method': 'cash'})
