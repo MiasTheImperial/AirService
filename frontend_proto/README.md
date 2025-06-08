@@ -23,15 +23,21 @@
 ## Установка
 
 ```bash
-# Клонировать репозиторий
-git clone https://github.com/yourusername/Cursach.git
-cd Cursach
+# Перейти в директорию приложения
+cd frontend_proto/InFlightApp
 
 # Установить зависимости
 npm install
 
 # Запустить приложение
-npm start
+npm start # или expo start
+```
+
+При необходимости укажите базовый URL API через переменную
+`EXPO_PUBLIC_API_URL`:
+
+```bash
+EXPO_PUBLIC_API_URL=http://localhost:5000 npm start
 ```
 
 ## Демо-аккаунты
@@ -57,4 +63,4 @@ InFlightApp/
 
 ## Скриншоты
 
-(Здесь будут скриншоты приложения) 
+(Здесь будут скриншоты приложения)
