@@ -6,3 +6,4 @@ Flask-Babel
 Flasgger
 psycopg2-binary
 marshmallow
+Flask-Migrate

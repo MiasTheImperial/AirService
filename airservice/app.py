@@ -4,6 +4,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_babel import Babel
 from flasgger import Swagger
+from flask_migrate import Migrate
 
 from .config import DevConfig
 from .models import db
@@ -33,9 +34,7 @@ def create_app(config_object=None):
     Swagger(app)
 
     db.init_app(app)
-
-    with app.app_context():
-        db.create_all()
+    Migrate(app, db)
 
     app.register_blueprint(catalog_bp)
     app.register_blueprint(orders_bp)
