@@ -51,7 +51,11 @@ def create_app(config_object=None):
         g.log_user = user
         g.log_endpoint = request.path
 
-    Limiter(get_remote_address, app=app, default_limits=['100 per hour'])
+    Limiter(
+        get_remote_address,
+        app=app,
+        default_limits=[app.config.get("API_RATE_LIMIT")]
+    )
 
     def get_locale():
         lang = request.args.get("lang")
