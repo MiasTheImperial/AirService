@@ -1,5 +1,6 @@
 import json
 from flask import Blueprint, jsonify, request, current_app
+from flask_babel import gettext
 
 from .admin import auth_required
 
@@ -29,7 +30,7 @@ def send_to_ai():
     db.session.add(msg)
     db.session.commit()
     task_queue.enqueue(process_outgoing_message, msg.id)
-    return jsonify({'queued': msg.id})
+    return jsonify({'queued': msg.id, 'message': gettext('Message queued')})
 
 
 @integration_bp.route('/integration/sync', methods=['POST'])
@@ -51,7 +52,7 @@ def sync_ground():
     db.session.add(msg)
     db.session.commit()
     task_queue.enqueue(process_outgoing_message, msg.id)
-    return jsonify({'queued': msg.id})
+    return jsonify({'queued': msg.id, 'message': gettext('Message queued')})
 
 
 @integration_bp.route('/retry_pending')
@@ -67,7 +68,7 @@ def retry_pending():
     for m in msgs:
         task_queue.enqueue(process_outgoing_message, m.id)
     db.session.commit()
-    return jsonify({'retried': len(msgs)})
+    return jsonify({'retried': len(msgs), 'message': gettext('Messages retried')})
 
 
 @integration_bp.route('/notifications')
