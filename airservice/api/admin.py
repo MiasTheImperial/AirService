@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 import logging
 import os
  
@@ -184,11 +185,47 @@ def sales_report():
 @admin_bp.route('/logs')
 def search_logs():
     auth_required()
-    query = request.args.get('q', '')
-    lines = []
+    query = request.args.get('q')
+    user_f = request.args.get('user')
+    endpoint_f = request.args.get('endpoint')
+    dt_from = None
+    if request.args.get('from'):
+        try:
+            dt_from = datetime.fromisoformat(request.args['from'])
+        except ValueError:
+            pass
+    dt_to = None
+    if request.args.get('to'):
+        try:
+            dt_to = datetime.fromisoformat(request.args['to'])
+        except ValueError:
+            pass
+
+    entries = []
     if os.path.exists('airservice.log'):
         with open('airservice.log') as f:
             for ln in f:
-                if query in ln:
-                    lines.append(ln.strip())
-    return jsonify(lines)
+                try:
+                    entry = json.loads(ln)
+                except json.JSONDecodeError:
+                    continue
+                if query and query not in entry.get('message', ''):
+                    continue
+                if user_f and entry.get('user') != user_f:
+                    continue
+                if endpoint_f and entry.get('endpoint') != endpoint_f:
+                    continue
+                ts_str = entry.get('timestamp')
+                if ts_str:
+                    try:
+                        ts = datetime.fromisoformat(ts_str)
+                    except ValueError:
+                        ts = None
+                else:
+                    ts = None
+                if dt_from and ts and ts < dt_from:
+                    continue
+                if dt_to and ts and ts > dt_to:
+                    continue
+                entries.append(entry)
+    return jsonify(entries)

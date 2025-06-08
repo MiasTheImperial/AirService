@@ -41,7 +41,7 @@
   - CRUD товаров и категорий через `/admin/items` и `/admin/categories`
   - Отчёт о продажах: `GET /admin/reports/sales?year=2025`
   - Экспорт отчёта в CSV: `GET /admin/reports/sales?format=csv`
-  - Поиск по логам: `GET /admin/logs?q=order`
+  - Поиск по логам: `GET /admin/logs?user=admin&endpoint=/orders&from=2024-01-01T00:00:00`
 - Swagger-документация доступна на `/apidocs/`
 - Push-уведомления о заказах доступны через SSE `/notifications`
 
