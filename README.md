@@ -28,6 +28,8 @@
    ```bash
    python run_worker.py
    ```
+7. Логи сервера пишутся в файл `airservice.log` в формате JSON и содержат поля
+   `timestamp`, `user`, `endpoint` и `message`.
 
 ## Использование
 

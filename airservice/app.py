@@ -1,5 +1,7 @@
-from flask import Flask, request
+from flask import Flask, request, g
 import logging
+from datetime import datetime
+from pythonjsonlogger import jsonlogger
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_babel import Babel
@@ -26,7 +28,28 @@ def create_app(config_object=None):
         cfg = config_object() if isinstance(config_object, type) else config_object
         app.config.from_object(cfg)
 
-    logging.basicConfig(filename='airservice.log', level=logging.INFO)
+    class RequestFilter(logging.Filter):
+        def filter(self, record):
+            record.user = getattr(g, 'log_user', 'system')
+            record.endpoint = getattr(g, 'log_endpoint', '')
+            record.timestamp = datetime.utcnow().isoformat()
+            return True
+
+    handler = logging.FileHandler('airservice.log')
+    formatter = jsonlogger.JsonFormatter('%(timestamp)s %(user)s %(endpoint)s %(message)s')
+    handler.setFormatter(formatter)
+    handler.addFilter(RequestFilter())
+
+    logger = logging.getLogger()
+    logger.handlers = []
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
+
+    @app.before_request
+    def set_log_context():
+        user = request.authorization.username if request.authorization else 'guest'
+        g.log_user = user
+        g.log_endpoint = request.path
 
     Limiter(get_remote_address, app=app, default_limits=['100 per hour'])
 
