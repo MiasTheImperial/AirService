@@ -24,6 +24,10 @@
    ```bash
    python run.py
    ```
+6. Запустите воркер очереди (требуется Redis):
+   ```bash
+   python run_worker.py
+   ```
 
 ## Использование
 

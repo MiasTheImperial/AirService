@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, request, current_app
 
 from ..models import db, OutgoingMessage
 from ..events import register_queue, unregister_queue
+from ..tasks import task_queue, process_outgoing_message
 
 integration_bp = Blueprint('integration', __name__)
 
@@ -13,6 +14,7 @@ def send_to_ai():
     msg = OutgoingMessage(payload=json.dumps(payload), target='ai')
     db.session.add(msg)
     db.session.commit()
+    task_queue.enqueue(process_outgoing_message, msg.id)
     return jsonify({'queued': msg.id})
 
 
@@ -22,6 +24,7 @@ def sync_ground():
     msg = OutgoingMessage(payload=json.dumps(payload), target='ground')
     db.session.add(msg)
     db.session.commit()
+    task_queue.enqueue(process_outgoing_message, msg.id)
     return jsonify({'queued': msg.id})
 
 
@@ -29,7 +32,7 @@ def sync_ground():
 def retry_pending():
     msgs = OutgoingMessage.query.filter_by(sent=False).all()
     for m in msgs:
-        m.sent = True  # pretend send succeeds
+        task_queue.enqueue(process_outgoing_message, m.id)
     db.session.commit()
     return jsonify({'retried': len(msgs)})
 
