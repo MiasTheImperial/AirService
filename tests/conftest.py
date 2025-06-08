@@ -3,8 +3,16 @@ import sys
 import base64
 from datetime import datetime
 import json
-
 import pytest
+import subprocess
+from pathlib import Path
+
+
+@pytest.fixture(scope="session", autouse=True)
+def compile_translations():
+    """Compile .po files to .mo so Flask-Babel can use them."""
+    translations_dir = Path(__file__).resolve().parent.parent / "airservice" / "translations"
+    subprocess.run(["pybabel", "compile", "-d", str(translations_dir)], check=True)
 
 # allow imports from repo root
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))

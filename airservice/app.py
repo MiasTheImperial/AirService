@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import logging
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -30,7 +30,13 @@ def create_app(config_object=None):
 
     Limiter(get_remote_address, app=app, default_limits=['100 per hour'])
 
-    Babel(app)
+    def get_locale():
+        lang = request.args.get("lang")
+        if lang:
+            return lang
+        return request.accept_languages.best_match(["ru", "en"]) or app.config.get("BABEL_DEFAULT_LOCALE")
+
+    Babel(app, locale_selector=get_locale)
     Swagger(app)
 
     db.init_app(app)
