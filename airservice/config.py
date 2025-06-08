@@ -14,6 +14,7 @@ class BaseConfig:
             pwd_hash = generate_password_hash(os.getenv("ADMIN_PASSWORD", "admin"))
         self.ADMIN_PASSWORD_HASH = pwd_hash
         self.BABEL_DEFAULT_LOCALE = os.getenv("BABEL_DEFAULT_LOCALE", "ru")
+        self.API_RATE_LIMIT = os.getenv("API_RATE_LIMIT", "100 per hour")
 
 
 class DevConfig(BaseConfig):
