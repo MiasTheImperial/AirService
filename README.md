@@ -29,3 +29,19 @@
 - Swagger-документация доступна на `/apidocs/`
 
 Данные по умолчанию хранятся в SQLite-файле `airservice.db`. Чтобы использовать PostgreSQL, задайте `DATABASE_URL`.
+
+## Running Tests
+
+1. Install dependencies:
+```bash
+pip install -r requirements.txt
+pip install pytest pytest-cov
+```
+2. Run the test suite:
+```bash
+pytest
+```
+3. To see coverage:
+```bash
+pytest --cov=airservice
+```
