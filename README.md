@@ -11,10 +11,16 @@
 2. При необходимости укажите строку подключения к БД через переменную `DATABASE_URL`.
    Пример для PostgreSQL:
    `postgresql://user:password@localhost/airservice`.
-3. Вы можете задать логин администратора через `ADMIN_USERNAME` и пароль
+3. Выполните миграции (при первом запуске):
+   ```bash
+   flask db init      # один раз
+   flask db migrate -m "init"
+   flask db upgrade
+   ```
+4. Вы можете задать логин администратора через `ADMIN_USERNAME` и пароль
    через `ADMIN_PASSWORD` или готовый `ADMIN_PASSWORD_HASH`.
    По умолчанию используются значения `admin`/`admin`.
-4. Запустите приложение (можно указать `SSL_CERT` и `SSL_KEY` для HTTPS):
+5. Запустите приложение (можно указать `SSL_CERT` и `SSL_KEY` для HTTPS):
    ```bash
    python run.py
    ```
