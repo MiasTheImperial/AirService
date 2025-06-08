@@ -1,5 +1,6 @@
 import logging
 from typing import List, Tuple
+from flask_babel import gettext
 
 from ..models import db, Item, Order, OrderItem
 from ..events import push_event
@@ -26,7 +27,9 @@ def create_order(seat: str, items: List[dict], *, payment_method: str | None = N
         else:
             validated_items.append((item, it.get("quantity", 1)))
     if missing_ids:
-        raise ValueError(f"Invalid item IDs: {missing_ids}")
+        raise ValueError(
+            gettext('Invalid item IDs: %(ids)s') % {'ids': missing_ids}
+        )
 
     order = Order(seat=seat, idempotency_key=idempotency_key, payment_method=payment_method)
     db.session.add(order)

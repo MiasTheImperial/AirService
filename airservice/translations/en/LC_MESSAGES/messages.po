@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-08 19:24+0000\n"
+"POT-Creation-Date: 2025-06-08 20:46+0000\n"
 "PO-Revision-Date: 2025-06-08 19:24+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,7 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: airservice/api/orders.py:17
+#: airservice/api/integration.py:33 airservice/api/integration.py:55
+msgid "Message queued"
+msgstr "Message queued"
+
+#: airservice/api/integration.py:71
+msgid "Messages retried"
+msgstr "Messages retried"
+
+#: airservice/api/orders.py:53
 msgid "Invalid payload"
 msgstr "Invalid payload"
+
+#: airservice/services/order_service.py:31
+#, python-format
+msgid "Invalid item IDs: %(ids)s"
+msgstr "Invalid item IDs: %(ids)s"
 
