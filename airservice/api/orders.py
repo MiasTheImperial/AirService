@@ -55,7 +55,15 @@ def create_order():
     items = payload['items']
     payment_method = payload.get('payment_method')
     idem_key = request.headers.get('Idempotency-Key')
-    order, created = order_service.create_order(seat, items, payment_method=payment_method, idempotency_key=idem_key)
+    try:
+        order, created = order_service.create_order(
+            seat,
+            items,
+            payment_method=payment_method,
+            idempotency_key=idem_key,
+        )
+    except ValueError as err:
+        return jsonify({'error': str(err)}), 400
     status_code = 201 if created else 200
     return jsonify({'order_id': order.id}), status_code
 
