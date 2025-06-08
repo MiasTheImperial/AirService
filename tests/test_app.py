@@ -221,6 +221,14 @@ def test_sales_report_multiple_years(client, populate_orders):
     assert data['2023-12']['services'] == 54.0
 
 
+def test_sales_report_all_years(client, populate_orders):
+    rv = client.get('/admin/reports/sales', headers=auth_header())
+    data = rv.get_json()
+    assert len(data) == 36
+    assert data['2021-01']['goods'] == 28.0
+    assert data['2023-12']['services'] == 54.0
+
+
 def test_admin_requires_auth(client):
     rv = client.get('/admin/items')
     assert rv.status_code == 401
