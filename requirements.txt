@@ -10,3 +10,4 @@ Flask-Migrate
 redis
 rq
 python-json-logger
+Flask-CORS
