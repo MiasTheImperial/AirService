@@ -1,15 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet, Image } from 'react-native';
-import { Card, Searchbar, Chip, Text, Button, useTheme } from 'react-native-paper';
-import { Product } from '../types';
+import { Card, Searchbar, Chip, Text, Button, useTheme, ActivityIndicator } from 'react-native-paper';
+import { Product, Category } from '../types';
 import { useTranslation } from 'react-i18next';
-import { products, categories } from '../data/products';
+import { getCatalog, getCategories } from '../api/api';
 
 const CatalogScreen = ({ navigation }: any) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const [prodData, catData] = await Promise.all([getCatalog(), getCategories()]);
+        setProducts(prodData);
+        setCategories(catData);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -58,6 +78,22 @@ const CatalogScreen = ({ navigation }: any) => {
       </Card.Actions>
     </Card>
   );
+
+  if (loading) {
+    return (
+      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
+        <Text style={{ color: theme.colors.error }}>{error}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -203,6 +239,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   viewButton: {
     width: '100%',

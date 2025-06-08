@@ -3,29 +3,26 @@ import { View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Text, Chip, Divider, Button, ActivityIndicator, useTheme } from 'react-native-paper';
 import { Order, OrderStatus } from '../types';
 import { useTranslation } from 'react-i18next';
-import { getOrdersByUserId } from '../data/orders';
+import { listOrders } from '../api/api';
 
 const OrderHistoryScreen = ({ navigation }: any) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
 
   // Получение данных о заказах
   useEffect(() => {
-    // Эмуляция загрузки данных с сервера
     const loadOrders = async () => {
       try {
         setLoading(true);
-        // Имитация задержки сети
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // В реальном приложении здесь был бы API-запрос
-        const userOrders = getOrdersByUserId('user123');
-        setOrders(userOrders);
-      } catch (error) {
-        console.error('Ошибка при загрузке заказов:', error);
+        const data = await listOrders();
+        setOrders(data);
+      } catch (err: any) {
+        console.error('Ошибка при загрузке заказов:', err);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -157,6 +154,14 @@ const OrderHistoryScreen = ({ navigation }: any) => {
     return (
       <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
+        <Text style={{ color: theme.colors.error }}>{error}</Text>
       </View>
     );
   }
