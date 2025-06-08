@@ -1,5 +1,6 @@
 from flask import Flask, request, g
 import logging
+import os
 from datetime import datetime
 from pythonjsonlogger import jsonlogger
 from flask_limiter import Limiter
@@ -7,6 +8,7 @@ from flask_limiter.util import get_remote_address
 from flask_babel import Babel
 from flasgger import Swagger
 from flask_migrate import Migrate
+from flask_cors import CORS
 
 from .config import DevConfig
 from .models import db
@@ -27,6 +29,8 @@ def create_app(config_object=None):
     else:
         cfg = config_object() if isinstance(config_object, type) else config_object
         app.config.from_object(cfg)
+
+    CORS(app, origins=os.getenv("FRONTEND_ORIGIN", "*"))
 
     class RequestFilter(logging.Filter):
         def filter(self, record):
