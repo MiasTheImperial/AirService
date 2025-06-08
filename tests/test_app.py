@@ -149,6 +149,10 @@ def test_admin_item_crud(client, app, sample_data):
     assert rv.status_code == 201
     item_id = rv.get_json()['id']
 
+    rv = client.get('/admin/items', headers=auth_header())
+    items = rv.get_json()
+    assert any(i['id'] == item_id or i['name'] == 'Soup' for i in items)
+
     rv = client.put(f'/admin/items/{item_id}', json={'price': 4.5}, headers=auth_header())
     assert rv.status_code == 200
 
