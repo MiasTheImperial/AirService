@@ -48,13 +48,15 @@ def sample_data(app):
             'Accessories': Category(name='Accessories'),
             'Services': Category(name='Services'),
         }
+        # subcategory for hierarchy tests
+        cats['Alcohol'] = Category(name='Alcohol', parent=cats['Drinks'])
         db.session.add_all(cats.values())
         db.session.flush()
         items = [
             Item(name='Sandwich', price=5.0, category=cats['Food']),
             Item(name='Salad', price=7.0, category=cats['Food']),
             Item(name='Water', price=1.5, category=cats['Drinks']),
-            Item(name='Wine', price=8.0, category=cats['Drinks']),
+            Item(name='Wine', price=8.0, category=cats['Alcohol']),
             Item(name='Coffee', price=3.0, category=cats['Drinks']),
             Item(name='Blanket', price=15.0, category=cats['Accessories']),
             Item(name='Headphones', price=25.0, category=cats['Accessories']),

@@ -61,3 +61,16 @@ def test_catalog_price_and_service_filters(client, sample_data):
         'Blanket': 15.0,
         'Headphones': 25.0,
     }
+
+
+def test_catalog_categories_hierarchy(client, sample_data):
+    rv = client.get('/catalog/categories')
+    assert rv.status_code == 200
+    data = rv.get_json()
+    # root categories
+    root_names = {c['name'] for c in data}
+    assert 'Drinks' in root_names
+    assert 'Alcohol' not in root_names
+    drinks = next(c for c in data if c['name'] == 'Drinks')
+    child_names = {c['name'] for c in drinks['children']}
+    assert 'Alcohol' in child_names
