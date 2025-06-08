@@ -10,6 +10,18 @@ integration_bp = Blueprint('integration', __name__)
 
 @integration_bp.route('/integration/ai', methods=['POST'])
 def send_to_ai():
+    """Send data to AI system asynchronously.
+
+    ---
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+    responses:
+      200:
+        description: Message queued
+    """
     payload = request.get_json() or {}
     msg = OutgoingMessage(payload=json.dumps(payload), target='ai')
     db.session.add(msg)
@@ -20,6 +32,18 @@ def send_to_ai():
 
 @integration_bp.route('/integration/sync', methods=['POST'])
 def sync_ground():
+    """Send data to ground services.
+
+    ---
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+    responses:
+      200:
+        description: Message queued
+    """
     payload = request.get_json() or {}
     msg = OutgoingMessage(payload=json.dumps(payload), target='ground')
     db.session.add(msg)
@@ -30,6 +54,13 @@ def sync_ground():
 
 @integration_bp.route('/retry_pending')
 def retry_pending():
+    """Retry sending all pending messages.
+
+    ---
+    responses:
+      200:
+        description: Count of retried messages
+    """
     msgs = OutgoingMessage.query.filter_by(sent=False).all()
     for m in msgs:
         task_queue.enqueue(process_outgoing_message, m.id)
@@ -39,6 +70,17 @@ def retry_pending():
 
 @integration_bp.route('/notifications')
 def notifications():
+    """Server-sent events with integration notifications.
+
+    ---
+    responses:
+      200:
+        description: SSE stream
+        content:
+          text/event-stream:
+            schema:
+              type: string
+    """
     def stream():
         q = register_queue()
         try:
