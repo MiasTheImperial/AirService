@@ -7,6 +7,7 @@ class OrderItemSchema(Schema):
 class OrderSchema(Schema):
     seat = fields.Str(required=True)
     items = fields.List(fields.Nested(OrderItemSchema), required=True)
+    payment_method = fields.Str()
 
 class ItemSchema(Schema):
     name = fields.Str(required=True)

@@ -17,8 +17,9 @@ def create_order():
         return jsonify({'error': gettext('Invalid payload'), 'details': err.messages}), 400
     seat = payload['seat']
     items = payload['items']
+    payment_method = payload.get('payment_method')
     idem_key = request.headers.get('Idempotency-Key')
-    order, created = order_service.create_order(seat, items, idempotency_key=idem_key)
+    order, created = order_service.create_order(seat, items, payment_method=payment_method, idempotency_key=idem_key)
     status_code = 201 if created else 200
     return jsonify({'order_id': order.id}), status_code
 

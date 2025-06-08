@@ -91,7 +91,8 @@ def populate_orders(app, sample_data):
                     order = Order(
                         seat=f'{month}{num}A',
                         status='done',
-                        created_at=datetime(year, month, 15)
+                        created_at=datetime(year, month, 15),
+                        payment_method='card'
                     )
                     db.session.add(order)
                     db.session.flush()
