@@ -240,3 +240,8 @@ def test_catalog_availability_filter(client, sample_data):
     rv = client.get('/catalog?available=0')
     names = {i['name'] for i in rv.get_json()}
     assert 'Wine' in names
+
+
+def test_get_nonexistent_order_returns_404(client):
+    rv = client.get('/orders/9999')
+    assert rv.status_code == 404
