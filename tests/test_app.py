@@ -22,14 +22,15 @@ def auth_header():
 def app():
     os.environ['DATABASE_URL'] = 'sqlite:///:memory:'
     os.environ['ADMIN_USERNAME'] = 'admin'
-    os.environ['ADMIN_PASSWORD'] = 'admin'
+    from werkzeug.security import generate_password_hash
+    os.environ['ADMIN_PASSWORD_HASH'] = generate_password_hash('admin')
     app = create_app(TestConfig)
     with app.app_context():
         db.create_all()
     yield app
     os.environ.pop('DATABASE_URL', None)
     os.environ.pop('ADMIN_USERNAME', None)
-    os.environ.pop('ADMIN_PASSWORD', None)
+    os.environ.pop('ADMIN_PASSWORD_HASH', None)
 
 
 @pytest.fixture
