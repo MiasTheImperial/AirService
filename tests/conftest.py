@@ -2,6 +2,7 @@ import os
 import sys
 import base64
 from datetime import datetime
+import json
 
 import pytest
 
@@ -103,3 +104,32 @@ def populate_orders(app, sample_data):
         db.session.commit()
         # return one of each to use in other tests
         return {'goods_id': goods_list[0], 'service_id': service_list[0]}
+
+
+@pytest.fixture
+def sample_logs():
+    entries = [
+        {
+            'timestamp': '2024-01-01T12:00:00',
+            'user': 'admin',
+            'endpoint': '/admin/items',
+            'message': 'item_created'
+        },
+        {
+            'timestamp': '2024-01-02T13:00:00',
+            'user': 'guest',
+            'endpoint': '/orders',
+            'message': 'order_created'
+        },
+        {
+            'timestamp': '2024-01-03T14:00:00',
+            'user': 'admin',
+            'endpoint': '/admin/items',
+            'message': 'item_deleted'
+        },
+    ]
+    with open('airservice.log', 'w') as f:
+        for e in entries:
+            f.write(json.dumps(e) + '\n')
+    yield entries
+    os.remove('airservice.log')
