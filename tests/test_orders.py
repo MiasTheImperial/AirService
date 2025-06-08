@@ -5,7 +5,8 @@ def test_order_flow_and_idempotency(client, sample_data):
     item_id = sample_data['items']['Sandwich']
     payload = {
         'seat': '10B',
-        'items': [{'item_id': item_id, 'quantity': 2}]
+        'items': [{'item_id': item_id, 'quantity': 2}],
+        'payment_method': 'card'
     }
     rv = client.post('/orders', json=payload, headers={'Idempotency-Key': '123'})
     assert rv.status_code == 201
@@ -34,7 +35,7 @@ def test_create_order_invalid_payload(client):
 
 def test_update_order_status_validation(client, sample_data):
     item_id = sample_data['items']['Sandwich']
-    rv = client.post('/orders', json={'seat': '15C', 'items': [{'item_id': item_id}]})
+    rv = client.post('/orders', json={'seat': '15C', 'items': [{'item_id': item_id}], 'payment_method': 'cash'})
     assert rv.status_code == 201
     order_id = rv.get_json()['order_id']
     rv = client.patch(f'/admin/orders/{order_id}', json={'status': 'forming'}, headers=auth_header())

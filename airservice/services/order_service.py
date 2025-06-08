@@ -5,7 +5,7 @@ from ..models import db, Item, Order, OrderItem
 from ..events import push_event
 
 
-def create_order(seat: str, items: List[dict], idempotency_key: str | None = None) -> Tuple[Order, bool]:
+def create_order(seat: str, items: List[dict], *, payment_method: str | None = None, idempotency_key: str | None = None) -> Tuple[Order, bool]:
     """Create a new order with given items.
 
     Returns a tuple of (order, created) where created=False means an order with
@@ -15,7 +15,7 @@ def create_order(seat: str, items: List[dict], idempotency_key: str | None = Non
         existing = Order.query.filter_by(idempotency_key=idempotency_key).first()
         if existing:
             return existing, False
-    order = Order(seat=seat, idempotency_key=idempotency_key)
+    order = Order(seat=seat, idempotency_key=idempotency_key, payment_method=payment_method)
     db.session.add(order)
     db.session.commit()
     for it in items:

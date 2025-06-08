@@ -34,6 +34,7 @@ class Order(db.Model):
     idempotency_key = db.Column(db.String(64), unique=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(20), default='new')
+    payment_method = db.Column(db.String(20))
 
 
 class OrderItem(db.Model):
