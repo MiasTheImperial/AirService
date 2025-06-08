@@ -1,0 +1,14 @@
+{
+  "name": "cursach",
+  "version": "1.0.0",
+  "description": "In-Flight Services Application",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd InFlightApp && npm start",
+    "android": "cd InFlightApp && npm run android",
+    "ios": "cd InFlightApp && npm run ios",
+    "web": "cd InFlightApp && npm run web"
+  },
+  "author": "",
+  "license": "ISC"
+} 

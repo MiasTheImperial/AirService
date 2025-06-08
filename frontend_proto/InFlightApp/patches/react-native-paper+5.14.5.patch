@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-paper/lib/module/components/MaterialCommunityIcon.js b/node_modules/react-native-paper/lib/module/components/MaterialCommunityIcon.js
+index 1234567..abcdef0 100644
+--- a/node_modules/react-native-paper/lib/module/components/MaterialCommunityIcon.js
++++ b/node_modules/react-native-paper/lib/module/components/MaterialCommunityIcon.js
+@@ -39,7 +39,7 @@ let MaterialCommunityIcon;
+ 
+ const loadIconModule = () => {
+   try {
+-    return require('@react-native-vector-icons/material-design-icons').default;
++    return require('@expo/vector-icons/MaterialCommunityIcons').default;
+   } catch (e) {
+     try {
+       return require('@expo/vector-icons/MaterialCommunityIcons').default;
