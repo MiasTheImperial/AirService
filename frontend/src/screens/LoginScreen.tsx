@@ -26,26 +26,32 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
     try {
       setLoading(true);
       setError('');
-      
+
       if (!isGuestMode) {
         if (!email) {
           setError(t('auth.emailRequired'));
           setLoading(false);
           return;
         }
-        
+
         if (!password) {
           setError(t('auth.passwordRequired'));
           setLoading(false);
           return;
         }
-        
+
         // Admin check (for demo)
         const isAdmin = email === 'admin@example.com';
-        
+
+        if (!isAdmin && !seatNumber) {
+          setError(t('auth.seatRequired'));
+          setLoading(false);
+          return;
+        }
+
         // Simulate request delay
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         route.params.onLogin(isAdmin, seatNumber);
       } else {
         if (!seatNumber) {
@@ -90,6 +96,17 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
             style={styles.input}
             autoCapitalize="none"
             keyboardType="email-address"
+            mode="outlined"
+            outlineColor={theme.colors.outline}
+            activeOutlineColor={theme.colors.primary}
+            textColor={theme.colors.onSurface}
+          />
+          <TextInput
+            label={t('auth.seatNumber')}
+            value={seatNumber}
+            onChangeText={setSeatNumber}
+            style={styles.input}
+            keyboardType="number-pad"
             mode="outlined"
             outlineColor={theme.colors.outline}
             activeOutlineColor={theme.colors.primary}
