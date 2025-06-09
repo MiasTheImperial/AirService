@@ -55,10 +55,21 @@
 
 ## Фронтенд
 
-Клиентское приложение находится в каталоге `frontend_proto`. Чтобы установить зависимости и запустить его:
+Клиентское приложение находится в каталоге `frontend`. Чтобы установить зависимости и запустить его:
 
 ```bash
-cd frontend_proto/InFlightApp
+npm install --prefix frontend
+npm run --prefix frontend web-build
+```
+
+После сборки статических файлов запустите сервер Flask:
+```bash
+python run.py
+```
+
+Для разработки можно запустить приложение Expo:
+```bash
+cd frontend
 npm install
 npm start # или expo start
 ```

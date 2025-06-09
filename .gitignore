@@ -4,3 +4,4 @@ airservice.db
 airservice.log
 instance/
 *.mo
+frontend/web-build/

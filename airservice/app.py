@@ -19,7 +19,7 @@ from .api.integration import integration_bp
 
 
 def create_app(config_object=None):
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='../frontend/web-build', static_url_path='/')
     if config_object is None:
         config_object = DevConfig
 
@@ -77,6 +77,10 @@ def create_app(config_object=None):
     app.register_blueprint(orders_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(integration_bp)
+
+    @app.route('/')
+    def index():
+        return app.send_static_file('index.html')
 
     return app
 
