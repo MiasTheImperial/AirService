@@ -22,5 +22,6 @@ class DevConfig(BaseConfig):
 
 
 class TestConfig(BaseConfig):
+    __test__ = False
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///:memory:")
