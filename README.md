@@ -24,6 +24,7 @@
    ```bash
    flask seed-data
    ```
+   После выполнения этой команды демо-аккаунт `user@example.com` (пароль `password`) будет иметь несколько заказов для демонстрации истории заказов.
 
 If an earlier version of the database already exists (for example from a previous clone), delete `airservice.db` or run `flask db downgrade base` before `flask db upgrade`.
 5. Вы можете задать логин администратора через `ADMIN_USERNAME` и пароль
