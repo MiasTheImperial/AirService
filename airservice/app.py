@@ -16,6 +16,7 @@ from .api.catalog import catalog_bp
 from .api.orders import orders_bp
 from .api.admin import admin_bp
 from .api.integration import integration_bp
+from .api.auth import auth_bp
 
 
 def create_app(config_object=None):
@@ -78,6 +79,7 @@ def create_app(config_object=None):
     Migrate(app, db)
 
     app.register_blueprint(catalog_bp)
+    app.register_blueprint(auth_bp)
     app.register_blueprint(orders_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(integration_bp)

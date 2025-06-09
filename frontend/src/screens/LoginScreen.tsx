@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { TextInput, Button, Text, Surface, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
+import { login } from '../api/api';
 
 interface LoginScreenProps {
   navigation: any;
@@ -40,13 +41,8 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
           return;
         }
 
-        // Admin check (for demo)
-        const isAdmin = email === 'admin@example.com';
-
-        // Simulate request delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        route.params.onLogin(isAdmin, seatNumber);
+        const res = await login(email, password);
+        route.params.onLogin(res.is_admin, res.seat);
       } else {
         if (!seatNumber) {
           setError(t('auth.seatRequired'));

@@ -8,6 +8,14 @@ ORDER_STATUSES = ['new', 'forming', 'done', 'cancelled']
 db = SQLAlchemy()
 
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    seat = db.Column(db.String(10), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+
+
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
