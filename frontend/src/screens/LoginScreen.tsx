@@ -7,7 +7,7 @@ interface LoginScreenProps {
   navigation: any;
   route: {
     params: {
-      onLogin: (isAdmin: boolean) => void;
+      onLogin: (isAdmin: boolean, seatNumber: string) => void;
     };
   };
 }
@@ -46,7 +46,7 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
         // Simulate request delay
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        route.params.onLogin(isAdmin);
+        route.params.onLogin(isAdmin, seatNumber);
       } else {
         if (!seatNumber) {
           setError(t('auth.seatRequired'));
@@ -57,7 +57,7 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
         // Simulate request delay
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        route.params.onLogin(false);
+        route.params.onLogin(false, seatNumber);
       }
     } catch (err: any) {
       setError(err.message || t('auth.invalidCredentials'));

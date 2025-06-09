@@ -27,7 +27,7 @@ import OrderHistoryScreen from './screens/OrderHistoryScreen';
 declare global {
   namespace ReactNavigation {
     interface RootParamList {
-      Login: { onLogin: (isAdmin: boolean) => void };
+      Login: { onLogin: (isAdmin: boolean, seatNumber: string) => void };
       MainApp: undefined;
       AdminRoot: undefined;
       ProductDetails: { id: string };
@@ -35,7 +35,7 @@ declare global {
       CatalogScreen: undefined;
       CartScreen: undefined;
       ProfileScreen: undefined;
-      LoginScreen: { onLogin: (isAdmin: boolean) => void };
+      LoginScreen: { onLogin: (isAdmin: boolean, seatNumber: string) => void };
       AdminPanel: undefined;
       ProductDetailsScreen: { id: string };
       OrderStatusScreen: { id: string };
@@ -143,7 +143,7 @@ const linking = {
 };
 
 // Main tab navigator for authenticated users
-const MainTabNavigator = () => {
+const MainTabNavigator = ({ seatNumber }: { seatNumber: string }) => {
   const { t } = useTranslation();
   
   return (
@@ -181,7 +181,11 @@ const MainTabNavigator = () => {
     >
       <Tab.Screen name={t('navigation.catalog')} component={CatalogScreen} />
       <Tab.Screen name={t('navigation.cart')} component={CartScreen} />
-      <Tab.Screen name={t('navigation.profile')} component={ProfileScreen} />
+      <Tab.Screen
+        name={t('navigation.profile')}
+        component={ProfileScreen}
+        initialParams={{ seatNumber }}
+      />
     </Tab.Navigator>
   );
 };
@@ -215,6 +219,7 @@ const RootStackNavigator = () => {
   const { t } = useTranslation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [seatNumber, setSeatNumber] = useState('');
 
   // Mock authentication check - in a real app, this would check for a valid token
   useEffect(() => {
@@ -255,18 +260,17 @@ const RootStackNavigator = () => {
         name="Login" 
         component={LoginScreen} 
         options={{ headerShown: false }}
-        initialParams={{ onLogin: (isAdmin: boolean) => {
+        initialParams={{ onLogin: (isAdmin: boolean, seat: string) => {
           setIsLoggedIn(true);
           setIsAdmin(isAdmin);
+          setSeatNumber(seat);
         }}}
       />
       
       {/* Основные экраны приложения */}
-      <Stack.Screen 
-        name="MainApp" 
-        component={MainTabNavigator}
-        options={{ headerShown: false }} 
-      />
+      <Stack.Screen name="MainApp" options={{ headerShown: false }}>
+        {() => <MainTabNavigator seatNumber={seatNumber} />}
+      </Stack.Screen>
       
       {/* Админ-панель */}
       <Stack.Screen 
@@ -298,10 +302,11 @@ const RootStackNavigator = () => {
         component={CartScreen} 
         options={{ title: t('navigation.cart') }}
       />
-      <Stack.Screen 
-        name="ProfileScreen" 
-        component={ProfileScreen} 
+      <Stack.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
         options={{ title: t('navigation.profile') }}
+        initialParams={{ seatNumber }}
       />
       <Stack.Screen 
         name="LoginScreen" 
@@ -328,10 +333,11 @@ const RootStackNavigator = () => {
         component={PaymentScreen} 
         options={{ title: t('payment.title') }}
       />
-      <Stack.Screen 
-        name="OrderHistoryScreen" 
-        component={OrderHistoryScreen} 
+      <Stack.Screen
+        name="OrderHistoryScreen"
+        component={OrderHistoryScreen}
         options={{ title: t('navigation.orderHistory') }}
+        initialParams={{ seatNumber }}
       />
     </Stack.Navigator>
   );

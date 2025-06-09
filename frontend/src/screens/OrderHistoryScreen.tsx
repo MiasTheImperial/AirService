@@ -5,9 +5,10 @@ import { Order, OrderStatus } from '../types';
 import { useTranslation } from 'react-i18next';
 import { listOrders } from '../api/api';
 
-const OrderHistoryScreen = ({ navigation }: any) => {
+const OrderHistoryScreen = ({ navigation, route }: any) => {
   const theme = useTheme();
   const { t } = useTranslation();
+  const seatNumber = route.params?.seatNumber as string;
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +19,7 @@ const OrderHistoryScreen = ({ navigation }: any) => {
     const loadOrders = async () => {
       try {
         setLoading(true);
-        const data = await listOrders();
+        const data = await listOrders({ seat: seatNumber, status: selectedFilter || undefined });
         setOrders(data);
       } catch (err: any) {
         console.error('Ошибка при загрузке заказов:', err);

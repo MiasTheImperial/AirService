@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import DirectLinkButton from '../components/DirectLinkButton';
 import { listOrders } from '../api/api';
 
-const ProfileScreen = ({ navigation }: any) => {
+const ProfileScreen = ({ navigation, route }: any) => {
+  const seatNumber = route.params?.seatNumber as string;
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(true); // По умолчанию включен темный режим
   const theme = useTheme();
@@ -23,7 +24,7 @@ const ProfileScreen = ({ navigation }: any) => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const data = await listOrders();
+        const data = await listOrders({ seat: seatNumber });
         setOrdersCount(data.length);
       } catch (err) {
         console.error('Ошибка при получении заказов:', err);
@@ -104,7 +105,7 @@ const ProfileScreen = ({ navigation }: any) => {
                 {ordersCount}
               </Text>
             </View>}
-            onPress={() => navigation.navigate('OrderHistoryScreen')}
+            onPress={() => navigation.navigate('OrderHistoryScreen', { seatNumber })}
           />
           
           <Divider style={{ backgroundColor: theme.colors.outline }} />
@@ -155,6 +156,7 @@ const ProfileScreen = ({ navigation }: any) => {
             <DirectLinkButton
               screenName="OrderHistoryScreen"
               style={styles.linkButton}
+              params={{ seatNumber }}
             >
               {t('navigation.orderHistory')}
             </DirectLinkButton>
