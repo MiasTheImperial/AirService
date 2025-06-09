@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavigationContainer, DefaultTheme as NavigationDefaultTheme, DarkTheme as NavigationDarkTheme, getStateFromPath as getStateFromPathDefault } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme as NavigationDefaultTheme, DarkTheme as NavigationDarkTheme, getStateFromPath as getStateFromPathDefault, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar, Platform } from 'react-native';
@@ -217,6 +217,7 @@ const AdminNavigator = () => {
 // Root Stack Navigator, который включает все экраны
 const RootStackNavigator = () => {
   const { t } = useTranslation();
+  const navigation = useNavigation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [seatNumber, setSeatNumber] = useState('');
@@ -242,6 +243,12 @@ const RootStackNavigator = () => {
 
     checkAuthStatus();
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigation.replace(isAdmin ? 'AdminRoot' : 'MainApp');
+    }
+  }, [isLoggedIn, isAdmin, navigation]);
   
   return (
     <Stack.Navigator
@@ -256,15 +263,18 @@ const RootStackNavigator = () => {
       }}
     >
       {/* Аутентификация */}
-      <Stack.Screen 
-        name="Login" 
-        component={LoginScreen} 
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
         options={{ headerShown: false }}
-        initialParams={{ onLogin: (isAdmin: boolean, seat: string) => {
-          setIsLoggedIn(true);
-          setIsAdmin(isAdmin);
-          setSeatNumber(seat);
-        }}}
+        initialParams={{
+          onLogin: (isAdmin: boolean, seat: string) => {
+            setIsLoggedIn(true);
+            setIsAdmin(isAdmin);
+            setSeatNumber(seat);
+            navigation.replace(isAdmin ? 'AdminRoot' : 'MainApp');
+          },
+        }}
       />
       
       {/* Основные экраны приложения */}
