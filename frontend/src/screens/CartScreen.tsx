@@ -5,6 +5,7 @@ import { OrderItem, PaymentMethod } from '../types';
 import PaymentForm from '../components/PaymentForm';
 import { useTranslation } from 'react-i18next';
 import DirectLinkButton from '../components/DirectLinkButton';
+import { createOrder } from '../api/api';
 
 const CartScreen = ({ navigation, route }: any) => {
   const theme = useTheme();
@@ -56,17 +57,28 @@ const CartScreen = ({ navigation, route }: any) => {
     setShowPaymentModal(true);
   };
 
-  const handlePaymentComplete = (paymentMethod: PaymentMethod) => {
+  const handlePaymentComplete = async (paymentMethod: PaymentMethod) => {
     setShowPaymentModal(false);
     setLoading(true);
-    
-    // In a real app, you would create the order in your backend
-    setTimeout(() => {
+
+    try {
+      const payload = {
+        seat: seatNumber,
+        items: cartItems.map((i) => ({
+          item_id: Number(i.productId),
+          quantity: i.quantity,
+        })),
+        payment_method: paymentMethod.type,
+      };
+      const res = await createOrder(payload);
+      const orderId = res.order_id;
+      setCartItems([]);
+      navigation.navigate('OrderStatus', { orderId: String(orderId) });
+    } catch (err) {
+      console.error('Failed to create order', err);
+    } finally {
       setLoading(false);
-      navigation.navigate('OrderStatus', {
-        orderId: `order-${Date.now()}`,
-      });
-    }, 1000);
+    }
   };
 
   const handlePaymentCancel = () => {

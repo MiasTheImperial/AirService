@@ -126,6 +126,7 @@ def get_order(order_id):
         'status': order.status,
         'items': items,
         'total': total,
+        'created_at': order.created_at.isoformat(),
     })
 
 
@@ -158,5 +159,6 @@ def list_orders():
             'status': o.status,
             'items': items,
             'total': total,
+            'created_at': o.created_at.isoformat(),
         })
     return jsonify(response)
