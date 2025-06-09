@@ -43,12 +43,6 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
         // Admin check (for demo)
         const isAdmin = email === 'admin@example.com';
 
-        if (!isAdmin && !seatNumber) {
-          setError(t('auth.seatRequired'));
-          setLoading(false);
-          return;
-        }
-
         // Simulate request delay
         await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -96,17 +90,6 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
             style={styles.input}
             autoCapitalize="none"
             keyboardType="email-address"
-            mode="outlined"
-            outlineColor={theme.colors.outline}
-            activeOutlineColor={theme.colors.primary}
-            textColor={theme.colors.onSurface}
-          />
-          <TextInput
-            label={t('auth.seatNumber')}
-            value={seatNumber}
-            onChangeText={setSeatNumber}
-            style={styles.input}
-            keyboardType="number-pad"
             mode="outlined"
             outlineColor={theme.colors.outline}
             activeOutlineColor={theme.colors.primary}
