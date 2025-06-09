@@ -5,6 +5,7 @@ from marshmallow import ValidationError
 
 from ..schemas import OrderSchema
 from ..services import order_service
+from ..models import Order
 
 orders_bp = Blueprint('orders', __name__)
 
@@ -118,3 +119,28 @@ def get_order(order_id):
             for oi in order.items
         ]
     })
+
+
+@orders_bp.get('/orders')
+def list_orders():
+    """List orders for the specified seat with optional status filter."""
+    seat = request.args.get('seat')
+    if not seat:
+        return jsonify({'error': gettext('Seat is required')}), 400
+    qs = Order.query.filter(Order.seat == seat)
+    status_f = request.args.get('status')
+    if status_f:
+        qs = qs.filter(Order.status == status_f)
+    orders = qs.order_by(Order.created_at).all()
+    return jsonify([
+        {
+            'id': o.id,
+            'seat': o.seat,
+            'status': o.status,
+            'items': [
+                {'name': i.item.name, 'quantity': i.quantity}
+                for i in o.items
+            ]
+        }
+        for o in orders
+    ])
