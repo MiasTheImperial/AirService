@@ -1,133 +1,82 @@
 # AirService
 
-Небольшой прототип backend-системы для заказа услуг на борту воздушного судна.
+Полноценное фулл-стек приложение для заказа услуг во время полёта. Репозиторий содержит REST API на Flask и клиентское приложение на React&nbsp;Native (Expo).
 
-## Запуск
+## Возможности
 
-Все приведённые ниже команды следует выполнять из корня репозитория.
+* каталог товаров и услуг с фильтрами и иерархией категорий;
+* оформление заказов пассажирами и панель администратора для управления ими;
+* очереди задач и интеграция с внешними сервисами через Redis/RQ;
+* отправка push-уведомлений о статусе заказа через SSE;
+* журналирование запросов в формате JSON;
+* локализация на русский и английский языки;
+* адаптивный фронтенд, работающий как на мобильных устройствах, так и в браузере.
 
-1. Установите зависимости:
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. При необходимости укажите строку подключения к БД через переменную `DATABASE_URL`.
-   Пример для PostgreSQL:
-   `postgresql://user:password@localhost/airservice`.
-3. Укажите приложение и примените существующие миграции:
-   ```bash
-   export FLASK_APP=run.py   # или используйте "flask --app run.py"
-   flask db upgrade
-   ```
-   Команду `flask db migrate` используйте только при создании новых миграций.
-
-4. После выполнения миграций заполните таблицы демонстрационными данными:
-   ```bash
-   flask seed-data
-   ```
-   Эта команда создаёт демо-аккаунт `user@example.com` с паролем `password` и несколькими примерными заказами.
-
-If an earlier version of the database already exists (for example from a previous clone), delete `airservice.db` or run `flask db downgrade base` before `flask db upgrade`.
-5. Вы можете задать логин администратора через `ADMIN_USERNAME` и пароль
-   через `ADMIN_PASSWORD` или готовый `ADMIN_PASSWORD_HASH`.
-   По умолчанию используются значения `admin`/`admin`.
-6. Можно настроить лимит запросов через переменную `API_RATE_LIMIT`
-   (например `"200 per hour"`). По умолчанию действует `"100 per hour"`.
-7. Разрешённые origin для CORS можно указать через `FRONTEND_ORIGIN`
-   (по умолчанию `*`).
-8. Запустите приложение (можно указать `SSL_CERT` и `SSL_KEY` для HTTPS):
-   ```bash
-   python run.py
-   ```
-9. Запустите воркер очереди (требуется Redis):
-   ```bash
-   python run_worker.py
-   ```
-   Адрес Redis можно задать через переменную `REDIS_URL` (по умолчанию
-   используется `redis://localhost:6379/0`).
-10. Запустите клиентское приложение из каталога `frontend`:
-   ```bash
-   npm start --prefix frontend
-   ```
-   Подробнее см. раздел «Фронтенд» ниже.
-11. Логи сервера пишутся в файл `airservice.log` в формате JSON и содержат поля
-   `timestamp`, `user`, `endpoint` и `message`.
-12. При изменении переводов выполните команду
-    `pybabel compile -d airservice/translations` для сборки `.mo`‑файлов.
-## Демо-учётные записи
-
-- Пользователь: `user@example.com`/`password`
-- Администратор: значения из `ADMIN_USERNAME` и `ADMIN_PASSWORD` (по умолчанию `admin`/`admin`).
-
-
-### Troubleshooting
-
-For SQLite, if an earlier version of `airservice.db` exists, delete the file or run `flask db downgrade base` before `flask db upgrade`.
-
-## Использование
-
-- Получить каталог: `GET /catalog` с поддержкой фильтров `category`, `price_min`, `price_max`, `available`, `service`, поиска `q` и параметра `lang=ru|en` для локализации названий
-- Создать заказ: `POST /orders` c JSON `{"seat": "12A", "items": [{"item_id": 1, "quantity": 2}]}`
-- Получить заказ: `GET /orders/<id>`
-- Админ-операции требуют basic-auth (по умолчанию `admin`/`admin`,
-  задаётся через `ADMIN_USERNAME` и `ADMIN_PASSWORD`/`ADMIN_PASSWORD_HASH`):
-  - Список заказов: `GET /admin/orders`
-  - Обновить статус: `PATCH /admin/orders/<id>` с JSON `{"status": "done"}`
-  - CRUD товаров и категорий через `/admin/items` и `/admin/categories`
-  - Отчёт о продажах: `GET /admin/reports/sales?year=2025`
-  - Экспорт отчёта в CSV: `GET /admin/reports/sales?format=csv`
-  - Поиск по логам: `GET /admin/logs?user=admin&endpoint=/orders&from=2024-01-01T00:00:00`
-- Swagger-документация доступна на `/apidocs/`
-- Push-уведомления о заказах доступны через SSE `/notifications`
-
-Данные по умолчанию хранятся в SQLite-файле `airservice.db`. Чтобы использовать PostgreSQL, задайте `DATABASE_URL`.
-
-## Фронтенд
-
-Клиентское приложение находится в каталоге `frontend`. Чтобы установить зависимости и запустить его:
+## Быстрый старт
 
 ```bash
+# 1. Зависимости Python
+pip install -r requirements.txt
+
+# 2. Строка подключения к БД (по умолчанию SQLite)
+export DATABASE_URL=postgresql://user:password@localhost/airservice  # при необходимости
+
+# 3. Применяем миграции и загружаем демо-данные
+export FLASK_APP=run.py
+flask db upgrade
+flask seed-data
+
+# 4. Запуск сервера
+python run.py  # переменные SSL_CERT/SSL_KEY включат HTTPS при наличии
+
+# 5. Воркер очереди (для интеграций и уведомлений)
+python run_worker.py  # REDIS_URL задаёт адрес Redis
+```
+
+### Настройка фронтенда
+
+```bash
+# установка зависимостей и сборка web-версии
 npm install --prefix frontend
 npm run --prefix frontend web-build
-```
 
-После сборки статических файлов запустите сервер Flask:
-```bash
-python run.py
-```
-
-Для разработки можно запустить приложение Expo:
-```bash
+# в режиме разработки
 cd frontend
-npm install
-npm start # или expo start
-```
-
-Перед запуском укажите адрес backend-сервера через переменную `EXPO_PUBLIC_API_URL`:
-
-```bash
 EXPO_PUBLIC_API_URL=http://localhost:5000 npm start
 ```
 
-Для полной функциональности (уведомления и фоновые задачи) требуется Redis и запущенный воркер:
+По умолчанию статические файлы из `frontend/web-build` раздаются Flask-приложением. Для мобильных платформ Expo предоставляет эмуляторы и возможность публикации.
 
-```bash
-python run_worker.py
-```
-## Краткое руководство
+## Конфигурация
 
-1. Перейдите по адресу сервера и войдите под `user@example.com`/`password`.
-2. Откройте каталог и добавьте товары в корзину.
-3. Оформите заказ и просмотрите историю заказов.
-4. Для административных запросов используйте учётные данные администратора и обращайтесь к `/admin/*` endpointам.
+Основные переменные окружения:
+
+| Переменная           | Значение по умолчанию        | Назначение                                 |
+|----------------------|------------------------------|--------------------------------------------|
+| `DATABASE_URL`       | `sqlite:///airservice.db`    | строка подключения к БД                    |
+| `ADMIN_USERNAME`     | `admin`                      | логин администратора                       |
+| `ADMIN_PASSWORD`     | `admin`                      | пароль администратора (или `ADMIN_PASSWORD_HASH`) |
+| `API_RATE_LIMIT`     | `100 per hour`               | лимит запросов на IP                       |
+| `FRONTEND_ORIGIN`    | `*`                          | разрешённый Origin для CORS                |
+| `REDIS_URL`          | `redis://localhost:6379/0`    | адрес Redis для очередей                   |
+| `EXPO_PUBLIC_API_URL`| `http://localhost:5000`      | URL бэкенда для фронтенда                  |
+
+При изменении переводов выполните `pybabel compile -d airservice/translations`.
+
+## Работа приложения
+
+API предоставляет эндпоинты `/catalog`, `/orders`, `/auth`, `/admin/*` и `/integration/*`. Административные запросы требуют basic‑аутентификации. События об изменении заказов транслируются через SSE на `/notifications`. Данные хранятся в SQLite или PostgreSQL. Очередь Redis используется для отложенных задач отправки сообщений во внешние системы.
+
+Логи сервера пишутся в `airservice.log` с полями `timestamp`, `user`, `endpoint`, `message`.
 
 ## Тестирование
 
-Для запуска тестов установите зависимости из `requirements.txt` и выполните:
-
 ```bash
-pip install -r requirements.txt
 pytest -q
 ```
+
+Набор тестов охватывает весь REST API, проверки локализации, администраторские операции, SSE‑уведомления и вспомогательные сервисы. Перед запуском тестов автоматически компилируются файлы переводов.
+
 ## Лицензия
 
-Этот проект распространяется под лицензией MIT.
+Проект распространяется под лицензией MIT.
