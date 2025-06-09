@@ -33,16 +33,27 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
-        <Card.Cover source={{ uri: product.image }} style={styles.image} />
+        <Card.Cover
+          source={
+            product.image
+              ? { uri: product.image }
+              : require('../assets/icon.png')
+          }
+          style={styles.image}
+        />
         <Card.Content>
           <View style={styles.header}>
             <Text style={[styles.title, { color: theme.colors.onSurface }]}>{product.name}</Text>
             <Text style={[styles.price, { color: theme.colors.primary }]}>{product.price} {t('common.currency')}</Text>
           </View>
           
-          <Text style={[styles.description, { color: theme.colors.onSurfaceVariant }]}>{product.description}</Text>
+          {product.description ? (
+            <Text style={[styles.description, { color: theme.colors.onSurfaceVariant }]}>
+              {product.description}
+            </Text>
+          ) : null}
           
-          {!product.inStock && (
+          {product.inStock === false && (
             <View style={[styles.outOfStockBadge, { backgroundColor: theme.colors.error }]}>
               <Text style={styles.outOfStockText}>{t('catalog.outOfStock')}</Text>
             </View>
@@ -154,7 +165,7 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
         mode="contained"
         onPress={handleAddToCart}
         style={styles.addButton}
-        disabled={!product.inStock}
+        disabled={product.inStock === false}
         buttonColor={theme.colors.primary}
         textColor={theme.colors.onPrimary}
       >

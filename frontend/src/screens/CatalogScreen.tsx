@@ -43,7 +43,14 @@ const CatalogScreen = ({ navigation }: any) => {
       onPress={() => navigation.navigate('ProductDetails', { product: item })}
     >
       <View style={styles.imageContainer}>
-        <Card.Cover source={{ uri: item.image }} style={styles.cardImage} />
+        <Card.Cover
+          source={
+            item.image
+              ? { uri: item.image }
+              : require('../assets/icon.png')
+          }
+          style={styles.cardImage}
+        />
       </View>
       <Card.Content style={styles.cardContent}>
         <Text 
@@ -56,13 +63,15 @@ const CatalogScreen = ({ navigation }: any) => {
         <Text style={[styles.productPrice, { color: theme.colors.primary }]}>
           {item.price} {t('common.currency')}
         </Text>
-        <Text 
-          numberOfLines={2} 
-          ellipsizeMode="tail" 
-          style={[styles.productDescription, { color: theme.colors.onSurfaceVariant }]}
-        >
-          {item.description}
-        </Text>
+        {item.description ? (
+          <Text
+            numberOfLines={2}
+            ellipsizeMode="tail"
+            style={[styles.productDescription, { color: theme.colors.onSurfaceVariant }]}
+          >
+            {item.description}
+          </Text>
+        ) : null}
       </Card.Content>
       <Card.Actions style={styles.cardActions}>
         <Button 
@@ -128,7 +137,16 @@ const CatalogScreen = ({ navigation }: any) => {
               style={styles.chip}
               selectedColor={theme.colors.primary}
               textStyle={{ color: selectedCategory === item.id ? theme.colors.onPrimary : theme.colors.onSurface }}
-              avatar={<Image source={{ uri: item.image }} style={styles.categoryImage} />}
+              avatar={
+                <Image
+                  source={
+                    item.image
+                      ? { uri: item.image }
+                      : require('../assets/icon.png')
+                  }
+                  style={styles.categoryImage}
+                />
+              }
             >
               {item.name}
             </Chip>
