@@ -4,6 +4,8 @@
 
 ## Запуск
 
+Все приведённые ниже команды следует выполнять из корня репозитория.
+
 1. Установите зависимости:
    ```bash
    pip install -r requirements.txt
@@ -11,8 +13,9 @@
 2. При необходимости укажите строку подключения к БД через переменную `DATABASE_URL`.
    Пример для PostgreSQL:
    `postgresql://user:password@localhost/airservice`.
-3. Выполните миграции (при первом запуске):
+3. Укажите приложение и выполните миграции (при первом запуске):
    ```bash
+   export FLASK_APP=run.py   # или используйте "flask --app run.py ..."
    flask db init      # один раз
    flask db migrate -m "init"
    flask db upgrade
