@@ -1,4 +1,6 @@
 from flask import Flask, request, g, has_request_context
+from flask.cli import with_appcontext
+from flask import current_app
 import logging
 import os
 from datetime import datetime, timezone
@@ -83,6 +85,13 @@ def create_app(config_object=None):
     app.register_blueprint(orders_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(integration_bp)
+
+    @app.cli.command('seed-data')
+    @with_appcontext
+    def seed_data():
+        """Load demo categories, items and orders."""
+        from .sample_data import load_demo_data
+        load_demo_data(current_app)
 
     @app.route('/')
     def index():
