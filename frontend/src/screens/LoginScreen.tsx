@@ -18,57 +18,63 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [seatNumber, setSeatNumber] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loadingType, setLoadingType] = useState<'guest' | 'user' | null>(null);
   const [error, setError] = useState('');
-  const [isGuestMode, setIsGuestMode] = useState(false);
 
-  const handleLogin = async () => {
+  const handleGuestLogin = async () => {
     try {
-      setLoading(true);
+      setLoadingType('guest');
       setError('');
-      
-      if (!isGuestMode) {
-        if (!email) {
-          setError(t('auth.emailRequired'));
-          setLoading(false);
-          return;
-        }
-        
-        if (!password) {
-          setError(t('auth.passwordRequired'));
-          setLoading(false);
-          return;
-        }
-        
-        // Admin check (for demo)
-        const isAdmin = email === 'admin@example.com';
-        
-        // Simulate request delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        route.params.onLogin(isAdmin, seatNumber);
-      } else {
-        if (!seatNumber) {
-          setError(t('auth.seatRequired'));
-          setLoading(false);
-          return;
-        }
-        
-        // Simulate request delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        route.params.onLogin(false, seatNumber);
+
+      if (!seatNumber) {
+        setError(t('auth.seatRequired'));
+        setLoadingType(null);
+        return;
       }
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      route.params.onLogin(false, seatNumber);
     } catch (err: any) {
       setError(err.message || t('auth.invalidCredentials'));
     } finally {
-      setLoading(false);
+      setLoadingType(null);
     }
   };
 
-  const toggleMode = () => {
-    setIsGuestMode(!isGuestMode);
-    setError('');
+  const handleUserLogin = async () => {
+    try {
+      setLoadingType('user');
+      setError('');
+
+      if (!email) {
+        setError(t('auth.emailRequired'));
+        setLoadingType(null);
+        return;
+      }
+
+      if (!password) {
+        setError(t('auth.passwordRequired'));
+        setLoadingType(null);
+        return;
+      }
+
+      const isAdmin = email === 'admin@example.com';
+
+      if (!isAdmin && !seatNumber) {
+        setError(t('auth.seatRequired'));
+        setLoadingType(null);
+        return;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      route.params.onLogin(isAdmin, seatNumber);
+    } catch (err: any) {
+      setError(err.message || t('auth.invalidCredentials'));
+    } finally {
+      setLoadingType(null);
+    }
   };
 
   return (
@@ -81,33 +87,30 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
         <Text style={[styles.title, { color: theme.colors.onBackground }]}>Авиа-Сервис</Text>
       </View>
       
-      {!isGuestMode ? (
-        <View>
-          <TextInput
-            label={t('auth.email')}
-            value={email}
-            onChangeText={setEmail}
-            style={styles.input}
-            autoCapitalize="none"
-            keyboardType="email-address"
-            mode="outlined"
-            outlineColor={theme.colors.outline}
-            activeOutlineColor={theme.colors.primary}
-            textColor={theme.colors.onSurface}
-          />
-          <TextInput
-            label={t('auth.password')}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            style={styles.input}
-            mode="outlined"
-            outlineColor={theme.colors.outline}
-            activeOutlineColor={theme.colors.primary}
-            textColor={theme.colors.onSurface}
-          />
-        </View>
-      ) : (
+      <View>
+        <TextInput
+          label={t('auth.email')}
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          mode="outlined"
+          outlineColor={theme.colors.outline}
+          activeOutlineColor={theme.colors.primary}
+          textColor={theme.colors.onSurface}
+        />
+        <TextInput
+          label={t('auth.password')}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          style={styles.input}
+          mode="outlined"
+          outlineColor={theme.colors.outline}
+          activeOutlineColor={theme.colors.primary}
+          textColor={theme.colors.onSurface}
+        />
         <TextInput
           label={t('auth.seatNumber')}
           value={seatNumber}
@@ -119,28 +122,32 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
           activeOutlineColor={theme.colors.primary}
           textColor={theme.colors.onSurface}
         />
-      )}
+      </View>
       
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      
+
       <Button
         mode="contained"
-        onPress={handleLogin}
-        loading={loading}
+        onPress={handleGuestLogin}
+        loading={loadingType === 'guest'}
+        disabled={!seatNumber}
         style={styles.button}
         buttonColor={theme.colors.primary}
         textColor={theme.colors.onPrimary}
       >
-        {isGuestMode ? t('auth.signInAsGuest') : t('auth.signIn')}
+        {t('auth.signInAsGuest')}
       </Button>
-      
+
       <Button
-        mode="text"
-        onPress={toggleMode}
-        style={styles.switchButton}
-        textColor={theme.colors.primary}
+        mode="contained"
+        onPress={handleUserLogin}
+        loading={loadingType === 'user'}
+        disabled={!email || !password || (!seatNumber && email !== 'admin@example.com')}
+        style={styles.button}
+        buttonColor={theme.colors.primary}
+        textColor={theme.colors.onPrimary}
       >
-        {isGuestMode ? t('auth.login') : t('auth.signInAsGuest')}
+        {t('auth.signIn')}
       </Button>
       
       <View style={[styles.demoCredentials, { backgroundColor: theme.colors.surfaceVariant }]}>
@@ -182,9 +189,6 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 10,
     paddingVertical: 8,
-  },
-  switchButton: {
-    marginTop: 10,
   },
   error: {
     color: '#FF5757',
