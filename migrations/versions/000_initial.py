@@ -31,7 +31,6 @@ def upgrade():
     sa.Column('idempotency_key', sa.String(length=64), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('status', sa.String(length=20), nullable=True),
-    sa.Column('payment_method', sa.String(length=20), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('idempotency_key')
     )

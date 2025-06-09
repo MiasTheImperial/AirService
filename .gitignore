@@ -5,3 +5,4 @@ airservice.log
 instance/
 *.mo
 frontend/web-build/
+venv/
