@@ -19,6 +19,8 @@
    flask db upgrade
    ```
    Команду `flask db migrate` используйте только при создании новых миграций.
+
+If an earlier version of the database already exists (for example from a previous clone), delete `airservice.db` or run `flask db downgrade base` before `flask db upgrade`.
 4. Вы можете задать логин администратора через `ADMIN_USERNAME` и пароль
    через `ADMIN_PASSWORD` или готовый `ADMIN_PASSWORD_HASH`.
    По умолчанию используются значения `admin`/`admin`.
@@ -40,6 +42,10 @@
    `timestamp`, `user`, `endpoint` и `message`.
 10. При изменении переводов выполните команду
     `pybabel compile -d airservice/translations` для сборки `.mo`‑файлов.
+
+### Troubleshooting
+
+For SQLite, if an earlier version of `airservice.db` exists, delete the file or run `flask db downgrade base` before `flask db upgrade`.
 
 ## Использование
 
