@@ -38,7 +38,8 @@ export async function getOrder(id: string) {
   return handleResponse(res);
 }
 
-export async function listOrders() {
-  const res = await fetch(`${API_URL}/admin/orders`);
+export async function listOrders({ seat, status }: { seat: string; status?: string }) {
+  const statusQuery = status ? `&status=${status}` : '';
+  const res = await fetch(`${API_URL}/orders?seat=${seat}${statusQuery}`);
   return handleResponse(res);
 }
