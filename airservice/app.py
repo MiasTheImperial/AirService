@@ -1,4 +1,4 @@
-from flask import Flask, request, g
+from flask import Flask, request, g, has_request_context
 import logging
 import os
 from datetime import datetime
@@ -34,8 +34,12 @@ def create_app(config_object=None):
 
     class RequestFilter(logging.Filter):
         def filter(self, record):
-            record.user = getattr(g, 'log_user', 'system')
-            record.endpoint = getattr(g, 'log_endpoint', '')
+            if has_request_context():
+                record.user = getattr(g, 'log_user', 'system')
+                record.endpoint = getattr(g, 'log_endpoint', '')
+            else:
+                record.user = 'system'
+                record.endpoint = ''
             record.timestamp = datetime.utcnow().isoformat()
             return True
 
