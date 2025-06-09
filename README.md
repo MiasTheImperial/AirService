@@ -85,9 +85,14 @@ EXPO_PUBLIC_API_URL=http://localhost:5000 npm start
 ```bash
 python run_worker.py
 ```
+## Тестирование
 
-Подробнее см. [frontend_proto/README.md](frontend_proto/README.md).
+Для запуска тестов установите зависимости из `requirements.txt` и выполните:
 
+```bash
+pip install -r requirements.txt
+pytest -q
+```
 ## Лицензия
 
 Этот проект распространяется под лицензией MIT.
