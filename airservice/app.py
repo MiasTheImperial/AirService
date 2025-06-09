@@ -1,4 +1,4 @@
-from flask import Flask, request, g, has_request_context
+from flask import Flask, request, g, has_request_context, current_app
 import logging
 import os
 from datetime import datetime, timezone
@@ -8,6 +8,7 @@ from flask_limiter.util import get_remote_address
 from flask_babel import Babel
 from flasgger import Swagger
 from flask_migrate import Migrate
+from flask.cli import with_appcontext
 from flask_cors import CORS
 
 from .config import DevConfig
@@ -83,6 +84,13 @@ def create_app(config_object=None):
     app.register_blueprint(orders_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(integration_bp)
+
+    @app.cli.command('seed-data')
+    @with_appcontext
+    def seed_data():
+        """Load demo categories, items and orders."""
+        from .sample_data import load_demo_data
+        load_demo_data(current_app)
 
     @app.route('/')
     def index():

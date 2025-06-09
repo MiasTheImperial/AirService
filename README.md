@@ -21,26 +21,31 @@
    Команду `flask db migrate` используйте только при создании новых миграций.
 
 If an earlier version of the database already exists (for example from a previous clone), delete `airservice.db` or run `flask db downgrade base` before `flask db upgrade`.
-4. Вы можете задать логин администратора через `ADMIN_USERNAME` и пароль
+4. Заполните таблицы демонстрационными данными:
+   ```bash
+   flask seed-data
+   ```
+   После выполнения команда загрузит каталог и несколько заказов для пользователя `user@example.com` (пароль `password`), чтобы экран истории заказов сразу отображал данные.
+5. Вы можете задать логин администратора через `ADMIN_USERNAME` и пароль
    через `ADMIN_PASSWORD` или готовый `ADMIN_PASSWORD_HASH`.
    По умолчанию используются значения `admin`/`admin`.
-5. Можно настроить лимит запросов через переменную `API_RATE_LIMIT`
-   (например `"200 per hour"`). По умолчанию действует `"100 per hour"`.
-6. Разрешённые origin для CORS можно указать через `FRONTEND_ORIGIN`
-   (по умолчанию `*`).
-7. Запустите приложение (можно указать `SSL_CERT` и `SSL_KEY` для HTTPS):
+6. Можно настроить лимит запросов через переменную `API_RATE_LIMIT`
+    (например `"200 per hour"`). По умолчанию действует `"100 per hour"`.
+7. Разрешённые origin для CORS можно указать через `FRONTEND_ORIGIN`
+    (по умолчанию `*`).
+8. Запустите приложение (можно указать `SSL_CERT` и `SSL_KEY` для HTTPS):
    ```bash
    python run.py
    ```
-8. Запустите воркер очереди (требуется Redis):
+9. Запустите воркер очереди (требуется Redis):
    ```bash
    python run_worker.py
    ```
    Адрес Redis можно задать через переменную `REDIS_URL` (по умолчанию
    используется `redis://localhost:6379/0`).
-9. Логи сервера пишутся в файл `airservice.log` в формате JSON и содержат поля
+10. Логи сервера пишутся в файл `airservice.log` в формате JSON и содержат поля
    `timestamp`, `user`, `endpoint` и `message`.
-10. При изменении переводов выполните команду
+11. При изменении переводов выполните команду
     `pybabel compile -d airservice/translations` для сборки `.mo`‑файлов.
 
 ### Troubleshooting
