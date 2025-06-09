@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Platform, Linking } from 'react-native';
 import { useTheme } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 interface DirectLinkButtonProps {
   screenName: string;
@@ -14,47 +15,31 @@ interface DirectLinkButtonProps {
  * по имени компонента. Для веб-версии создает ссылку с новым URL,
  * для мобильной версии использует deeplink.
  */
-const DirectLinkButton: React.FC<DirectLinkButtonProps> = ({ 
+const DirectLinkButton: React.FC<DirectLinkButtonProps> = ({
   screenName,
   params,
   children,
   style
 }) => {
   const theme = useTheme();
-  
+  const navigation = useNavigation();
+
   const handlePress = () => {
-    // Формируем URL на основе имени экрана и параметров
-    let url = '';
-    
-    if (Platform.OS === 'web') {
-      // Для веб используем относительный URL
-      url = `/${screenName}`;
-      if (params) {
-        // Добавляем параметры в URL для экранов с параметрами
-        const paramKeys = Object.keys(params);
-        if (paramKeys.length > 0) {
-          url += `/${params[paramKeys[0]]}`;
+    try {
+      navigation.navigate(screenName as never, params as never);
+    } catch {
+      // В редких случаях навигация может быть недоступна
+      if (Platform.OS !== 'web') {
+        let url = `inflightapp://${screenName}`;
+        if (params) {
+          const paramKeys = Object.keys(params);
+          if (paramKeys.length > 0) {
+            url += `/${params[paramKeys[0]]}`;
+          }
         }
+
+        Linking.openURL(url);
       }
-      
-      // Для веб-версии изменяем URL без перезагрузки страницы
-      window.history.pushState({}, '', url);
-      
-      // Также можно добавить перенаправление или навигацию
-      // с помощью react-navigation
-    } else {
-      // Для мобильной версии используем схему deeplink
-      url = `inflightapp://${screenName}`;
-      if (params) {
-        // Добавляем параметры в URL для экранов с параметрами
-        const paramKeys = Object.keys(params);
-        if (paramKeys.length > 0) {
-          url += `/${params[paramKeys[0]]}`;
-        }
-      }
-      
-      // Открываем ссылку через Linking API
-      Linking.openURL(url);
     }
   };
   
