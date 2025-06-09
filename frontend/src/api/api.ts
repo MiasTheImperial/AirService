@@ -18,7 +18,9 @@ export async function getCatalog(): Promise<Product[]> {
     name: item.name,
     description: item.description || undefined,
     price: item.price,
-    categoryId: item.category ? String(item.category) : '',
+    categoryId: item.category_id !== undefined && item.category_id !== null
+      ? String(item.category_id)
+      : '',
     image: item.image || undefined,
     inStock: item.available,
   }));

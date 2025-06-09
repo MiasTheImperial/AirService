@@ -73,6 +73,8 @@ def catalog():
                     type: boolean
                   category:
                     type: string
+                  category_id:
+                    type: integer
     """
     qs = Item.query
     category = request.args.get('category')
@@ -113,6 +115,7 @@ def catalog():
             'available': i.available,
             'service': i.is_service,
             'category': i.category.name if i.category else None,
+            'category_id': i.category.id if i.category else None,
         })
     return jsonify(data)
 
