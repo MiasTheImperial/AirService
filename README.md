@@ -60,6 +60,7 @@
 ```bash
 npm install --prefix frontend
 npm run --prefix frontend web-build
+```
 
 После сборки статических файлов запустите сервер Flask:
 ```bash
