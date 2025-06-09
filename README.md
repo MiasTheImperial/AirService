@@ -51,15 +51,15 @@ EXPO_PUBLIC_API_URL=http://localhost:5000 npm start
 
 Основные переменные окружения:
 
-| Переменная           | Значение по умолчанию        | Назначение                                 |
-|----------------------|------------------------------|--------------------------------------------|
-| `DATABASE_URL`       | `sqlite:///airservice.db`    | строка подключения к БД                    |
-| `ADMIN_USERNAME`     | `admin`                      | логин администратора                       |
+| Переменная           | Значение по умолчанию        | Назначение                                        |
+|----------------------|------------------------------|---------------------------------------------------|
+| `DATABASE_URL`       | `sqlite:///airservice.db`    | строка подключения к БД                           |
+| `ADMIN_USERNAME`     | `admin`                      | логин администратора                              |
 | `ADMIN_PASSWORD`     | `admin`                      | пароль администратора (или `ADMIN_PASSWORD_HASH`) |
-| `API_RATE_LIMIT`     | `100 per hour`               | лимит запросов на IP                       |
-| `FRONTEND_ORIGIN`    | `*`                          | разрешённый Origin для CORS                |
-| `REDIS_URL`          | `redis://localhost:6379/0`    | адрес Redis для очередей                   |
-| `EXPO_PUBLIC_API_URL`| `http://localhost:5000`      | URL бэкенда для фронтенда                  |
+| `API_RATE_LIMIT`     | `100 per hour`               | лимит запросов на IP                              |
+| `FRONTEND_ORIGIN`    | `*`                          | разрешённый Origin для CORS                       |
+| `REDIS_URL`          | `redis://localhost:6379/0`   | адрес Redis для очередей                          |
+| `EXPO_PUBLIC_API_URL`| `http://localhost:5000`      | URL бэкенда для фронтенда                         |
 
 При изменении переводов выполните `pybabel compile -d airservice/translations`.
 
