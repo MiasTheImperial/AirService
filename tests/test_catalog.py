@@ -6,7 +6,10 @@ def test_catalog_filters(client, sample_data):
     # all items
     rv = client.get('/catalog')
     assert rv.status_code == 200
-    assert len(rv.get_json()) == 9
+    data = rv.get_json()
+    assert len(data) == 9
+    # ensure category name and id are present
+    assert {'category', 'category_id'} <= set(data[0].keys())
 
     # by category
     food_cat = sample_data['categories']['Food']
