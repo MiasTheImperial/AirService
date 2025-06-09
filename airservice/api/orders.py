@@ -5,7 +5,8 @@ from marshmallow import ValidationError
 
 from ..schemas import OrderSchema
 from ..services import order_service
-from ..models import Order
+from ..models import Order, User
+from werkzeug.security import check_password_hash
 
 orders_bp = Blueprint('orders', __name__)
 
@@ -52,7 +53,18 @@ def create_order():
         payload = OrderSchema().load(request.get_json() or {})
     except ValidationError as err:
         return jsonify({'error': gettext('Invalid payload'), 'details': err.messages}), 400
-    seat = payload['seat']
+
+    auth = request.authorization
+    user = None
+    if auth:
+        user = User.query.filter_by(email=auth.username).first()
+        if not user or not check_password_hash(user.password_hash, auth.password):
+            abort(401)
+
+    seat = user.seat if user else payload.get('seat')
+    if not seat:
+        return jsonify({'error': gettext('Seat is required')}), 400
+
     items = payload['items']
     payment_method = payload.get('payment_method')
     idem_key = request.headers.get('Idempotency-Key')

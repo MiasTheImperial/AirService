@@ -10,6 +10,15 @@ async function handleResponse(res: Response) {
   return res.json();
 }
 
+export async function login(email: string, password: string) {
+  const res = await fetch(`${API_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  return handleResponse(res);
+}
+
 export async function getCatalog(): Promise<Product[]> {
   const res = await fetch(`${API_URL}/catalog`);
   const data = await handleResponse(res);
@@ -49,15 +58,22 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export interface CreateOrderPayload {
-  seat: string;
+  seat?: string;
   items: { item_id: number | string; quantity: number }[];
   payment_method?: string;
 }
 
-export async function createOrder(payload: CreateOrderPayload) {
+export async function createOrder(
+  payload: CreateOrderPayload,
+  auth?: { email: string; password: string }
+) {
+  const headers: any = { 'Content-Type': 'application/json' };
+  if (auth) {
+    headers['Authorization'] = `Basic ${btoa(`${auth.email}:${auth.password}`)}`;
+  }
   const res = await fetch(`${API_URL}/orders`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify(payload),
   });
   return handleResponse(res);
