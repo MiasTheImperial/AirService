@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavigationContainer, DefaultTheme as NavigationDefaultTheme, DarkTheme as NavigationDarkTheme, getStateFromPath as getStateFromPathDefault, useNavigation } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme as NavigationDefaultTheme, DarkTheme as NavigationDarkTheme, getStateFromPath as getStateFromPathDefault, useNavigation, StackActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar, Platform } from 'react-native';
@@ -246,7 +246,7 @@ const RootStackNavigator = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigation.replace(isAdmin ? 'AdminRoot' : 'MainApp');
+      navigation.dispatch(StackActions.replace(isAdmin ? 'AdminRoot' : 'MainApp'));
     }
   }, [isLoggedIn, isAdmin, navigation]);
   
@@ -272,7 +272,7 @@ const RootStackNavigator = () => {
             setIsLoggedIn(true);
             setIsAdmin(isAdmin);
             setSeatNumber(seat);
-            navigation.replace(isAdmin ? 'AdminRoot' : 'MainApp');
+            navigation.dispatch(StackActions.replace(isAdmin ? 'AdminRoot' : 'MainApp'));
           },
         }}
       />
