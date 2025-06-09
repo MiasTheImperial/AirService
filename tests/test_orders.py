@@ -61,3 +61,26 @@ def test_update_order_status_validation(client, sample_data):
     rv = client.patch(f'/admin/orders/{order_id}', json={'status': 'bad'}, headers=auth_header())
     assert rv.status_code == 200
     assert rv.get_json()['status'] == 'forming'
+
+
+def test_list_orders_filters(client, sample_data):
+    item_id = sample_data['items']['Sandwich']
+    rv = client.post('/orders', json={'seat': '5A', 'items': [{'item_id': item_id}]})
+    first = rv.get_json()['order_id']
+    rv = client.post('/orders', json={'seat': '5A', 'items': [{'item_id': item_id}]})
+    second = rv.get_json()['order_id']
+    client.patch(f'/admin/orders/{second}', json={'status': 'done'}, headers=auth_header())
+    client.post('/orders', json={'seat': '6A', 'items': [{'item_id': item_id}]})
+
+    rv = client.get('/orders?seat=5A')
+    assert rv.status_code == 200
+    data = rv.get_json()
+    assert [o['id'] for o in data] == [first, second]
+
+    rv = client.get('/orders?seat=5A&status=done')
+    assert rv.status_code == 200
+    data = rv.get_json()
+    assert len(data) == 1 and data[0]['id'] == second
+
+    rv = client.get('/orders')
+    assert rv.status_code == 400
