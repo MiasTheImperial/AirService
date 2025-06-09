@@ -53,6 +53,30 @@
 
 Данные по умолчанию хранятся в SQLite-файле `airservice.db`. Чтобы использовать PostgreSQL, задайте `DATABASE_URL`.
 
+## Фронтенд
+
+Клиентское приложение находится в каталоге `frontend_proto`. Чтобы установить зависимости и запустить его:
+
+```bash
+cd frontend_proto/InFlightApp
+npm install
+npm start # или expo start
+```
+
+Перед запуском укажите адрес backend-сервера через переменную `EXPO_PUBLIC_API_URL`:
+
+```bash
+EXPO_PUBLIC_API_URL=http://localhost:5000 npm start
+```
+
+Для полной функциональности (уведомления и фоновые задачи) требуется Redis и запущенный воркер:
+
+```bash
+python run_worker.py
+```
+
+Подробнее см. [frontend_proto/README.md](frontend_proto/README.md).
+
 ## Лицензия
 
 Этот проект распространяется под лицензией MIT.
