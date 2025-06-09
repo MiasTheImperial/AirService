@@ -1,4 +1,4 @@
-import { Product, Category } from '../types';
+import { Product, Category, OrderStatus } from '../types';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -61,13 +61,35 @@ export async function createOrder(payload: CreateOrderPayload) {
   return handleResponse(res);
 }
 
+export function mapOrderStatus(status: string): OrderStatus {
+  switch (status) {
+    case 'new':
+      return OrderStatus.PENDING;
+    case 'forming':
+      return OrderStatus.PREPARING;
+    case 'done':
+      return OrderStatus.COMPLETED;
+    case 'cancelled':
+      return OrderStatus.CANCELLED;
+    default:
+      return status as OrderStatus;
+  }
+}
+
 export async function getOrder(id: string) {
   const res = await fetch(`${API_URL}/orders/${id}`);
-  return handleResponse(res);
+  const data = await handleResponse(res);
+  if (data && typeof data.status === 'string') {
+    data.status = mapOrderStatus(data.status);
+  }
+  return data;
 }
 
 export async function listOrders({ seat, status }: { seat: string; status?: string }) {
   const statusQuery = status ? `&status=${status}` : '';
   const res = await fetch(`${API_URL}/orders?seat=${seat}${statusQuery}`);
-  return handleResponse(res);
+  const data = await handleResponse(res);
+  return Array.isArray(data)
+    ? data.map((o) => ({ ...o, status: mapOrderStatus(o.status) }))
+    : data;
 }
