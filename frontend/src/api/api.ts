@@ -78,20 +78,35 @@ export function mapOrderStatus(status: string): OrderStatus {
   }
 }
 
+function mapOrder(data: any) {
+  return {
+    id: String(data.id),
+    items: Array.isArray(data.items)
+      ? data.items.map((i: any) => ({
+          productId: String(i.item_id),
+          name: i.name,
+          price: i.price,
+          quantity: i.quantity,
+        }))
+      : [],
+    totalAmount: data.total,
+    status: mapOrderStatus(data.status),
+    seatNumber: data.seat,
+    createdAt: data.created_at ? new Date(data.created_at) : undefined,
+    updatedAt: data.updated_at ? new Date(data.updated_at) : undefined,
+    paymentMethod: data.payment_method,
+  };
+}
+
 export async function getOrder(id: string) {
   const res = await fetch(`${API_URL}/orders/${id}`);
   const data = await handleResponse(res);
-  if (data && typeof data.status === 'string') {
-    data.status = mapOrderStatus(data.status);
-  }
-  return data;
+  return mapOrder(data);
 }
 
 export async function listOrders({ seat, status }: { seat: string; status?: string }) {
   const statusQuery = status ? `&status=${status}` : '';
   const res = await fetch(`${API_URL}/orders?seat=${seat}${statusQuery}`);
   const data = await handleResponse(res);
-  return Array.isArray(data)
-    ? data.map((o) => ({ ...o, status: mapOrderStatus(o.status) }))
-    : data;
+  return Array.isArray(data) ? data.map(mapOrder) : data;
 }

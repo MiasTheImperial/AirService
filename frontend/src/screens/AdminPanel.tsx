@@ -34,7 +34,6 @@ const AdminPanel = ({ navigation }: any) => {
         recentOrders: [
           {
             id: 'order1',
-            userId: 'user1',
             items: [{ productId: '1', quantity: 2, price: 3.99 }],
             totalAmount: 7.98,
             status: OrderStatus.COMPLETED,
@@ -44,7 +43,6 @@ const AdminPanel = ({ navigation }: any) => {
           },
           {
             id: 'order2',
-            userId: 'user2',
             items: [{ productId: '3', quantity: 1, price: 25.99 }],
             totalAmount: 25.99,
             status: OrderStatus.DELIVERING,
@@ -54,7 +52,6 @@ const AdminPanel = ({ navigation }: any) => {
           },
           {
             id: 'order3',
-            userId: 'user3',
             items: [
               { productId: '2', quantity: 1, price: 5.99 },
               { productId: '4', quantity: 1, price: 9.99 },

@@ -19,7 +19,11 @@ def test_order_flow_and_idempotency(client, sample_data):
 
     rv = client.get(f'/orders/{order_id}')
     assert rv.status_code == 200
-    assert rv.get_json()['seat'] == '10B'
+    data = rv.get_json()
+    assert data['seat'] == '10B'
+    assert data['total'] == 10.0
+    assert data['items'][0]['item_id'] == item_id
+    assert data['items'][0]['price'] == 5.0
 
     rv = client.patch(f'/admin/orders/{order_id}', json={'status': 'done'}, headers=auth_header())
     assert rv.status_code == 200
@@ -76,11 +80,14 @@ def test_list_orders_filters(client, sample_data):
     assert rv.status_code == 200
     data = rv.get_json()
     assert [o['id'] for o in data] == [first, second]
+    assert all(o['total'] == 5.0 for o in data)
+    assert all(o['items'][0]['item_id'] == item_id for o in data)
 
     rv = client.get('/orders?seat=5A&status=done')
     assert rv.status_code == 200
     data = rv.get_json()
     assert len(data) == 1 and data[0]['id'] == second
+    assert data[0]['total'] == 5.0
 
     rv = client.get('/orders')
     assert rv.status_code == 400

@@ -110,14 +110,22 @@ def get_order(order_id):
     order = order_service.get_order(order_id)
     if not order:
         abort(404)
+    items = [
+        {
+            'item_id': oi.item.id,
+            'name': oi.item.name,
+            'price': oi.item.price,
+            'quantity': oi.quantity,
+        }
+        for oi in order.items
+    ]
+    total = sum(i['price'] * i['quantity'] for i in items)
     return jsonify({
         'id': order.id,
         'seat': order.seat,
         'status': order.status,
-        'items': [
-            {'name': oi.item.name, 'quantity': oi.quantity}
-            for oi in order.items
-        ]
+        'items': items,
+        'total': total,
     })
 
 
@@ -132,15 +140,23 @@ def list_orders():
     if status_f:
         qs = qs.filter(Order.status == status_f)
     orders = qs.order_by(Order.created_at).all()
-    return jsonify([
-        {
+    response = []
+    for o in orders:
+        items = [
+            {
+                'item_id': i.item.id,
+                'name': i.item.name,
+                'price': i.item.price,
+                'quantity': i.quantity,
+            }
+            for i in o.items
+        ]
+        total = sum(it['price'] * it['quantity'] for it in items)
+        response.append({
             'id': o.id,
             'seat': o.seat,
             'status': o.status,
-            'items': [
-                {'name': i.item.name, 'quantity': i.quantity}
-                for i in o.items
-            ]
-        }
-        for o in orders
-    ])
+            'items': items,
+            'total': total,
+        })
+    return jsonify(response)

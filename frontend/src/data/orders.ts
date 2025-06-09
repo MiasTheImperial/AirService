@@ -12,7 +12,6 @@ export const orders: Order[] = [
   // Заказ №1 - Доставлен (завершен)
   {
     id: 'order-20231015-001',
-    userId: 'user123',
     items: [
       {
         productId: 'food-2',
@@ -44,7 +43,6 @@ export const orders: Order[] = [
   // Заказ №2 - В процессе доставки
   {
     id: 'order-20231015-002',
-    userId: 'user123',
     items: [
       {
         productId: 'drinks-3',
@@ -70,7 +68,6 @@ export const orders: Order[] = [
   // Заказ №3 - Готовится
   {
     id: 'order-20231015-003',
-    userId: 'user123',
     items: [
       {
         productId: 'food-1',
@@ -96,7 +93,6 @@ export const orders: Order[] = [
   // Заказ №4 - Ожидает обработки
   {
     id: 'order-20231015-004',
-    userId: 'user123',
     items: [
       {
         productId: 'alcohol-1',
@@ -122,7 +118,6 @@ export const orders: Order[] = [
   // Заказ №5 - Отменен
   {
     id: 'order-20231014-001',
-    userId: 'user123',
     items: [
       {
         productId: 'food-5',
@@ -142,7 +137,6 @@ export const orders: Order[] = [
   // Заказ №6 - Большой заказ (завершен)
   {
     id: 'order-20231013-001',
-    userId: 'user123',
     items: [
       {
         productId: 'food-3',
@@ -179,9 +173,6 @@ export const orders: Order[] = [
 ];
 
 // Получить заказы по ID пользователя
-export const getOrdersByUserId = (userId: string): Order[] => {
-  return orders.filter(order => order.userId === userId);
-};
 
 // Получить заказ по ID
 export const getOrderById = (orderId: string): Order | undefined => {

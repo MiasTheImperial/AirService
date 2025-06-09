@@ -35,13 +35,12 @@ export interface Product {
 
 export interface Order {
   id: string;
-  userId: string;
   items: OrderItem[];
   totalAmount: number;
   status: OrderStatus;
   seatNumber: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   paymentMethod?: string;
 }
 
