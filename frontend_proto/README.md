@@ -40,6 +40,12 @@ npm start # или expo start
 EXPO_PUBLIC_API_URL=http://localhost:5000 npm start
 ```
 
+Для полной функциональности (уведомления и фоновые задачи) требуется Redis и запущенный воркер:
+
+```bash
+python run_worker.py
+```
+
 ## Демо-аккаунты
 
 - **Обычный пользователь**: user@example.com / password
