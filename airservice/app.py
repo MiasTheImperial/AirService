@@ -1,8 +1,8 @@
 from flask import Flask, request, g, has_request_context
 import logging
 import os
-from datetime import datetime
-from pythonjsonlogger import jsonlogger
+from datetime import datetime, timezone
+from pythonjsonlogger import json
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_babel import Babel
@@ -40,11 +40,11 @@ def create_app(config_object=None):
             else:
                 record.user = 'system'
                 record.endpoint = ''
-            record.timestamp = datetime.utcnow().isoformat()
+            record.timestamp = datetime.now(timezone.utc).isoformat()
             return True
 
     handler = logging.FileHandler('airservice.log')
-    formatter = jsonlogger.JsonFormatter('%(timestamp)s %(user)s %(endpoint)s %(message)s')
+    formatter = json.JsonFormatter('%(timestamp)s %(user)s %(endpoint)s %(message)s')
     handler.setFormatter(formatter)
     handler.addFilter(RequestFilter())
 

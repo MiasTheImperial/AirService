@@ -32,7 +32,7 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     seat = db.Column(db.String(10), nullable=False)
     idempotency_key = db.Column(db.String(64), unique=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
     status = db.Column(db.String(20), default='new')
     payment_method = db.Column(db.String(20))
 
@@ -51,4 +51,4 @@ class OutgoingMessage(db.Model):
     payload = db.Column(db.Text, nullable=False)
     target = db.Column(db.String(120))
     sent = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
