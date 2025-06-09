@@ -20,11 +20,11 @@
    ```
    Команду `flask db migrate` используйте только при создании новых миграций.
 
-4. Заполните таблицы демонстрационными данными:
+4. После выполнения миграций заполните таблицы демонстрационными данными:
    ```bash
    flask seed-data
    ```
-   После выполнения этой команды демо-аккаунт `user@example.com` (пароль `password`) будет иметь несколько заказов для демонстрации истории заказов.
+   Эта команда создаёт демо-аккаунт `user@example.com` с паролем `password` и несколькими примерными заказами.
 
 If an earlier version of the database already exists (for example from a previous clone), delete `airservice.db` or run `flask db downgrade base` before `flask db upgrade`.
 5. Вы можете задать логин администратора через `ADMIN_USERNAME` и пароль
@@ -44,10 +44,20 @@ If an earlier version of the database already exists (for example from a previou
    ```
    Адрес Redis можно задать через переменную `REDIS_URL` (по умолчанию
    используется `redis://localhost:6379/0`).
-10. Логи сервера пишутся в файл `airservice.log` в формате JSON и содержат поля
+10. Запустите клиентское приложение из каталога `frontend`:
+   ```bash
+   npm start --prefix frontend
+   ```
+   Подробнее см. раздел «Фронтенд» ниже.
+11. Логи сервера пишутся в файл `airservice.log` в формате JSON и содержат поля
    `timestamp`, `user`, `endpoint` и `message`.
-11. При изменении переводов выполните команду
+12. При изменении переводов выполните команду
     `pybabel compile -d airservice/translations` для сборки `.mo`‑файлов.
+## Демо-учётные записи
+
+- Пользователь: `user@example.com`/`password`
+- Администратор: значения из `ADMIN_USERNAME` и `ADMIN_PASSWORD` (по умолчанию `admin`/`admin`).
+
 
 ### Troubleshooting
 
@@ -103,6 +113,13 @@ EXPO_PUBLIC_API_URL=http://localhost:5000 npm start
 ```bash
 python run_worker.py
 ```
+## Краткое руководство
+
+1. Перейдите по адресу сервера и войдите под `user@example.com`/`password`.
+2. Откройте каталог и добавьте товары в корзину.
+3. Оформите заказ и просмотрите историю заказов.
+4. Для административных запросов используйте учётные данные администратора и обращайтесь к `/admin/*` endpointам.
+
 ## Тестирование
 
 Для запуска тестов установите зависимости из `requirements.txt` и выполните:
