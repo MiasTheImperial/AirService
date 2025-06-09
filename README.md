@@ -32,8 +32,12 @@
    ```bash
    python run_worker.py
    ```
+   Адрес Redis можно задать через переменную `REDIS_URL` (по умолчанию
+   используется `redis://localhost:6379/0`).
 9. Логи сервера пишутся в файл `airservice.log` в формате JSON и содержат поля
    `timestamp`, `user`, `endpoint` и `message`.
+10. При изменении переводов выполните команду
+    `pybabel compile -d airservice/translations` для сборки `.mo`‑файлов.
 
 ## Использование
 
