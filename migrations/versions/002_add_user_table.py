@@ -27,7 +27,7 @@ def upgrade():
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('email')
     )
-    # seed admin user
+    # seed admin and demo user accounts
     op.bulk_insert(
         sa.table(
             'user',
@@ -42,7 +42,13 @@ def upgrade():
                 'password_hash': generate_password_hash('password'),
                 'seat': '999F',
                 'is_admin': True,
-            }
+            },
+            {
+                'email': 'user@example.com',
+                'password_hash': generate_password_hash('password'),
+                'seat': '5A',
+                'is_admin': False,
+            },
         ]
     )
 
