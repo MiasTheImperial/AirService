@@ -16,11 +16,11 @@ export interface UserPreferences {
 export interface Product {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   price: number;
   categoryId: string;
-  image: string;
-  inStock: boolean;
+  image?: string;
+  inStock?: boolean;
   ingredients?: string | null;
   nutritionalInfo?: {
     calories: number;
@@ -63,8 +63,8 @@ export enum OrderStatus {
 export interface Category {
   id: string;
   name: string;
-  description: string;
-  image: string;
+  description?: string;
+  image?: string;
 }
 
 export interface AnalyticsData {

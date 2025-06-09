@@ -1,3 +1,5 @@
+import { Product, Category } from '../types';
+
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
 
 async function handleResponse(res: Response) {
@@ -8,14 +10,40 @@ async function handleResponse(res: Response) {
   return res.json();
 }
 
-export async function getCatalog() {
+export async function getCatalog(): Promise<Product[]> {
   const res = await fetch(`${API_URL}/catalog`);
-  return handleResponse(res);
+  const data = await handleResponse(res);
+  return data.map((item: any) => ({
+    id: String(item.id),
+    name: item.name,
+    description: item.description || undefined,
+    price: item.price,
+    categoryId: item.category ? String(item.category) : '',
+    image: item.image || undefined,
+    inStock: item.available,
+  }));
 }
 
-export async function getCategories() {
+function flattenCategories(nodes: any[]): any[] {
+  return nodes.reduce((acc: any[], node: any) => {
+    acc.push(node);
+    if (node.children) {
+      acc.push(...flattenCategories(node.children));
+    }
+    return acc;
+  }, []);
+}
+
+export async function getCategories(): Promise<Category[]> {
   const res = await fetch(`${API_URL}/catalog/categories`);
-  return handleResponse(res);
+  const data = await handleResponse(res);
+  const flat = flattenCategories(data);
+  return flat.map((c: any) => ({
+    id: String(c.id),
+    name: c.name,
+    description: c.description || undefined,
+    image: c.image || undefined,
+  }));
 }
 
 export interface CreateOrderPayload {
