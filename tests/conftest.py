@@ -3,6 +3,7 @@ import sys
 import base64
 from datetime import datetime
 import json
+import logging
 import pytest
 import subprocess
 from pathlib import Path
@@ -140,4 +141,5 @@ def sample_logs():
         for e in entries:
             f.write(json.dumps(e) + '\n')
     yield entries
+    logging.shutdown()
     os.remove('airservice.log')
