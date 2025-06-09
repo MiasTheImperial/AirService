@@ -1,7 +1,7 @@
 """Add payment_method column to order
 
 Revision ID: 001
-Revises: None
+Revises: 000
 Create Date: 2024-04-25
 """
 
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '001'
-down_revision = None
+down_revision = '000'
 branch_labels = None
 depends_on = None
 
