@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Text, Chip, Divider, Button, ActivityIndicator, useTheme } from 'react-native-paper';
 import { Order, OrderStatus } from '../types';
 import { useTranslation } from 'react-i18next';
-import { listOrders, mapOrderStatus } from '../api/api';
+import { listOrders } from '../api/api';
 
 const OrderHistoryScreen = ({ navigation, route }: any) => {
   const theme = useTheme();
@@ -20,10 +20,7 @@ const OrderHistoryScreen = ({ navigation, route }: any) => {
       try {
         setLoading(true);
         const data = await listOrders({ seat: seatNumber, status: selectedFilter || undefined });
-        const mapped = Array.isArray(data)
-          ? data.map(order => ({ ...order, status: mapOrderStatus(order.status) }))
-          : [];
-        setOrders(mapped as Order[]);
+        setOrders((Array.isArray(data) ? data : []) as Order[]);
       } catch (err: any) {
         console.error('Ошибка при загрузке заказов:', err);
         setError(err.message);

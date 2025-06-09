@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Card, Text, ActivityIndicator, Button, useTheme } from 'react-native-paper';
 import { Order, OrderStatus } from '../types';
 import { useTranslation } from 'react-i18next';
-import { getOrder, mapOrderStatus } from '../api/api';
+import { getOrder } from '../api/api';
 
 const OrderStatusScreen = ({ route, navigation }: any) => {
   const theme = useTheme();
@@ -18,9 +18,6 @@ const OrderStatusScreen = ({ route, navigation }: any) => {
       try {
         setLoading(true);
         const data = await getOrder(route.params.orderId);
-        if (data) {
-          data.status = mapOrderStatus(data.status);
-        }
         setOrder(data);
       } catch (err: any) {
         console.error('Ошибка при загрузке заказа:', err);
