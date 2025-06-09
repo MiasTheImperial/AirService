@@ -180,7 +180,11 @@ const MainTabNavigator = ({ seatNumber }: { seatNumber: string }) => {
       })}
     >
       <Tab.Screen name={t('navigation.catalog')} component={CatalogScreen} />
-      <Tab.Screen name={t('navigation.cart')} component={CartScreen} />
+      <Tab.Screen
+        name={t('navigation.cart')}
+        component={CartScreen}
+        initialParams={{ seatNumber }}
+      />
       <Tab.Screen
         name={t('navigation.profile')}
         component={ProfileScreen}

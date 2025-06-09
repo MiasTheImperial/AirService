@@ -24,7 +24,7 @@ const CartScreen = ({ navigation, route }: any) => {
       price: 599,
     },
   ]);
-  const [seatNumber, setSeatNumber] = useState('');
+  const [seatNumber, setSeatNumber] = useState(route.params?.seatNumber || '');
   const [loading, setLoading] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
