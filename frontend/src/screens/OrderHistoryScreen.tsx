@@ -212,9 +212,9 @@ const OrderHistoryScreen = ({ navigation, route }: any) => {
           <Text style={{ color: theme.colors.onBackground }}>
             {t('orderStatus.noOrders')}
           </Text>
-          <Button 
-            mode="contained" 
-            onPress={() => navigation.navigate('Catalog')}
+          <Button
+            mode="contained"
+            onPress={() => navigation.navigate(t('navigation.catalog'))}
             style={styles.catalogButton}
             buttonColor={theme.colors.primary}
             textColor={theme.colors.onPrimary}

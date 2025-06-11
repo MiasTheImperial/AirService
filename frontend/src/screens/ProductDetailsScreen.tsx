@@ -34,7 +34,7 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
 
     // Navigate back to catalog after a short delay
     setTimeout(() => {
-      navigation.navigate('Cart', { newItem: item });
+      navigation.navigate(t('navigation.cart'), { newItem: item });
     }, 1500);
   };
 
@@ -186,7 +186,7 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
         duration={1500}
         action={{
           label: t('navigation.cart'),
-          onPress: () => navigation.navigate('Cart'),
+          onPress: () => navigation.navigate(t('navigation.cart')),
         }}
         style={{ backgroundColor: theme.colors.surfaceVariant }}
         theme={{
