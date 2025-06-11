@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import ru from './locales/ru';
+import en from './locales/en';
 
 // Настройка i18next
 i18n
@@ -10,9 +11,12 @@ i18n
   .init({
     compatibilityJSON: 'v3',
     resources: {
+      en: {
+        translation: en,
+      },
       ru: {
-        translation: ru
-      }
+        translation: ru,
+      },
     },
     lng: 'ru', // Русский язык по умолчанию
     fallbackLng: 'ru',
@@ -21,10 +25,17 @@ i18n
     }
   });
 
-// Инициализация языка из хранилища (в этом случае всегда будет русский)
+// Инициализация языка из хранилища
 export const initLanguage = async () => {
-  // Для совместимости с существующим кодом сохраняем язык в хранилище
-  await AsyncStorage.setItem('userLanguage', 'ru');
+  const stored = await AsyncStorage.getItem('userLanguage');
+  const lang = stored || 'ru';
+  await i18n.changeLanguage(lang);
+  return lang;
+};
+
+export const changeLanguage = async (lang: string) => {
+  await i18n.changeLanguage(lang);
+  await AsyncStorage.setItem('userLanguage', lang);
 };
 
 export default i18n; 
