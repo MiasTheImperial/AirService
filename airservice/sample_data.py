@@ -12,42 +12,77 @@ def load_demo_data(app):
                 "Drinks": Category(name="Drinks", image="categories/drinks.jpg"),
                 "Accessories": Category(name="Accessories", image="categories/accessories.jpg"),
                 "Services": Category(name="Services", image="categories/services.jpg"),
+                "Snacks": Category(name="Snacks", image="categories/snacks.jpg"),
+                "Desserts": Category(name="Desserts", image="categories/desserts.jpg"),
+                "Cosmetics": Category(name="Cosmetics", image="categories/cosmetics.jpg"),
+                "Toys": Category(name="Toys", image="categories/toys.jpg"),
+                "Books": Category(name="Books", image="categories/books.jpg"),
+                "Parfumes": Category(name="Parfumes", image="categories/parfumes.jpg"),
             }
+            # add a subcategory for hierarchy demo
+            cats["Alcohol"] = Category(
+                name="Alcohol",
+                parent=cats["Drinks"],
+                image="categories/alcohol.jpg",
+            )
             db.session.add_all(cats.values())
             db.session.flush()
 
+            items_data = [
+                ("Куриное филе с овощами", "Нежное куриное филе, приготовленное на гриле, подается с сезонными овощами и соусом.", 750.0, "Food", "products/chicken_filet.jpg"),
+                ("Паста Карбонара", "Классическая итальянская паста с соусом из сливок, яиц, бекона и сыра пармезан.", 680.0, "Food", "products/carbonara.jpg"),
+                ("Стейк из говядины", "Сочный стейк из мраморной говядины средней прожарки с картофельным пюре и соусом.", 1200.0, "Food", "products/marbled_beef.jpg"),
+                ("Рыба с овощами на пару", "Нежное филе лосося, приготовленное на пару, с овощным гарниром и лимонным соусом.", 850.0, "Food", "products/steamed_fish.jpg"),
+                ("Вегетарианский салат", "Свежий салат из сезонных овощей с оливковым маслом и бальзамическим уксусом.", 450.0, "Food", "products/vegeterian_salad.jpg"),
+                ("Борщ", "Традиционный украинский борщ со сметаной и чесночными пампушками.", 480.0, "Food", "products/borsch.jpg"),
+                ("Свежевыжатый апельсиновый сок", "Натуральный свежевыжатый сок из спелых апельсинов.", 350.0, "Drinks", "products/orange_juice.jpg"),
+                ("Минеральная вода", "Негазированная минеральная вода.", 150.0, "Drinks", "products/mineral_water_no_gas.jpg"),
+                ("Кофе Американо", "Классический кофе американо из свежемолотых зерен арабики.", 280.0, "Drinks", "products/americano_coffee.jpg"),
+                ("Чай зеленый", "Китайский зеленый чай с жасмином.", 220.0, "Drinks", "products/green_tea.jpg"),
+                ("Смузи ягодный", "Освежающий смузи из свежих ягод с йогуртом и медом.", 380.0, "Drinks", "products/smoozi.jpg"),
+                ("Вино красное сухое", "Итальянское красное сухое вино Кьянти Классико.", 750.0, "Alcohol", "products/red_wine.jpg"),
+                ("Пиво светлое", "Чешское светлое пиво Пилзнер.", 450.0, "Alcohol", "products/beer_white.jpg"),
+                ("Виски", "Шотландский односолодовый виски 12 лет выдержки.", 950.0, "Alcohol", "products/whiskey.jpg"),
+                ("Орешки ассорти", "Смесь жареных орехов с солью.", 320.0, "Snacks", "products/nuts_assorty.jpg"),
+                ("Чипсы картофельные", "Хрустящие картофельные чипсы с солью и специями.", 280.0, "Snacks", "products/potato_chips.jpg"),
+                ("Сырная тарелка", "Ассорти из 4 видов сыра с виноградом и крекерами.", 680.0, "Snacks", "products/cheese_plate.jpg"),
+                ("Тирамису", "Классический итальянский десерт на основе маскарпоне и кофе.", 420.0, "Desserts", "products/tiramisu.jpg"),
+                ("Чизкейк", "Нежный чизкейк с ягодным соусом.", 390.0, "Desserts", "products/raspberry_cheesecake.jpg"),
+                ("Шоколадный фондан", "Шоколадный кекс с жидкой начинкой и ванильным мороженым.", 450.0, "Desserts", "products/chocolate_fondan.jpg"),
+                ("Дорожная подушка", "Удобная подушка для шеи для комфортного сна во время полета.", 980.0, "Accessories", "products/travel_pillow.jpg"),
+                ("Маска для сна", "Мягкая маска для сна с регулируемым ремешком.", 450.0, "Accessories", "products/sleep_mask.jpg"),
+                ("Беруши", "Силиконовые беруши для защиты от шума.", 280.0, "Accessories", "products/ear_plugs.jpg"),
+                ("Наушники", "Беспроводные наушники с шумоподавлением.", 3500.0, "Accessories", "products/wireless_headphones.jpg"),
+                ("Увлажняющий крем", "Увлажняющий крем для лица с гиалуроновой кислотой.", 850.0, "Cosmetics", "products/soothening_cream.jpg"),
+                ("Набор миниатюр", "Дорожный набор миниатюр средств по уходу за кожей.", 1200.0, "Cosmetics", "products/miniatur_set.jpg"),
+                ("Мягкая игрушка", "Мягкая игрушка в виде самолета для детей.", 680.0, "Toys", "products/soft_toy.jpg"),
+                ("Набор для раскрашивания", "Детский набор для раскрашивания с карандашами и раскрасками.", 450.0, "Toys", "products/safe_paint_set.jpg"),
+                ("Роман \"Мастер и Маргарита\"", "Знаменитый роман Михаила Булгакова в мягкой обложке.", 550.0, "Books", "products/master_and_margarita.jpg"),
+                ("Журнал о путешествиях", "Свежий выпуск журнала о путешествиях и приключениях.", 320.0, "Books", "products/travel_journal.jpg"),
+                ("WiFi", "Доступ к Wi-Fi во время полета.", 10.0, "Services", "products/internet_wi-fi.jpg", True),
+            ]
             items = [
-                Item(name="Sandwich", price=5.0, category=cats["Food"], image="products/sandwich.jpg"),
-                Item(name="Salad", price=7.0, category=cats["Food"], image="products/salad.jpg"),
-                Item(name="Water", price=1.5, category=cats["Drinks"], image="products/water.jpg"),
-                Item(name="Wine", price=8.0, category=cats["Alcohol"], image="products/wine.jpg"),
-                Item(name="Coffee", price=3.0, category=cats["Drinks"], image="products/coffee.jpg"),
-                Item(name="Blanket", price=15.0, category=cats["Accessories"], image="products/blanket.jpg"),
-                Item(name="Headphones", price=25.0, category=cats["Accessories"], image="products/headphones.jpg"),
                 Item(
-                    name="WiFi", price=10.0, is_service=True, category=cats["Services"], image="products/wifi.jpg"
-                ),
-                Item(
-                    name="Priority Boarding",
-                    image="priority_boarding.png",
-                    price=12.0,
-                    is_service=True,
-                    category=cats["Services"],
-                    image="products/priority.jpg",
-                ),
+                    name=name,
+                    description=desc,
+                    price=price,
+                    category=cats[cat],
+                    image=image,
+                    is_service=(rest[0] if rest else False),
+                )
+                for name, desc, price, cat, image, *rest in items_data
             ]
             db.session.add_all(items)
             db.session.commit()
 
         if Order.query.first() is None:
             goods_list = [
-                Item.query.filter_by(name="Sandwich").first().id,
-                Item.query.filter_by(name="Water").first().id,
-                Item.query.filter_by(name="Blanket").first().id,
+                Item.query.filter_by(name="Паста Карбонара").first().id,
+                Item.query.filter_by(name="Минеральная вода").first().id,
+                Item.query.filter_by(name="Вегетарианский салат").first().id,
             ]
             service_list = [
                 Item.query.filter_by(name="WiFi").first().id,
-                Item.query.filter_by(name="Priority Boarding").first().id,
             ]
 
             demo_dates = [

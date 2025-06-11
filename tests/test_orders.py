@@ -2,7 +2,7 @@ from conftest import auth_header
 
 
 def test_order_flow_and_idempotency(client, sample_data):
-    item_id = sample_data['items']['Sandwich']
+    item_id = sample_data['items']['Паста Карбонара']
     payload = {
         'seat': '10B',
         'items': [{'item_id': item_id, 'quantity': 2}],
@@ -21,9 +21,9 @@ def test_order_flow_and_idempotency(client, sample_data):
     assert rv.status_code == 200
     data = rv.get_json()
     assert data['seat'] == '10B'
-    assert data['total'] == 10.0
+    assert data['total'] == 1360.0
     assert data['items'][0]['item_id'] == item_id
-    assert data['items'][0]['price'] == 5.0
+    assert data['items'][0]['price'] == 680.0
 
     rv = client.patch(f'/admin/orders/{order_id}', json={'status': 'done'}, headers=auth_header())
     assert rv.status_code == 200
@@ -46,7 +46,7 @@ def test_create_order_rejects_invalid_items(client, sample_data):
     payload = {
         'seat': '22B',
         'items': [
-            {'item_id': sample_data['items']['Sandwich']},
+            {'item_id': sample_data['items']['Паста Карбонара']},
             {'item_id': bad_id},
         ],
     }
@@ -55,7 +55,7 @@ def test_create_order_rejects_invalid_items(client, sample_data):
 
 
 def test_update_order_status_validation(client, sample_data):
-    item_id = sample_data['items']['Sandwich']
+    item_id = sample_data['items']['Паста Карбонара']
     rv = client.post('/orders', json={'seat': '15C', 'items': [{'item_id': item_id}], 'payment_method': 'cash'})
     assert rv.status_code == 201
     order_id = rv.get_json()['order_id']
@@ -68,7 +68,7 @@ def test_update_order_status_validation(client, sample_data):
 
 
 def test_list_orders_filters(client, sample_data):
-    item_id = sample_data['items']['Sandwich']
+    item_id = sample_data['items']['Паста Карбонара']
     rv = client.post('/orders', json={'seat': '5A', 'items': [{'item_id': item_id}]})
     first = rv.get_json()['order_id']
     rv = client.post('/orders', json={'seat': '5A', 'items': [{'item_id': item_id}]})
@@ -80,14 +80,14 @@ def test_list_orders_filters(client, sample_data):
     assert rv.status_code == 200
     data = rv.get_json()
     assert [o['id'] for o in data] == [first, second]
-    assert all(o['total'] == 5.0 for o in data)
+    assert all(o['total'] == 680.0 for o in data)
     assert all(o['items'][0]['item_id'] == item_id for o in data)
 
     rv = client.get('/orders?seat=5A&status=done')
     assert rv.status_code == 200
     data = rv.get_json()
     assert len(data) == 1 and data[0]['id'] == second
-    assert data[0]['total'] == 5.0
+    assert data[0]['total'] == 680.0
 
     rv = client.get('/orders')
     assert rv.status_code == 400
