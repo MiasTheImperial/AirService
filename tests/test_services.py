@@ -5,7 +5,7 @@ from airservice.models import db, Item
 
 
 def test_order_service_create_and_idempotent(app, sample_data):
-    item_id = sample_data['items']['Sandwich']
+    item_id = sample_data['items']['Паста Карбонара']
     items = [{'item_id': item_id, 'quantity': 1}]
     with app.app_context():
         with patch('airservice.services.order_service.push_event') as pe:
@@ -19,7 +19,7 @@ def test_order_service_create_and_idempotent(app, sample_data):
 
 
 def test_update_order_status(app, sample_data):
-    item_id = sample_data['items']['Sandwich']
+    item_id = sample_data['items']['Паста Карбонара']
     with app.app_context():
         order, _ = order_service.create_order('2A', [{'item_id': item_id}], payment_method='cash', idempotency_key=None)
         with patch('airservice.services.order_service.push_event') as pe:

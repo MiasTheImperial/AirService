@@ -28,7 +28,7 @@ def test_login_and_order_uses_account_seat(client, app, sample_data):
     assert data["seat"] == "5A"
     assert not data["is_admin"]
 
-    item_id = sample_data["items"]["Sandwich"]
+    item_id = sample_data["items"]["Паста Карбонара"]
     rv = client.post(
         "/orders",
         json={"items": [{"item_id": item_id}]},

@@ -13,27 +13,58 @@ def load_demo_data(app):
                 "Accessories": Category(name="Accessories", image="categories/accessories.jpg"),
                 "Services": Category(name="Services", image="categories/services.jpg"),
             }
+            # add a subcategory for hierarchy demo
+            cats["Alcohol"] = Category(
+                name="Alcohol",
+                parent=cats["Drinks"],
+                image="categories/alcohol.jpg",
+            )
             db.session.add_all(cats.values())
             db.session.flush()
 
             items = [
-                Item(name="Sandwich", price=5.0, category=cats["Food"], image="products/sandwich.jpg"),
-                Item(name="Salad", price=7.0, category=cats["Food"], image="products/salad.jpg"),
-                Item(name="Water", price=1.5, category=cats["Drinks"], image="products/water.jpg"),
-                Item(name="Wine", price=8.0, category=cats["Alcohol"], image="products/wine.jpg"),
-                Item(name="Coffee", price=3.0, category=cats["Drinks"], image="products/coffee.jpg"),
-                Item(name="Blanket", price=15.0, category=cats["Accessories"], image="products/blanket.jpg"),
-                Item(name="Headphones", price=25.0, category=cats["Accessories"], image="products/headphones.jpg"),
                 Item(
-                    name="WiFi", price=10.0, is_service=True, category=cats["Services"], image="products/wifi.jpg"
+                    name="Паста Карбонара",
+                    description="Классическая итальянская паста с соусом из сливок, яиц, бекона и сыра пармезан.",
+                    price=680.0,
+                    category=cats["Food"],
+                    image="products/carbonara.jpg",
                 ),
                 Item(
-                    name="Priority Boarding",
-                    image="priority_boarding.png",
-                    price=12.0,
+                    name="Вегетарианский салат",
+                    description="Свежий салат из сезонных овощей с оливковым маслом и бальзамическим уксусом.",
+                    price=450.0,
+                    category=cats["Food"],
+                    image="products/vegeterian_salad.jpg",
+                ),
+                Item(
+                    name="Минеральная вода",
+                    description="Негазированная минеральная вода.",
+                    price=150.0,
+                    category=cats["Drinks"],
+                    image="products/mineral_water_no_gas.jpg",
+                ),
+                Item(
+                    name="Кофе Американо",
+                    description="Классический кофе американо из свежемолотых зерен арабики.",
+                    price=280.0,
+                    category=cats["Drinks"],
+                    image="products/americano_coffee.jpg",
+                ),
+                Item(
+                    name="Вино красное сухое",
+                    description="Итальянское красное сухое вино Кьянти Классико.",
+                    price=750.0,
+                    category=cats["Alcohol"],
+                    image="products/red_wine.jpg",
+                ),
+                Item(
+                    name="WiFi",
+                    description="Доступ к Wi-Fi во время полета.",
+                    price=10.0,
                     is_service=True,
                     category=cats["Services"],
-                    image="products/priority.jpg",
+                    image="products/internet_wi-fi.jpg",
                 ),
             ]
             db.session.add_all(items)
@@ -41,13 +72,12 @@ def load_demo_data(app):
 
         if Order.query.first() is None:
             goods_list = [
-                Item.query.filter_by(name="Sandwich").first().id,
-                Item.query.filter_by(name="Water").first().id,
-                Item.query.filter_by(name="Blanket").first().id,
+                Item.query.filter_by(name="Паста Карбонара").first().id,
+                Item.query.filter_by(name="Минеральная вода").first().id,
+                Item.query.filter_by(name="Вегетарианский салат").first().id,
             ]
             service_list = [
                 Item.query.filter_by(name="WiFi").first().id,
-                Item.query.filter_by(name="Priority Boarding").first().id,
             ]
 
             demo_dates = [
