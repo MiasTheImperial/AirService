@@ -101,7 +101,6 @@ const linking = {
       [RouteName.CART_SCREEN]: RoutePath[RouteName.CART_SCREEN],
       [RouteName.PROFILE_SCREEN]: RoutePath[RouteName.PROFILE_SCREEN],
       [RouteName.LOGIN_SCREEN]: RoutePath[RouteName.LOGIN_SCREEN],
-      [RouteName.ADMIN_PANEL]: RoutePath[RouteName.ADMIN_PANEL],
       [RouteName.PRODUCT_DETAILS_SCREEN]: RoutePath[RouteName.PRODUCT_DETAILS_SCREEN],
       [RouteName.ORDER_STATUS_SCREEN]: RoutePath[RouteName.ORDER_STATUS_SCREEN],
       [RouteName.ORDER_DETAILS_SCREEN]: RoutePath[RouteName.ORDER_DETAILS_SCREEN],
@@ -354,11 +353,6 @@ const RootStackNavigator = () => {
         name={RouteName.LOGIN_SCREEN}
         component={LoginScreen}
         options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name={RouteName.ADMIN_PANEL}
-        component={AdminPanel}
-        options={{ title: t('navigation.admin') }}
       />
       <Stack.Screen
         name={RouteName.PRODUCT_DETAILS_SCREEN}
