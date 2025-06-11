@@ -65,6 +65,8 @@ def catalog():
                     type: string
                   description:
                     type: string
+                  image:
+                    type: string
                   price:
                     type: number
                   available:
@@ -111,6 +113,7 @@ def catalog():
             'id': i.id,
             'name': name,
             'description': i.description,
+            'image': i.image,
             'price': i.price,
             'available': i.available,
             'service': i.is_service,
@@ -139,6 +142,8 @@ def catalog_categories():
                     type: integer
                   name:
                     type: string
+                  image:
+                    type: string
                   children:
                     type: array
                     items:
@@ -148,12 +153,14 @@ def catalog_categories():
                           type: integer
                         name:
                           type: string
+                        image:
+                          type: string
                         children:
                           type: array
                           items: {}
     """
     cats = Category.query.order_by(Category.id).all()
-    nodes = {c.id: {'id': c.id, 'name': c.name, 'children': []} for c in cats}
+    nodes = {c.id: {'id': c.id, 'name': c.name, 'image': c.image, 'children': []} for c in cats}
     roots = []
     for c in cats:
         node = nodes[c.id]

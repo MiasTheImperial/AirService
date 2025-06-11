@@ -8,28 +8,29 @@ def load_demo_data(app):
     with app.app_context():
         if Category.query.first() is None and Item.query.first() is None:
             cats = {
-                "Food": Category(name="Food"),
-                "Drinks": Category(name="Drinks"),
-                "Accessories": Category(name="Accessories"),
-                "Services": Category(name="Services"),
+                "Food": Category(name="Food", image="food.png"),
+                "Drinks": Category(name="Drinks", image="drinks.png"),
+                "Accessories": Category(name="Accessories", image="accessories.png"),
+                "Services": Category(name="Services", image="services.png"),
             }
-            cats["Alcohol"] = Category(name="Alcohol", parent=cats["Drinks"])
+            cats["Alcohol"] = Category(name="Alcohol", image="alcohol.png", parent=cats["Drinks"])
             db.session.add_all(cats.values())
             db.session.flush()
 
             items = [
-                Item(name="Sandwich", price=5.0, category=cats["Food"]),
-                Item(name="Salad", price=7.0, category=cats["Food"]),
-                Item(name="Water", price=1.5, category=cats["Drinks"]),
-                Item(name="Wine", price=8.0, category=cats["Alcohol"]),
-                Item(name="Coffee", price=3.0, category=cats["Drinks"]),
-                Item(name="Blanket", price=15.0, category=cats["Accessories"]),
-                Item(name="Headphones", price=25.0, category=cats["Accessories"]),
+                Item(name="Sandwich", image="sandwich.png", price=5.0, category=cats["Food"]),
+                Item(name="Salad", image="salad.png", price=7.0, category=cats["Food"]),
+                Item(name="Water", image="water.png", price=1.5, category=cats["Drinks"]),
+                Item(name="Wine", image="wine.png", price=8.0, category=cats["Alcohol"]),
+                Item(name="Coffee", image="coffee.png", price=3.0, category=cats["Drinks"]),
+                Item(name="Blanket", image="blanket.png", price=15.0, category=cats["Accessories"]),
+                Item(name="Headphones", image="headphones.png", price=25.0, category=cats["Accessories"]),
                 Item(
-                    name="WiFi", price=10.0, is_service=True, category=cats["Services"]
+                    name="WiFi", image="wifi.png", price=10.0, is_service=True, category=cats["Services"]
                 ),
                 Item(
                     name="Priority Boarding",
+                    image="priority_boarding.png",
                     price=12.0,
                     is_service=True,
                     category=cats["Services"],

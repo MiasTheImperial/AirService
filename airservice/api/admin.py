@@ -145,6 +145,8 @@ def admin_items():
                 type: string
               description:
                 type: string
+              image:
+                type: string
               price:
                 type: number
               available:
@@ -169,6 +171,7 @@ def admin_items():
         return jsonify({'id': item.id}), 201
     items = Item.query.all()
     return jsonify([{ 'id': i.id, 'name': i.name, 'description': i.description,
+                      'image': i.image,
                       'price': i.price, 'available': i.available,
                       'service': i.is_service,
                       'category_id': i.category_id } for i in items])
@@ -195,6 +198,8 @@ def admin_item_detail(item_id):
               name:
                 type: string
               description:
+                type: string
+              image:
                 type: string
               price:
                 type: number
@@ -238,6 +243,8 @@ def admin_categories():
             properties:
               name:
                 type: string
+              image:
+                type: string
               parent_id:
                 type: integer
     responses:
@@ -252,13 +259,17 @@ def admin_categories():
             data = CategorySchema().load(request.get_json() or {})
         except ValidationError as err:
             return jsonify(err.messages), 400
-        cat = Category(name=data['name'], parent_id=data.get('parent_id'))
+        cat = Category(
+            name=data['name'],
+            image=data.get('image'),
+            parent_id=data.get('parent_id'),
+        )
         db.session.add(cat)
         db.session.commit()
         logging.info('category_created %s', cat.name)
         return jsonify({'id': cat.id}), 201
     cats = Category.query.all()
-    return jsonify([{ 'id': c.id, 'name': c.name, 'parent_id': c.parent_id } for c in cats])
+    return jsonify([{ 'id': c.id, 'name': c.name, 'image': c.image, 'parent_id': c.parent_id } for c in cats])
 
 
 @admin_bp.route('/categories/<int:cat_id>', methods=['PUT', 'DELETE'])
@@ -281,6 +292,8 @@ def admin_category_detail(cat_id):
             properties:
               name:
                 type: string
+              image:
+                type: string
               parent_id:
                 type: integer
     responses:
@@ -300,6 +313,8 @@ def admin_category_detail(cat_id):
             return jsonify(err.messages), 400
         if 'name' in data:
             cat.name = data['name']
+        if 'image' in data:
+            cat.image = data['image']
         if 'parent_id' in data:
             cat.parent_id = data['parent_id']
         db.session.commit()

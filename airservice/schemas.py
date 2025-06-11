@@ -14,6 +14,7 @@ class ItemSchema(Schema):
     name_ru = fields.Str()
     name_en = fields.Str()
     description = fields.Str()
+    image = fields.Str()
     price = fields.Float(required=True)
     available = fields.Bool(load_default=True)
     service = fields.Bool(load_default=False)
@@ -21,4 +22,5 @@ class ItemSchema(Schema):
 
 class CategorySchema(Schema):
     name = fields.Str(required=True)
+    image = fields.Str()
     parent_id = fields.Int()
