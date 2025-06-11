@@ -420,9 +420,15 @@ const AppContent = () => {
 };
 
 const App = () => {
+  const [languageReady, setLanguageReady] = useState(false);
+
   useEffect(() => {
-    initLanguage();
+    initLanguage().finally(() => setLanguageReady(true));
   }, []);
+
+  if (!languageReady) {
+    return null;
+  }
 
   return (
     <ThemeProvider>
