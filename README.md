@@ -40,7 +40,8 @@ python run_worker.py  # REDIS_URL задаёт адрес Redis
 ```bash
 # установка зависимостей и сборка web-версии
 cd frontend
-npm install
+npm install --legacy-peer-deps
+npm run web-build
 EXPO_PUBLIC_API_URL=http://192.168.x.x:5000 npm run web-build
 # 192.168.178.20
 
