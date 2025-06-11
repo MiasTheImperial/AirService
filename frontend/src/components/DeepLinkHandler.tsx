@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Linking } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import RouteName, { RoutePath } from '../navigation/routes';
 
 /**
  * DeepLinkHandler - компонент для обработки deeplink и навигации по URL
@@ -18,40 +17,27 @@ const DeepLinkHandler = () => {
   const handleDeepLink = (event: { url: string }) => {
     const { url } = event;
     console.log('Received deep link:', url);
-
-    const segments = url.split('//')[1].split('/').slice(1);
-    if (segments.length === 0) return;
-
-    const pathSegment = segments[0];
-    const param = segments[1];
-
-    // Находим имя маршрута по базовому пути
-    const routeEntry = Object.entries(RoutePath).find(([, value]) => value.split('/')[0] === pathSegment);
-    if (!routeEntry) return;
-
-    const routeName = routeEntry[0] as RouteName;
-
-    // Список экранов, принимающих параметры
-    const componentsWithParams = [
-      RouteName.PRODUCT_DETAILS_SCREEN,
-      RouteName.ORDER_STATUS_SCREEN,
-      RouteName.PRODUCT_DETAILS,
-      RouteName.ORDER_STATUS,
-      RouteName.ORDER_DETAILS,
-      RouteName.ORDER_DETAILS_SCREEN,
-      RouteName.PAYMENT_SCREEN
-    ];
-
-    if (componentsWithParams.includes(routeName) && param) {
-      const params: Record<string, string> = {};
-      if (routeName === RouteName.PAYMENT_SCREEN) {
-        params.amount = param;
-      } else {
-        params.id = param;
-      }
-      navigation.navigate(routeName as never, params as never);
+    
+    // Получаем путь из URL (часть после доменного имени)
+    const path = url.split('//')[1].split('/').slice(1);
+    if (path.length === 0) return;
+    
+    const componentName = path[0];
+    const componentParam = path[1];
+    
+    console.log('Component name:', componentName);
+    console.log('Component param:', componentParam);
+    
+    // Список компонентов, которые могут принимать параметры
+    const componentsWithParams = ['ProductDetailsScreen', 'OrderStatusScreen', 'ProductDetails', 'OrderStatus'];
+    
+    // Выполняем навигацию в соответствии с полученным URL
+    if (componentsWithParams.includes(componentName) && componentParam) {
+      // Для экранов с параметрами
+      navigation.navigate(componentName as never, { id: componentParam } as never);
     } else {
-      navigation.navigate(routeName as never);
+      // Для экранов без параметров
+      navigation.navigate(componentName as never);
     }
   };
 
@@ -75,4 +61,4 @@ const DeepLinkHandler = () => {
   return null;
 };
 
-export default DeepLinkHandler;
+export default DeepLinkHandler; 
