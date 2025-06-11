@@ -5,6 +5,7 @@ import { Order, OrderStatus } from '../types';
 import { useTranslation } from 'react-i18next';
 import { listOrders } from '../api/api';
 import RouteName from '../navigation/routes';
+import { formatPrice } from '../utils/currency';
 
 const OrderHistoryScreen = ({ navigation, route }: any) => {
   const theme = useTheme();
@@ -149,7 +150,7 @@ const OrderHistoryScreen = ({ navigation, route }: any) => {
             {t('common.total')}:
           </Text>
           <Text style={[styles.totalAmount, { color: theme.colors.primary }]}>
-            {item.totalAmount} {t('common.currency')}
+            {formatPrice(item.totalAmount)}
           </Text>
         </View>
       </Card.Content>

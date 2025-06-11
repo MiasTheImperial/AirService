@@ -5,6 +5,7 @@ import { Order, OrderStatus } from '../types';
 import { useTranslation } from 'react-i18next';
 import { getOrder } from '../api/api';
 import RouteName from '../navigation/routes';
+import { formatPrice } from '../utils/currency';
 
 const OrderStatusScreen = ({ route, navigation }: any) => {
   const theme = useTheme();
@@ -156,7 +157,7 @@ const OrderStatusScreen = ({ route, navigation }: any) => {
                 <Text style={{ color: theme.colors.onSurfaceVariant }}>{item.name}</Text>
                 <Text style={{ color: theme.colors.onSurfaceVariant }}>x{item.quantity}</Text>
                 <Text style={{ color: theme.colors.onSurfaceVariant }}>
-                  {item.price * item.quantity} {t('common.currency')}
+                  {formatPrice(item.price * item.quantity)}
                 </Text>
               </View>
             ))}
@@ -167,7 +168,7 @@ const OrderStatusScreen = ({ route, navigation }: any) => {
               {t('common.total')}:
             </Text>
             <Text style={[styles.totalAmount, { color: theme.colors.primary }]}>
-              {order.totalAmount} {t('common.currency')}
+              {formatPrice(order.totalAmount)}
             </Text>
           </View>
         </Card.Content>

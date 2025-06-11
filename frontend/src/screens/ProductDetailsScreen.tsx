@@ -5,6 +5,7 @@ import { MaterialCommunityIcon } from '../components/CustomIcons';
 import { Product, OrderItem } from '../types';
 import RouteName from '../navigation/routes';
 import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../utils/currency';
 
 const ProductDetailsScreen = ({ route, navigation }: any) => {
   const { product } = route.params;
@@ -53,7 +54,7 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
         <Card.Content>
           <View style={styles.header}>
             <Text style={[styles.title, { color: theme.colors.onSurface }]}>{product.name}</Text>
-            <Text style={[styles.price, { color: theme.colors.primary }]}>{product.price} {t('common.currency')}</Text>
+            <Text style={[styles.price, { color: theme.colors.primary }]}>{formatPrice(product.price)}</Text>
           </View>
           
           {product.description ? (
@@ -164,7 +165,7 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
           <View style={styles.totalContainer}>
             <Text style={[styles.totalLabel, { color: theme.colors.onSurface }]}>{t('common.total')}:</Text>
             <Text style={[styles.totalPrice, { color: theme.colors.primary }]}>
-              {product.price * quantity} {t('common.currency')}
+              {formatPrice(product.price * quantity)}
             </Text>
           </View>
         </Card.Content>

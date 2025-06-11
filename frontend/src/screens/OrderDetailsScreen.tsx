@@ -4,6 +4,7 @@ import { Card, Text, ActivityIndicator, List } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
 import { getOrder } from '../api/api';
 import { Order, OrderItem, OrderStatus } from '../types';
+import { formatPrice } from '../utils/currency';
 
 const OrderDetailsScreen = ({ route }: any) => {
   const { t } = useTranslation();
@@ -67,7 +68,9 @@ const OrderDetailsScreen = ({ route }: any) => {
         <Card.Title title={`${t('orderStatus.orderNumber')}: ${order.id}`} />
         <Card.Content>
           <Text>{t('orderStatus.orderStatus')}: {getStatusLabel(order.status)}</Text>
-          <Text>{t('orderStatus.orderTotal')}: ${order.totalAmount.toFixed(2)}</Text>
+          <Text>
+            {t('orderStatus.orderTotal')}: {formatPrice(order.totalAmount)}
+          </Text>
           <Text>{t('profile.seatNumber')}: {order.seatNumber}</Text>
         </Card.Content>
       </Card>
@@ -78,7 +81,7 @@ const OrderDetailsScreen = ({ route }: any) => {
             <List.Item
               key={item.productId}
               title={`${item.name} x${item.quantity}`}
-              description={`$${(item.price * item.quantity).toFixed(2)}`}
+              description={formatPrice(item.price * item.quantity)}
             />
           ))}
         </Card.Content>

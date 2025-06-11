@@ -4,6 +4,7 @@ import { Card, Searchbar, Chip, Text, Button, useTheme, ActivityIndicator } from
 import { Product, Category } from '../types';
 import { useTranslation } from 'react-i18next';
 import { getCatalog, getCategories } from '../api/api';
+import { formatPrice } from '../utils/currency';
 import RouteName from '../navigation/routes';
 
 const CatalogScreen = ({ navigation }: any) => {
@@ -66,7 +67,7 @@ const CatalogScreen = ({ navigation }: any) => {
           {item.name}
         </Text>
         <Text style={[styles.productPrice, { color: theme.colors.primary }]}>
-          {item.price} {t('common.currency')}
+          {formatPrice(item.price)}
         </Text>
         {item.description ? (
           <Text

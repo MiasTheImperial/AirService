@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { Card, Text, DataTable, Button, ActivityIndicator, Appbar } from 'react-native-paper';
 import { AnalyticsData, Order, OrderStatus } from '../types';
 import RouteName from '../navigation/routes';
+import { formatPrice } from '../utils/currency';
 
 const AdminPanel = ({ navigation }: any) => {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
@@ -82,7 +83,9 @@ const AdminPanel = ({ navigation }: any) => {
         <Card style={styles.card}>
           <Card.Content>
             <Text style={styles.cardTitle}>Sales Overview</Text>
-            <Text style={styles.salesAmount}>${analyticsData.totalSales.toFixed(2)}</Text>
+            <Text style={styles.salesAmount}>
+              {formatPrice(analyticsData.totalSales)}
+            </Text>
           </Card.Content>
         </Card>
 
@@ -117,7 +120,9 @@ const AdminPanel = ({ navigation }: any) => {
               {analyticsData.salesByCategory.map((category, index) => (
                 <DataTable.Row key={index}>
                   <DataTable.Cell>{category.category}</DataTable.Cell>
-                  <DataTable.Cell numeric>${category.amount.toFixed(2)}</DataTable.Cell>
+                  <DataTable.Cell numeric>
+                    {formatPrice(category.amount)}
+                  </DataTable.Cell>
                 </DataTable.Row>
               ))}
             </DataTable>
@@ -153,7 +158,9 @@ const AdminPanel = ({ navigation }: any) => {
               >
                 <DataTable.Cell>{order.id.substring(0, 8)}</DataTable.Cell>
                 <DataTable.Cell>{order.seatNumber}</DataTable.Cell>
-                <DataTable.Cell>${order.totalAmount.toFixed(2)}</DataTable.Cell>
+                <DataTable.Cell>
+                  {formatPrice(order.totalAmount)}
+                </DataTable.Cell>
                 <DataTable.Cell>{order.status}</DataTable.Cell>
               </DataTable.Row>
             ))}
