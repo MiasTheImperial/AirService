@@ -11,6 +11,7 @@ import './i18n/i18n'; // Import i18n settings
 import { initLanguage } from './i18n/i18n';
 import MobileContainer from './components/MobileContainer';
 import DeepLinkHandler from './components/DeepLinkHandler';
+import RouteName from './navigation/routes';
 
 // Import screens
 import LoginScreen from './screens/LoginScreen';
@@ -77,14 +78,14 @@ const linking = {
       Login: 'login',
       MainApp: {
         screens: {
-          [encodeURI('Каталог товаров')]: 'catalog',
-          [encodeURI('Корзина')]: 'cart',
-          [encodeURI('Профиль')]: 'profile',
+          [RouteName.CATALOG]: 'catalog',
+          [RouteName.CART]: 'cart',
+          [RouteName.PROFILE]: 'profile',
         }
       },
       AdminRoot: {
         screens: {
-          [encodeURI('Админ-панель')]: 'admin'
+          [RouteName.ADMIN_PANEL]: 'admin'
         }
       },
       ProductDetails: 'product/:id',
@@ -105,9 +106,15 @@ const linking = {
   getStateFromPath: (path: string, options: any) => {
     // Проверяем, соответствует ли путь имени компонента
     const componentNames = [
-      'CatalogScreen', 'CartScreen', 'ProfileScreen', 'LoginScreen',
-      'AdminPanel', 'ProductDetailsScreen', 'OrderStatusScreen', 'PaymentScreen',
-      'OrderHistoryScreen'
+      RouteName.CATALOG_SCREEN,
+      RouteName.CART_SCREEN,
+      RouteName.PROFILE_SCREEN,
+      RouteName.LOGIN_SCREEN,
+      RouteName.ADMIN_PANEL,
+      RouteName.PRODUCT_DETAILS_SCREEN,
+      RouteName.ORDER_STATUS_SCREEN,
+      RouteName.PAYMENT_SCREEN,
+      RouteName.ORDER_HISTORY_SCREEN
     ];
     
     // Проверка на соответствие имени компонента
@@ -152,11 +159,11 @@ const MainTabNavigator = ({ seatNumber }: { seatNumber: string }) => {
         tabBarIcon: ({ focused, color, size }: { focused: boolean, color: string, size: number }) => {
           let iconName: any = 'home';
 
-          if (route.name === t('navigation.catalog')) {
+          if (route.name === RouteName.CATALOG) {
             iconName = focused ? 'fast-food' : 'fast-food-outline';
-          } else if (route.name === t('navigation.cart')) {
+          } else if (route.name === RouteName.CART) {
             iconName = focused ? 'cart' : 'cart-outline';
-          } else if (route.name === t('navigation.profile')) {
+          } else if (route.name === RouteName.PROFILE) {
             iconName = focused ? 'person' : 'person-outline';
           }
 
@@ -179,16 +186,22 @@ const MainTabNavigator = ({ seatNumber }: { seatNumber: string }) => {
         headerTintColor: defaultTheme.colors.onSurface,
       })}
     >
-      <Tab.Screen name={t('navigation.catalog')} component={CatalogScreen} />
       <Tab.Screen
-        name={t('navigation.cart')}
-        component={CartScreen}
-        initialParams={{ seatNumber }}
+        name={RouteName.CATALOG}
+        component={CatalogScreen}
+        options={{ title: t('navigation.catalog') }}
       />
       <Tab.Screen
-        name={t('navigation.profile')}
+        name={RouteName.CART}
+        component={CartScreen}
+        initialParams={{ seatNumber }}
+        options={{ title: t('navigation.cart') }}
+      />
+      <Tab.Screen
+        name={RouteName.PROFILE}
         component={ProfileScreen}
         initialParams={{ seatNumber }}
+        options={{ title: t('navigation.profile') }}
       />
     </Tab.Navigator>
   );
@@ -209,10 +222,10 @@ const AdminNavigator = () => {
         headerTintColor: defaultTheme.colors.onSurface,
       }}
     >
-      <Stack.Screen 
-        name={t('navigation.admin')} 
-        component={AdminPanel} 
-        options={{ headerShown: false }} 
+      <Stack.Screen
+        name={RouteName.ADMIN_PANEL}
+        component={AdminPanel}
+        options={{ headerShown: false, title: t('navigation.admin') }}
       />
     </Stack.Navigator>
   );
@@ -282,73 +295,73 @@ const RootStackNavigator = () => {
       />
       
       {/* Основные экраны приложения */}
-      <Stack.Screen name="MainApp" options={{ headerShown: false }}>
+      <Stack.Screen name={RouteName.MAIN_APP} options={{ headerShown: false }}>
         {() => <MainTabNavigator seatNumber={seatNumber} />}
       </Stack.Screen>
       
       {/* Админ-панель */}
-      <Stack.Screen 
-        name="AdminRoot" 
+      <Stack.Screen
+        name={RouteName.ADMIN_ROOT}
         component={AdminNavigator}
         options={{ headerShown: false }}
       />
       
       {/* Экраны доступные для всех */}
-      <Stack.Screen 
-        name="ProductDetails"
-        component={ProductDetailsScreen} 
+      <Stack.Screen
+        name={RouteName.PRODUCT_DETAILS}
+        component={ProductDetailsScreen}
         options={{ title: t('productDetails.title') }}
       />
-      <Stack.Screen 
-        name="OrderStatus"
-        component={OrderStatusScreen} 
+      <Stack.Screen
+        name={RouteName.ORDER_STATUS}
+        component={OrderStatusScreen}
         options={{ title: t('orderStatus.title') }}
       />
       
       {/* Прямой доступ к компонентам по их именам */}
-      <Stack.Screen 
-        name="CatalogScreen" 
-        component={CatalogScreen} 
+      <Stack.Screen
+        name={RouteName.CATALOG_SCREEN}
+        component={CatalogScreen}
         options={{ title: t('navigation.catalog') }}
       />
-      <Stack.Screen 
-        name="CartScreen" 
-        component={CartScreen} 
+      <Stack.Screen
+        name={RouteName.CART_SCREEN}
+        component={CartScreen}
         options={{ title: t('navigation.cart') }}
       />
       <Stack.Screen
-        name="ProfileScreen"
+        name={RouteName.PROFILE_SCREEN}
         component={ProfileScreen}
         options={{ title: t('navigation.profile') }}
         initialParams={{ seatNumber }}
       />
-      <Stack.Screen 
-        name="LoginScreen" 
-        component={LoginScreen} 
+      <Stack.Screen
+        name={RouteName.LOGIN_SCREEN}
+        component={LoginScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen 
-        name="AdminPanel" 
-        component={AdminPanel} 
+      <Stack.Screen
+        name={RouteName.ADMIN_PANEL}
+        component={AdminPanel}
         options={{ title: t('navigation.admin') }}
       />
-      <Stack.Screen 
-        name="ProductDetailsScreen" 
-        component={ProductDetailsScreen} 
+      <Stack.Screen
+        name={RouteName.PRODUCT_DETAILS_SCREEN}
+        component={ProductDetailsScreen}
         options={{ title: t('productDetails.title') }}
       />
-      <Stack.Screen 
-        name="OrderStatusScreen" 
-        component={OrderStatusScreen} 
+      <Stack.Screen
+        name={RouteName.ORDER_STATUS_SCREEN}
+        component={OrderStatusScreen}
         options={{ title: t('orderStatus.title') }}
       />
-      <Stack.Screen 
-        name="PaymentScreen" 
-        component={PaymentScreen} 
+      <Stack.Screen
+        name={RouteName.PAYMENT_SCREEN}
+        component={PaymentScreen}
         options={{ title: t('payment.title') }}
       />
       <Stack.Screen
-        name="OrderHistoryScreen"
+        name={RouteName.ORDER_HISTORY_SCREEN}
         component={OrderHistoryScreen}
         options={{ title: t('navigation.orderHistory') }}
         initialParams={{ seatNumber }}

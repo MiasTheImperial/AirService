@@ -4,6 +4,7 @@ import { Card, Text, Chip, Divider, Button, ActivityIndicator, useTheme } from '
 import { Order, OrderStatus } from '../types';
 import { useTranslation } from 'react-i18next';
 import { listOrders } from '../api/api';
+import RouteName from '../navigation/routes';
 
 const OrderHistoryScreen = ({ navigation, route }: any) => {
   const theme = useTheme();
@@ -99,7 +100,11 @@ const OrderHistoryScreen = ({ navigation, route }: any) => {
   const renderOrderItem = ({ item }: { item: Order }) => (
     <Card 
       style={[styles.orderCard, { backgroundColor: theme.colors.surface }]}
-      onPress={() => navigation.navigate('OrderStatus', { orderId: item.id })}
+      onPress={() =>
+        navigation.navigate(RouteName.ORDER_STATUS as never, {
+          orderId: item.id,
+        } as never)
+      }
     >
       <Card.Content>
         <View style={styles.orderHeader}>
@@ -214,7 +219,7 @@ const OrderHistoryScreen = ({ navigation, route }: any) => {
           </Text>
           <Button
             mode="contained"
-            onPress={() => navigation.navigate(t('navigation.catalog'))}
+            onPress={() => navigation.navigate(RouteName.CATALOG as never)}
             style={styles.catalogButton}
             buttonColor={theme.colors.primary}
             textColor={theme.colors.onPrimary}

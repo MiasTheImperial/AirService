@@ -4,6 +4,7 @@ import { Card, Text, Switch, Button, List, Divider, useTheme } from 'react-nativ
 import { useTranslation } from 'react-i18next';
 import DirectLinkButton from '../components/DirectLinkButton';
 import { listOrders } from '../api/api';
+import RouteName from '../navigation/routes';
 
 const ProfileScreen = ({ navigation, route }: any) => {
   const seatNumber = route.params?.seatNumber as string;
@@ -105,7 +106,11 @@ const ProfileScreen = ({ navigation, route }: any) => {
                 {ordersCount}
               </Text>
             </View>}
-            onPress={() => navigation.navigate('OrderHistoryScreen', { seatNumber })}
+            onPress={() =>
+              navigation.navigate(RouteName.ORDER_HISTORY_SCREEN as never, {
+                seatNumber,
+              } as never)
+            }
           />
           
           <Divider style={{ backgroundColor: theme.colors.outline }} />
@@ -116,7 +121,7 @@ const ProfileScreen = ({ navigation, route }: any) => {
             titleStyle={{ color: theme.colors.onSurface }}
             descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
             left={props => <List.Icon {...props} icon="credit-card" color={theme.colors.primary} />}
-            onPress={() => navigation.navigate('PaymentScreen')}
+            onPress={() => navigation.navigate(RouteName.PAYMENT_SCREEN as never)}
           />
           
           <Divider style={{ backgroundColor: theme.colors.outline }} />
@@ -140,21 +145,21 @@ const ProfileScreen = ({ navigation, route }: any) => {
           
           <View style={styles.linksContainer}>
             <DirectLinkButton
-              screenName="CatalogScreen"
+              screenName={RouteName.CATALOG_SCREEN}
               style={styles.linkButton}
             >
               {t('navigation.catalog')}
             </DirectLinkButton>
             
             <DirectLinkButton
-              screenName="CartScreen"
+              screenName={RouteName.CART_SCREEN}
               style={styles.linkButton}
             >
               {t('navigation.cart')}
             </DirectLinkButton>
             
             <DirectLinkButton
-              screenName="OrderHistoryScreen"
+              screenName={RouteName.ORDER_HISTORY_SCREEN}
               style={styles.linkButton}
               params={{ seatNumber }}
             >
@@ -162,7 +167,7 @@ const ProfileScreen = ({ navigation, route }: any) => {
             </DirectLinkButton>
             
             <DirectLinkButton
-              screenName="PaymentScreen"
+              screenName={RouteName.PAYMENT_SCREEN}
               style={styles.linkButton}
             >
               {t('payment.title')}

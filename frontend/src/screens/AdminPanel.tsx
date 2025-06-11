@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { Card, Text, DataTable, Button, ActivityIndicator, Appbar } from 'react-native-paper';
 import { AnalyticsData, Order, OrderStatus } from '../types';
+import RouteName from '../navigation/routes';
 
 const AdminPanel = ({ navigation }: any) => {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
@@ -142,9 +143,13 @@ const AdminPanel = ({ navigation }: any) => {
             </DataTable.Header>
 
             {analyticsData.recentOrders.map((order) => (
-              <DataTable.Row 
+              <DataTable.Row
                 key={order.id}
-                onPress={() => navigation.navigate('OrderDetails', { orderId: order.id })}
+                onPress={() =>
+                  navigation.navigate(RouteName.ORDER_DETAILS as never, {
+                    orderId: order.id,
+                  } as never)
+                }
               >
                 <DataTable.Cell>{order.id.substring(0, 8)}</DataTable.Cell>
                 <DataTable.Cell>{order.seatNumber}</DataTable.Cell>

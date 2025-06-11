@@ -4,6 +4,7 @@ import { Text, useTheme } from 'react-native-paper';
 import PaymentForm from '../components/PaymentForm';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
+import RouteName from '../navigation/routes';
 
 // Интерфейс для параметров маршрута
 interface PaymentScreenProps {
@@ -28,8 +29,8 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
   
   const handlePaymentComplete = (paymentMethod: any) => {
     // Переходим на экран статуса заказа после успешной оплаты
-    navigation.navigate('OrderStatus' as never, { 
-      orderId: `order-${Date.now()}` 
+    navigation.navigate(RouteName.ORDER_STATUS as never, {
+      orderId: `order-${Date.now()}`
     } as never);
   };
   
