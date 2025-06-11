@@ -13,6 +13,7 @@ class ItemSchema(Schema):
     name = fields.Str(required=True)
     name_ru = fields.Str()
     name_en = fields.Str()
+    image = fields.Str()
     description = fields.Str()
     price = fields.Float(required=True)
     available = fields.Bool(load_default=True)
@@ -22,3 +23,4 @@ class ItemSchema(Schema):
 class CategorySchema(Schema):
     name = fields.Str(required=True)
     parent_id = fields.Int()
+    image = fields.Str()
