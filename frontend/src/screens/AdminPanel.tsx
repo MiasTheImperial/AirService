@@ -82,7 +82,9 @@ const AdminPanel = ({ navigation }: any) => {
         <Card style={styles.card}>
           <Card.Content>
             <Text style={styles.cardTitle}>Sales Overview</Text>
-            <Text style={styles.salesAmount}>${analyticsData.totalSales.toFixed(2)}</Text>
+            <Text style={styles.salesAmount}>
+              {analyticsData.totalSales.toFixed(2)} {t('common.currency')}
+            </Text>
           </Card.Content>
         </Card>
 
@@ -117,7 +119,9 @@ const AdminPanel = ({ navigation }: any) => {
               {analyticsData.salesByCategory.map((category, index) => (
                 <DataTable.Row key={index}>
                   <DataTable.Cell>{category.category}</DataTable.Cell>
-                  <DataTable.Cell numeric>${category.amount.toFixed(2)}</DataTable.Cell>
+                  <DataTable.Cell numeric>
+                    {category.amount.toFixed(2)} {t('common.currency')}
+                  </DataTable.Cell>
                 </DataTable.Row>
               ))}
             </DataTable>
@@ -153,7 +157,9 @@ const AdminPanel = ({ navigation }: any) => {
               >
                 <DataTable.Cell>{order.id.substring(0, 8)}</DataTable.Cell>
                 <DataTable.Cell>{order.seatNumber}</DataTable.Cell>
-                <DataTable.Cell>${order.totalAmount.toFixed(2)}</DataTable.Cell>
+                <DataTable.Cell>
+                  {order.totalAmount.toFixed(2)} {t('common.currency')}
+                </DataTable.Cell>
                 <DataTable.Cell>{order.status}</DataTable.Cell>
               </DataTable.Row>
             ))}
