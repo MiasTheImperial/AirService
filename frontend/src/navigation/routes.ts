@@ -16,7 +16,8 @@ export enum RouteName {
   ORDER_STATUS_SCREEN = 'OrderStatusScreen',
   PAYMENT_SCREEN = 'PaymentScreen',
   ORDER_HISTORY_SCREEN = 'OrderHistoryScreen',
-  ORDER_DETAILS = 'OrderDetails'
+  ORDER_DETAILS = 'OrderDetails',
+  SUPPORT_SCREEN = 'SupportScreen'
 }
 
 export default RouteName;

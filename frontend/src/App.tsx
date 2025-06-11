@@ -23,6 +23,7 @@ import AdminPanel from './screens/AdminPanel';
 import ProductDetailsScreen from './screens/ProductDetailsScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
+import SupportScreen from './screens/SupportScreen';
 
 // Определение типов для навигации
 declare global {
@@ -42,6 +43,7 @@ declare global {
       OrderStatusScreen: { id: string };
       PaymentScreen: { amount?: number };
       OrderHistoryScreen: undefined;
+      SupportScreen: undefined;
     }
   }
 }
@@ -100,6 +102,7 @@ const linking = {
       OrderStatusScreen: 'OrderStatusScreen/:id',
       PaymentScreen: 'PaymentScreen/:amount?',
       OrderHistoryScreen: 'OrderHistoryScreen',
+      SupportScreen: 'SupportScreen',
     }
   },
   // Обработка URL, которые не соответствуют конфигурации
@@ -114,7 +117,8 @@ const linking = {
       RouteName.PRODUCT_DETAILS_SCREEN,
       RouteName.ORDER_STATUS_SCREEN,
       RouteName.PAYMENT_SCREEN,
-      RouteName.ORDER_HISTORY_SCREEN
+      RouteName.ORDER_HISTORY_SCREEN,
+      RouteName.SUPPORT_SCREEN
     ];
     
     // Проверка на соответствие имени компонента
@@ -365,6 +369,11 @@ const RootStackNavigator = () => {
         component={OrderHistoryScreen}
         options={{ title: t('navigation.orderHistory') }}
         initialParams={{ seatNumber }}
+      />
+      <Stack.Screen
+        name={RouteName.SUPPORT_SCREEN}
+        component={SupportScreen}
+        options={{ title: t('support.title') }}
       />
     </Stack.Navigator>
   );
