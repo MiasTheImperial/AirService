@@ -49,6 +49,7 @@ export interface OrderItem {
   quantity: number;
   price: number;
   name: string;
+  image?: string;
 }
 
 export enum OrderStatus {
