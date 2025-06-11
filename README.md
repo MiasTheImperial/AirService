@@ -39,12 +39,14 @@ python run_worker.py  # REDIS_URL задаёт адрес Redis
 # установка зависимостей и сборка web-версии
 cd frontend
 npm install
-npm run web-build
+EXPO_PUBLIC_API_URL=http://192.168.x.x:5000 npm run web-build
 
 # в режиме разработки
 EXPO_PUBLIC_API_URL=http://localhost:5000 npm start
 EXPO_PUBLIC_API_URL=http://192.168.178.20:5000 npm start
 ```
+
+При сборке переменная `EXPO_PUBLIC_API_URL` обязательна, иначе URL бэкенда остаётся `http://localhost:5000`.
 
 По умолчанию статические файлы из `frontend/web-build` раздаются Flask-приложением. Для мобильных платформ Expo предоставляет эмуляторы и возможность публикации.
 
