@@ -191,6 +191,11 @@ export default {
     noOrders: 'У вас пока нет заказов',
   },
 
+  // Экран деталей заказа
+  orderDetails: {
+    title: 'Детали заказа',
+  },
+
   // Экран профиля
   profile: {
     title: 'Профиль',

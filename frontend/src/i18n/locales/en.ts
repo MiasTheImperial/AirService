@@ -184,6 +184,11 @@ export default {
     confirmCancel: 'Are you sure you want to cancel your order?',
   },
 
+  // Order details screen
+  orderDetails: {
+    title: 'Order Details',
+  },
+
   // Profile screen
   profile: {
     title: 'Profile',
