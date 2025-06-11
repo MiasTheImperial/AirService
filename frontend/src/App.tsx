@@ -11,7 +11,7 @@ import './i18n/i18n'; // Import i18n settings
 import { initLanguage } from './i18n/i18n';
 import MobileContainer from './components/MobileContainer';
 import DeepLinkHandler from './components/DeepLinkHandler';
-import RouteName from './navigation/routes';
+import RouteName, { RoutePath } from './navigation/routes';
 
 // Import screens
 import LoginScreen from './screens/LoginScreen';
@@ -80,38 +80,45 @@ const linking = {
   config: {
     // Конфигурация навигации
     screens: {
-      Login: 'login',
-      MainApp: {
+      [RouteName.LOGIN]: RoutePath[RouteName.LOGIN],
+      [RouteName.MAIN_APP]: {
         screens: {
-          [RouteName.CATALOG]: 'catalog',
-          [RouteName.CART]: 'cart',
-          [RouteName.PROFILE]: 'profile',
+          [RouteName.CATALOG]: RoutePath[RouteName.CATALOG],
+          [RouteName.CART]: RoutePath[RouteName.CART],
+          [RouteName.PROFILE]: RoutePath[RouteName.PROFILE],
         }
       },
-      AdminRoot: {
+      [RouteName.ADMIN_ROOT]: {
         screens: {
-          [RouteName.ADMIN_PANEL]: 'admin'
+          [RouteName.ADMIN_PANEL]: RoutePath[RouteName.ADMIN_PANEL]
         }
       },
-      ProductDetails: 'product/:id',
-      OrderStatus: 'order/:id',
-      OrderDetails: 'order-details/:id',
+      [RouteName.PRODUCT_DETAILS]: RoutePath[RouteName.PRODUCT_DETAILS],
+      [RouteName.ORDER_STATUS]: RoutePath[RouteName.ORDER_STATUS],
+      [RouteName.ORDER_DETAILS]: RoutePath[RouteName.ORDER_DETAILS],
       // Добавляем прямые ссылки на экраны для доступа по имени компонента
-      CatalogScreen: 'CatalogScreen',
-      CartScreen: 'CartScreen',
-      ProfileScreen: 'ProfileScreen',
-      LoginScreen: 'LoginScreen',
-      AdminPanel: 'AdminPanel',
-      ProductDetailsScreen: 'ProductDetailsScreen/:id',
-      OrderStatusScreen: 'OrderStatusScreen/:id',
-      OrderDetailsScreen: 'OrderDetailsScreen/:id',
-      PaymentScreen: 'PaymentScreen/:amount?',
-      OrderHistoryScreen: 'OrderHistoryScreen',
-      SupportScreen: 'SupportScreen',
+      [RouteName.CATALOG_SCREEN]: RoutePath[RouteName.CATALOG_SCREEN],
+      [RouteName.CART_SCREEN]: RoutePath[RouteName.CART_SCREEN],
+      [RouteName.PROFILE_SCREEN]: RoutePath[RouteName.PROFILE_SCREEN],
+      [RouteName.LOGIN_SCREEN]: RoutePath[RouteName.LOGIN_SCREEN],
+      [RouteName.ADMIN_PANEL]: RoutePath[RouteName.ADMIN_PANEL],
+      [RouteName.PRODUCT_DETAILS_SCREEN]: RoutePath[RouteName.PRODUCT_DETAILS_SCREEN],
+      [RouteName.ORDER_STATUS_SCREEN]: RoutePath[RouteName.ORDER_STATUS_SCREEN],
+      [RouteName.ORDER_DETAILS_SCREEN]: RoutePath[RouteName.ORDER_DETAILS_SCREEN],
+      [RouteName.PAYMENT_SCREEN]: RoutePath[RouteName.PAYMENT_SCREEN],
+      [RouteName.ORDER_HISTORY_SCREEN]: RoutePath[RouteName.ORDER_HISTORY_SCREEN],
+      [RouteName.SUPPORT_SCREEN]: RoutePath[RouteName.SUPPORT_SCREEN],
     }
   },
   // Обработка URL, которые не соответствуют конфигурации
   getStateFromPath: (path: string, options: any) => {
+    // Явно направляем на экран входа при пустом пути
+    if (path === '' || path === RoutePath[RouteName.LOGIN]) {
+      return {
+        routes: [{ name: RouteName.LOGIN }]
+      };
+    }
+
     // Проверяем, соответствует ли путь имени компонента
     const componentNames = [
       RouteName.CATALOG_SCREEN,
@@ -136,9 +143,9 @@ const linking = {
       const segments = path.split('/');
       
       if (segments.length > 1) {
-        if (['ProductDetailsScreen', 'OrderStatusScreen', 'OrderDetailsScreen'].includes(componentMatch)) {
+        if ([RouteName.PRODUCT_DETAILS_SCREEN, RouteName.ORDER_STATUS_SCREEN, RouteName.ORDER_DETAILS_SCREEN].includes(componentMatch as RouteName)) {
           params.id = segments[1];
-        } else if (componentMatch === 'PaymentScreen') {
+        } else if (componentMatch === RouteName.PAYMENT_SCREEN) {
           params.amount = segments[1];
         }
       }
@@ -273,7 +280,11 @@ const RootStackNavigator = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigation.dispatch(StackActions.replace(isAdmin ? 'AdminRoot' : 'MainApp'));
+      navigation.dispatch(
+        StackActions.replace(isAdmin ? RouteName.ADMIN_ROOT : RouteName.MAIN_APP)
+      );
+    } else {
+      navigation.dispatch(StackActions.replace(RouteName.LOGIN));
     }
   }, [isLoggedIn, isAdmin, navigation]);
   
@@ -291,7 +302,7 @@ const RootStackNavigator = () => {
     >
       {/* Аутентификация */}
       <Stack.Screen
-        name="Login"
+        name={RouteName.LOGIN}
         component={LoginScreen}
         options={{ headerShown: false }}
         initialParams={{
@@ -299,7 +310,7 @@ const RootStackNavigator = () => {
             setIsLoggedIn(true);
             setIsAdmin(isAdmin);
             setSeatNumber(seat);
-            navigation.dispatch(StackActions.replace(isAdmin ? 'AdminRoot' : 'MainApp'));
+            navigation.dispatch(StackActions.replace(isAdmin ? RouteName.ADMIN_ROOT : RouteName.MAIN_APP));
           },
         }}
       />
