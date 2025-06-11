@@ -24,6 +24,7 @@ import ProductDetailsScreen from './screens/ProductDetailsScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import SupportScreen from './screens/SupportScreen';
+import OrderDetailsScreen from './screens/OrderDetailsScreen';
 
 // Определение типов для навигации
 declare global {
@@ -34,6 +35,7 @@ declare global {
       AdminRoot: undefined;
       ProductDetails: { id: string };
       OrderStatus: { orderId: string };
+      OrderDetails: { orderId: string };
       CatalogScreen: undefined;
       CartScreen: undefined;
       ProfileScreen: undefined;
@@ -41,6 +43,7 @@ declare global {
       AdminPanel: undefined;
       ProductDetailsScreen: { id: string };
       OrderStatusScreen: { id: string };
+      OrderDetailsScreen: { id: string };
       PaymentScreen: { amount?: number };
       OrderHistoryScreen: undefined;
       SupportScreen: undefined;
@@ -92,6 +95,7 @@ const linking = {
       },
       ProductDetails: 'product/:id',
       OrderStatus: 'order/:id',
+      OrderDetails: 'order-details/:id',
       // Добавляем прямые ссылки на экраны для доступа по имени компонента
       CatalogScreen: 'CatalogScreen',
       CartScreen: 'CartScreen',
@@ -100,6 +104,7 @@ const linking = {
       AdminPanel: 'AdminPanel',
       ProductDetailsScreen: 'ProductDetailsScreen/:id',
       OrderStatusScreen: 'OrderStatusScreen/:id',
+      OrderDetailsScreen: 'OrderDetailsScreen/:id',
       PaymentScreen: 'PaymentScreen/:amount?',
       OrderHistoryScreen: 'OrderHistoryScreen',
       SupportScreen: 'SupportScreen',
@@ -116,6 +121,7 @@ const linking = {
       RouteName.ADMIN_PANEL,
       RouteName.PRODUCT_DETAILS_SCREEN,
       RouteName.ORDER_STATUS_SCREEN,
+      RouteName.ORDER_DETAILS_SCREEN,
       RouteName.PAYMENT_SCREEN,
       RouteName.ORDER_HISTORY_SCREEN,
       RouteName.SUPPORT_SCREEN
@@ -130,7 +136,7 @@ const linking = {
       const segments = path.split('/');
       
       if (segments.length > 1) {
-        if (['ProductDetailsScreen', 'OrderStatusScreen'].includes(componentMatch)) {
+        if (['ProductDetailsScreen', 'OrderStatusScreen', 'OrderDetailsScreen'].includes(componentMatch)) {
           params.id = segments[1];
         } else if (componentMatch === 'PaymentScreen') {
           params.amount = segments[1];
@@ -321,6 +327,11 @@ const RootStackNavigator = () => {
         component={OrderStatusScreen}
         options={{ title: t('orderStatus.title') }}
       />
+      <Stack.Screen
+        name={RouteName.ORDER_DETAILS}
+        component={OrderDetailsScreen}
+        options={{ title: t('orderDetails.title') }}
+      />
       
       {/* Прямой доступ к компонентам по их именам */}
       <Stack.Screen
@@ -358,6 +369,11 @@ const RootStackNavigator = () => {
         name={RouteName.ORDER_STATUS_SCREEN}
         component={OrderStatusScreen}
         options={{ title: t('orderStatus.title') }}
+      />
+      <Stack.Screen
+        name={RouteName.ORDER_DETAILS_SCREEN}
+        component={OrderDetailsScreen}
+        options={{ title: t('orderDetails.title') }}
       />
       <Stack.Screen
         name={RouteName.PAYMENT_SCREEN}
