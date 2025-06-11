@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Modal, Image } from 'react-native';
 import { Card, Button, Text, TextInput, Divider, useTheme } from 'react-native-paper';
 import { OrderItem, PaymentMethod } from '../types';
@@ -10,23 +10,18 @@ import { createOrder } from '../api/api';
 const CartScreen = ({ navigation, route }: any) => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const [cartItems, setCartItems] = useState<OrderItem[]>([
-    {
-      productId: '1',
-      name: 'Кофе',
-      quantity: 2,
-      price: 399,
-    },
-    {
-      productId: '2',
-      name: 'Сэндвич',
-      quantity: 1,
-      price: 599,
-    },
-  ]);
+  const [cartItems, setCartItems] = useState<OrderItem[]>([]);
   const [seatNumber, setSeatNumber] = useState(route.params?.seatNumber || '');
   const [loading, setLoading] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  useEffect(() => {
+    const newItem: OrderItem | undefined = route.params?.newItem;
+    if (newItem) {
+      setCartItems(items => [...items, newItem]);
+      navigation.setParams({ newItem: undefined });
+    }
+  }, [route.params?.newItem]);
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
