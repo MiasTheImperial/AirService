@@ -3,7 +3,7 @@ import json
 import logging
 import os
  
-from flask import Blueprint, jsonify, request, abort, current_app
+from flask import Blueprint, jsonify, request, abort, current_app, url_for
 from werkzeug.security import check_password_hash
 from marshmallow import ValidationError
 
@@ -171,6 +171,7 @@ def admin_items():
         return jsonify({'id': item.id}), 201
     items = Item.query.all()
     return jsonify([{ 'id': i.id, 'name': i.name, 'description': i.description,
+                      'image': url_for('serve_image', filename=i.image) if i.image else None,
                       'price': i.price, 'available': i.available,
                       'service': i.is_service,
                       'category_id': i.category_id,
@@ -267,9 +268,9 @@ def admin_categories():
         logging.info('category_created %s', cat.name)
         return jsonify({'id': cat.id}), 201
     cats = Category.query.all()
-    return jsonify([{ 'id': c.id, 'name': c.name,
-                      'parent_id': c.parent_id,
-                      'image': c.image } for c in cats])
+
+    return jsonify([{ 'id': c.id, 'name': c.name, 'image': url_for('serve_image', filename=c.image) if c.image else None, 'parent_id': c.parent_id } for c in cats])
+
 
 
 @admin_bp.route('/categories/<int:cat_id>', methods=['PUT', 'DELETE'])
