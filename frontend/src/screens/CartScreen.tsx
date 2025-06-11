@@ -89,7 +89,7 @@ const CartScreen = ({ navigation, route }: any) => {
               <Text style={[styles.emptyText, { color: theme.colors.onSurface }]}>{t('cart.empty')}</Text>
               <Button
                 mode="contained"
-                onPress={() => navigation.navigate('Catalog')}
+                onPress={() => navigation.navigate(t('navigation.catalog'))}
                 style={styles.shopButton}
                 buttonColor={theme.colors.primary}
                 textColor={theme.colors.onPrimary}

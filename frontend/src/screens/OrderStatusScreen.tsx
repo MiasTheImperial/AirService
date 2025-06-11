@@ -107,7 +107,7 @@ const OrderStatusScreen = ({ route, navigation }: any) => {
         <Text style={{ color: theme.colors.onBackground }}>{t('orderStatus.orderNotFound')}</Text>
         <Button
           mode="contained"
-          onPress={() => navigation.navigate('Catalog')}
+          onPress={() => navigation.navigate(t('navigation.catalog'))}
           style={styles.button}
           buttonColor={theme.colors.primary}
           textColor={theme.colors.onPrimary}
@@ -175,7 +175,7 @@ const OrderStatusScreen = ({ route, navigation }: any) => {
       <View style={styles.buttonContainer}>
         <Button
           mode="contained"
-          onPress={() => navigation.navigate('Catalog')}
+          onPress={() => navigation.navigate(t('navigation.catalog'))}
           style={[styles.button, { flex: 1, marginRight: 8 }]}
           buttonColor={theme.colors.primary}
           textColor={theme.colors.onPrimary}
