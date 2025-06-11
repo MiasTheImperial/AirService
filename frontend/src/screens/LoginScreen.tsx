@@ -109,7 +109,7 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
           value={seatNumber}
           onChangeText={setSeatNumber}
           style={styles.input}
-          keyboardType="number-pad"
+          keyboardType="default"
           mode="outlined"
           outlineColor={theme.colors.outline}
           activeOutlineColor={theme.colors.primary}

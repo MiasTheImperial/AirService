@@ -27,7 +27,7 @@ flask db upgrade
 flask seed-data
 
 # 4. Запуск сервера
-python run.py  # переменные SSL_CERT/SSL_KEY включат HTTPS при наличии
+FLASK_APP=run.py flask run --host=0.0.0.0  # переменные SSL_CERT/SSL_KEY включат HTTPS при наличии
 
 # 5. Воркер очереди (для интеграций и уведомлений)
 python run_worker.py  # REDIS_URL задаёт адрес Redis
@@ -37,12 +37,13 @@ python run_worker.py  # REDIS_URL задаёт адрес Redis
 
 ```bash
 # установка зависимостей и сборка web-версии
-npm install --prefix frontend
-npm run --prefix frontend web-build
+cd frontend
+npm install
+npm run web-build
 
 # в режиме разработки
-cd frontend
 EXPO_PUBLIC_API_URL=http://localhost:5000 npm start
+EXPO_PUBLIC_API_URL=http://192.168.178.20:5000 npm start
 ```
 
 По умолчанию статические файлы из `frontend/web-build` раздаются Flask-приложением. Для мобильных платформ Expo предоставляет эмуляторы и возможность публикации.
