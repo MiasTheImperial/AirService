@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Linking } from 'react-native';
 import { Card, Text, Switch, Button, List, Divider, useTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
+import i18n, { changeLanguage } from '../i18n/i18n';
 import DirectLinkButton from '../components/DirectLinkButton';
 import { listOrders } from '../api/api';
 import RouteName from '../navigation/routes';
@@ -10,6 +11,8 @@ const ProfileScreen = ({ navigation, route }: any) => {
   const seatNumber = route.params?.seatNumber as string;
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(true); // По умолчанию включен темный режим
+  const [languageExpanded, setLanguageExpanded] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
   const theme = useTheme();
   const { t } = useTranslation();
   
@@ -88,6 +91,38 @@ const ProfileScreen = ({ navigation, route }: any) => {
               />
             )}
           />
+
+          <Divider style={{ backgroundColor: theme.colors.outline }} />
+
+          <List.Accordion
+            title={t('profile.language')}
+            expanded={languageExpanded}
+            onPress={() => setLanguageExpanded(!languageExpanded)}
+            titleStyle={{ color: theme.colors.onSurface }}
+          >
+            <List.Item
+              title="Русский"
+              onPress={() => {
+                changeLanguage('ru');
+                setSelectedLanguage('ru');
+                setLanguageExpanded(false);
+              }}
+              right={() =>
+                selectedLanguage === 'ru' ? <List.Icon icon="check" /> : null
+              }
+            />
+            <List.Item
+              title="English"
+              onPress={() => {
+                changeLanguage('en');
+                setSelectedLanguage('en');
+                setLanguageExpanded(false);
+              }}
+              right={() =>
+                selectedLanguage === 'en' ? <List.Icon icon="check" /> : null
+              }
+            />
+          </List.Accordion>
         </Card.Content>
       </Card>
 

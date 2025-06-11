@@ -7,8 +7,7 @@ import { defaultTheme } from './theme';
 import { IoniconsIcon } from './components/CustomIcons';
 import CustomPaperProvider from './components/CustomPaperProvider';
 import { useTranslation } from 'react-i18next';
-import './i18n/i18n'; // Import i18n settings
-import { initLanguage } from './i18n/i18n';
+import i18n, { initLanguage } from './i18n/i18n';
 import MobileContainer from './components/MobileContainer';
 import DeepLinkHandler from './components/DeepLinkHandler';
 import RouteName from './navigation/routes';
