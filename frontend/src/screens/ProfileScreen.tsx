@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Linking } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Card, Text, Switch, Button, List, Divider, useTheme } from 'react-native-paper';
+import { useThemeContext } from '../theme/ThemeProvider';
 import { useTranslation } from 'react-i18next';
 import i18n, { changeLanguage } from '../i18n/i18n';
 import DirectLinkButton from '../components/DirectLinkButton';
@@ -10,7 +11,7 @@ import RouteName from '../navigation/routes';
 const ProfileScreen = ({ navigation, route }: any) => {
   const seatNumber = route.params?.seatNumber as string;
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [darkModeEnabled, setDarkModeEnabled] = useState(true); // По умолчанию включен темный режим
+  const { isDarkTheme, toggleTheme } = useThemeContext();
   const [languageExpanded, setLanguageExpanded] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
   const theme = useTheme();
@@ -85,8 +86,8 @@ const ProfileScreen = ({ navigation, route }: any) => {
             descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
             right={() => (
               <Switch
-                value={darkModeEnabled}
-                onValueChange={setDarkModeEnabled}
+                value={isDarkTheme}
+                onValueChange={toggleTheme}
                 color={theme.colors.primary}
               />
             )}
