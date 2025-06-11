@@ -1,6 +1,7 @@
+import Constants from 'expo-constants';
 import { Product, Category, OrderStatus } from '../types';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = Constants.expoConfig?.extra?.apiUrl as string;
 
 async function handleResponse(res: Response) {
   if (!res.ok) {

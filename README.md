@@ -40,10 +40,13 @@ python run_worker.py  # REDIS_URL задаёт адрес Redis
 cd frontend
 npm install
 EXPO_PUBLIC_API_URL=http://192.168.x.x:5000 npm run web-build
+# 192.168.178.20
 
 # в режиме разработки
+# локальный сервер
 EXPO_PUBLIC_API_URL=http://localhost:5000 npm start
-EXPO_PUBLIC_API_URL=http://192.168.178.20:5000 npm start
+# или для доступа с других устройств в локальной сети
+EXPO_PUBLIC_API_URL=http://192.168.x.x:5000 npm start
 ```
 
 При сборке переменная `EXPO_PUBLIC_API_URL` обязательна, иначе URL бэкенда остаётся `http://localhost:5000`.
