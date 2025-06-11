@@ -1,4 +1,4 @@
-from flask import Flask, request, g, has_request_context
+from flask import Flask, request, g, has_request_context, send_from_directory
 from flask.cli import with_appcontext
 from flask import current_app
 import logging
@@ -96,6 +96,10 @@ def create_app(config_object=None):
     @app.route('/')
     def index():
         return app.send_static_file('index.html')
+
+    @app.route('/images/<path:filename>')
+    def serve_image(filename):
+        return send_from_directory(os.path.join(app.root_path, 'static', 'images'), filename)
 
     return app
 

@@ -53,25 +53,25 @@ def sample_data(app):
     """Populate DB with categories and items."""
     with app.app_context():
         cats = {
-            'Food': Category(name='Food'),
-            'Drinks': Category(name='Drinks'),
-            'Accessories': Category(name='Accessories'),
-            'Services': Category(name='Services'),
+            'Food': Category(name='Food', image='categories/food.jpg'),
+            'Drinks': Category(name='Drinks', image='categories/drinks.jpg'),
+            'Accessories': Category(name='Accessories', image='categories/accessories.jpg'),
+            'Services': Category(name='Services', image='categories/services.jpg'),
         }
         # subcategory for hierarchy tests
-        cats['Alcohol'] = Category(name='Alcohol', parent=cats['Drinks'])
+        cats['Alcohol'] = Category(name='Alcohol', parent=cats['Drinks'], image='categories/alcohol.jpg')
         db.session.add_all(cats.values())
         db.session.flush()
         items = [
-            Item(name='Sandwich', price=5.0, category=cats['Food']),
-            Item(name='Salad', price=7.0, category=cats['Food']),
-            Item(name='Water', price=1.5, category=cats['Drinks']),
-            Item(name='Wine', price=8.0, category=cats['Alcohol']),
-            Item(name='Coffee', price=3.0, category=cats['Drinks']),
-            Item(name='Blanket', price=15.0, category=cats['Accessories']),
-            Item(name='Headphones', price=25.0, category=cats['Accessories']),
-            Item(name='WiFi', price=10.0, is_service=True, category=cats['Services']),
-            Item(name='Priority Boarding', price=12.0, is_service=True, category=cats['Services']),
+            Item(name='Sandwich', price=5.0, category=cats['Food'], image='products/sandwich.jpg'),
+            Item(name='Salad', price=7.0, category=cats['Food'], image='products/salad.jpg'),
+            Item(name='Water', price=1.5, category=cats['Drinks'], image='products/water.jpg'),
+            Item(name='Wine', price=8.0, category=cats['Alcohol'], image='products/wine.jpg'),
+            Item(name='Coffee', price=3.0, category=cats['Drinks'], image='products/coffee.jpg'),
+            Item(name='Blanket', price=15.0, category=cats['Accessories'], image='products/blanket.jpg'),
+            Item(name='Headphones', price=25.0, category=cats['Accessories'], image='products/headphones.jpg'),
+            Item(name='WiFi', price=10.0, is_service=True, category=cats['Services'], image='products/wifi.jpg'),
+            Item(name='Priority Boarding', price=12.0, is_service=True, category=cats['Services'], image='products/priority.jpg'),
         ]
         db.session.add_all(items)
         db.session.commit()
