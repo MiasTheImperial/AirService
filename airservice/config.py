@@ -15,6 +15,7 @@ class BaseConfig:
         self.ADMIN_PASSWORD_HASH = pwd_hash
         self.BABEL_DEFAULT_LOCALE = os.getenv("BABEL_DEFAULT_LOCALE", "ru")
         self.API_RATE_LIMIT = os.getenv("API_RATE_LIMIT", "100 per hour")
+        self.RATELIMIT_STORAGE_URI = os.getenv("RATELIMIT_STORAGE_URI", "memory://")
 
 
 class DevConfig(BaseConfig):

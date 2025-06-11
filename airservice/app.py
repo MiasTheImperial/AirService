@@ -65,7 +65,8 @@ def create_app(config_object=None):
     Limiter(
         get_remote_address,
         app=app,
-        default_limits=[app.config.get("API_RATE_LIMIT")]
+        default_limits=[app.config.get("API_RATE_LIMIT")],
+        storage_uri=app.config.get("RATELIMIT_STORAGE_URI")
     )
 
     def get_locale():
