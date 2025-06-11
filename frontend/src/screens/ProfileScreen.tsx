@@ -132,7 +132,7 @@ const ProfileScreen = ({ navigation, route }: any) => {
             titleStyle={{ color: theme.colors.onSurface }}
             descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
             left={props => <List.Icon {...props} icon="help-circle" color={theme.colors.primary} />}
-            onPress={() => navigation.navigate('Support')}
+            onPress={() => navigation.navigate(RouteName.SUPPORT_SCREEN as never)}
           />
         </Card.Content>
       </Card>

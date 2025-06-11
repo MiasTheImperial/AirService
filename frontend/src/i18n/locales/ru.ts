@@ -272,4 +272,9 @@ export default {
     promotions: 'Акции',
     system: 'Системные',
   },
-}; 
+
+  // Экран поддержки
+  support: {
+    title: 'Поддержка',
+  },
+};

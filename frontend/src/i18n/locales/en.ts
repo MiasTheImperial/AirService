@@ -195,9 +195,15 @@ export default {
     preferences: 'Preferences',
     language: 'Language',
     darkMode: 'Dark mode',
+    darkModeDescription: 'Toggle between dark and light themes',
     notifications: 'Notifications',
+    notificationsDescription: 'Receive updates about your orders',
     orderHistory: 'Order history',
+    orderHistoryDescription: 'View your past orders',
     savedPaymentMethods: 'Saved payment methods',
+    paymentMethodsDescription: 'Manage your payment methods',
+    helpSupport: 'Help & support',
+    helpSupportDescription: 'Get help with your orders',
     logout: 'Logout',
     editProfile: 'Edit profile',
     changePassword: 'Change password',
@@ -259,4 +265,9 @@ export default {
     promotions: 'Promotions',
     system: 'System',
   },
-}; 
+
+  // Support screen
+  support: {
+    title: 'Support',
+  },
+};
