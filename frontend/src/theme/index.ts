@@ -1,4 +1,4 @@
-import { MD3DarkTheme, configureFonts } from 'react-native-paper';
+import { MD3DarkTheme, MD3LightTheme, configureFonts } from 'react-native-paper';
 import { MaterialIconsProvider, MaterialCommunityIconsProvider } from '../components/CustomIcons';
 
 // Define colors for our dark theme
@@ -77,4 +77,16 @@ export const darkTheme = {
 export const defaultTheme = darkTheme;
 
 // For backward compatibility, but we'll only use dark theme
-export const lightTheme = darkTheme; 
+export const lightTheme = {
+  ...MD3LightTheme,
+  colors: {
+    ...MD3LightTheme.colors,
+  },
+  fonts: configureFonts({ config: fontConfig }),
+  icons: customIconProviders,
+  roundness: 12,
+  animation: {
+    scale: 1.0,
+  },
+  dark: false,
+};

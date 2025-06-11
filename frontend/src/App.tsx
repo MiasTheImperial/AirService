@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { NavigationContainer, DefaultTheme as NavigationDefaultTheme, DarkTheme as NavigationDarkTheme, getStateFromPath as getStateFromPathDefault, useNavigation, StackActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StatusBar, Platform } from 'react-native';
-import { defaultTheme } from './theme';
+import { StatusBar } from 'react-native';
+
+import ThemeProvider, { useThemeContext } from './theme/ThemeProvider';
 import { IoniconsIcon } from './components/CustomIcons';
 import CustomPaperProvider from './components/CustomPaperProvider';
 import { useTranslation } from 'react-i18next';
@@ -54,18 +55,18 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 // Create a customized navigation theme
-const navigationTheme = {
-  ...NavigationDarkTheme,
+const createNavigationTheme = (theme: any) => ({
+  ...(theme.dark ? NavigationDarkTheme : NavigationDefaultTheme),
   colors: {
-    ...NavigationDarkTheme.colors,
-    primary: defaultTheme.colors.primary,
-    background: defaultTheme.colors.background,
-    card: defaultTheme.colors.surface,
-    text: defaultTheme.colors.onSurface,
-    border: defaultTheme.colors.outline,
-    notification: defaultTheme.colors.secondary,
+    ...(theme.dark ? NavigationDarkTheme.colors : NavigationDefaultTheme.colors),
+    primary: theme.colors.primary,
+    background: theme.colors.background,
+    card: theme.colors.surface,
+    text: theme.colors.onSurface,
+    border: theme.colors.outline,
+    notification: theme.colors.secondary,
   },
-};
+});
 
 // Настройка URL-ссылок для навигации
 const linking = {
@@ -161,6 +162,7 @@ const linking = {
 // Main tab navigator for authenticated users
 const MainTabNavigator = ({ seatNumber }: { seatNumber: string }) => {
   const { t } = useTranslation();
+  const { theme } = useThemeContext();
   
   return (
     <Tab.Navigator
@@ -178,21 +180,21 @@ const MainTabNavigator = ({ seatNumber }: { seatNumber: string }) => {
 
           return <IoniconsIcon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: defaultTheme.colors.primary,
-        tabBarInactiveTintColor: defaultTheme.colors.outline,
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.outline,
         tabBarStyle: { 
-          backgroundColor: defaultTheme.colors.surface,
-          borderTopColor: defaultTheme.colors.surfaceVariant,
+          backgroundColor: theme.colors.surface,
+          borderTopColor: theme.colors.surfaceVariant,
         },
         tabBarLabelStyle: {
           fontWeight: '500',
         },
         headerStyle: {
-          backgroundColor: defaultTheme.colors.surface,
+          backgroundColor: theme.colors.surface,
           elevation: 0,
           shadowOpacity: 0,
         },
-        headerTintColor: defaultTheme.colors.onSurface,
+        headerTintColor: theme.colors.onSurface,
       })}
     >
       <Tab.Screen
@@ -219,16 +221,17 @@ const MainTabNavigator = ({ seatNumber }: { seatNumber: string }) => {
 // Admin navigator
 const AdminNavigator = () => {
   const { t } = useTranslation();
+  const { theme } = useThemeContext();
   
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: defaultTheme.colors.surface,
+          backgroundColor: theme.colors.surface,
           elevation: 0,
           shadowOpacity: 0,
         },
-        headerTintColor: defaultTheme.colors.onSurface,
+        headerTintColor: theme.colors.onSurface,
       }}
     >
       <Stack.Screen
@@ -244,6 +247,7 @@ const AdminNavigator = () => {
 const RootStackNavigator = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
+  const { theme } = useThemeContext();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [seatNumber, setSeatNumber] = useState('');
@@ -280,12 +284,12 @@ const RootStackNavigator = () => {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: defaultTheme.colors.surface,
+          backgroundColor: theme.colors.surface,
           elevation: 0,
           shadowOpacity: 0,
         },
-        headerTintColor: defaultTheme.colors.onSurface,
-        cardStyle: { backgroundColor: defaultTheme.colors.background }
+        headerTintColor: theme.colors.onSurface,
+        cardStyle: { backgroundColor: theme.colors.background }
       }}
     >
       {/* Аутентификация */}
@@ -395,17 +399,15 @@ const RootStackNavigator = () => {
 };
 
 // Main app component
-const App = () => {
-  // Initialize language from storage
-  useEffect(() => {
-    initLanguage();
-  }, []);
+const AppContent = () => {
+  const { theme } = useThemeContext();
+  const navigationTheme = useMemo(() => createNavigationTheme(theme), [theme]);
 
   return (
-    <CustomPaperProvider theme={defaultTheme}>
-      <StatusBar 
-        barStyle="light-content" 
-        backgroundColor={defaultTheme.colors.background}
+    <CustomPaperProvider theme={theme}>
+      <StatusBar
+        barStyle={theme.dark ? 'light-content' : 'dark-content'}
+        backgroundColor={theme.colors.background}
       />
       <MobileContainer>
         <NavigationContainer theme={navigationTheme} linking={linking}>
@@ -417,4 +419,16 @@ const App = () => {
   );
 };
 
-export default App; 
+const App = () => {
+  useEffect(() => {
+    initLanguage();
+  }, []);
+
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+};
+
+export default App;
