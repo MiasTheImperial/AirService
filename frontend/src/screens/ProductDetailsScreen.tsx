@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-nat
 import { Button, Text, Card, Snackbar, Divider, List, useTheme } from 'react-native-paper';
 import { MaterialCommunityIcon } from '../components/CustomIcons';
 import { Product, OrderItem } from '../types';
+import RouteName from '../navigation/routes';
 import { useTranslation } from 'react-i18next';
 
 const ProductDetailsScreen = ({ route, navigation }: any) => {
@@ -34,7 +35,7 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
 
     // Navigate back to catalog after a short delay
     setTimeout(() => {
-      navigation.navigate(t('navigation.cart'), { newItem: item });
+      navigation.navigate(RouteName.CART as never, { newItem: item } as never);
     }, 1500);
   };
 
@@ -186,7 +187,7 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
         duration={1500}
         action={{
           label: t('navigation.cart'),
-          onPress: () => navigation.navigate(t('navigation.cart')),
+          onPress: () => navigation.navigate(RouteName.CART as never),
         }}
         style={{ backgroundColor: theme.colors.surfaceVariant }}
         theme={{

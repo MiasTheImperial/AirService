@@ -4,6 +4,7 @@ import { Card, Text, ActivityIndicator, Button, useTheme } from 'react-native-pa
 import { Order, OrderStatus } from '../types';
 import { useTranslation } from 'react-i18next';
 import { getOrder } from '../api/api';
+import RouteName from '../navigation/routes';
 
 const OrderStatusScreen = ({ route, navigation }: any) => {
   const theme = useTheme();
@@ -107,7 +108,7 @@ const OrderStatusScreen = ({ route, navigation }: any) => {
         <Text style={{ color: theme.colors.onBackground }}>{t('orderStatus.orderNotFound')}</Text>
         <Button
           mode="contained"
-          onPress={() => navigation.navigate(t('navigation.catalog'))}
+          onPress={() => navigation.navigate(RouteName.CATALOG as never)}
           style={styles.button}
           buttonColor={theme.colors.primary}
           textColor={theme.colors.onPrimary}
@@ -175,7 +176,7 @@ const OrderStatusScreen = ({ route, navigation }: any) => {
       <View style={styles.buttonContainer}>
         <Button
           mode="contained"
-          onPress={() => navigation.navigate(t('navigation.catalog'))}
+          onPress={() => navigation.navigate(RouteName.CATALOG as never)}
           style={[styles.button, { flex: 1, marginRight: 8 }]}
           buttonColor={theme.colors.primary}
           textColor={theme.colors.onPrimary}
@@ -185,7 +186,7 @@ const OrderStatusScreen = ({ route, navigation }: any) => {
         
         <Button
           mode="outlined"
-          onPress={() => navigation.navigate('OrderHistoryScreen')}
+          onPress={() => navigation.navigate(RouteName.ORDER_HISTORY_SCREEN as never)}
           style={[styles.button, { flex: 1, marginLeft: 8 }]}
           textColor={theme.colors.primary}
         >

@@ -4,6 +4,7 @@ import { Card, Searchbar, Chip, Text, Button, useTheme, ActivityIndicator } from
 import { Product, Category } from '../types';
 import { useTranslation } from 'react-i18next';
 import { getCatalog, getCategories } from '../api/api';
+import RouteName from '../navigation/routes';
 
 const CatalogScreen = ({ navigation }: any) => {
   const { t } = useTranslation();
@@ -40,7 +41,11 @@ const CatalogScreen = ({ navigation }: any) => {
   const renderProduct = ({ item }: { item: Product }) => (
     <Card
       style={[styles.card, { backgroundColor: theme.colors.surface }]}
-      onPress={() => navigation.navigate('ProductDetails', { product: item })}
+      onPress={() =>
+        navigation.navigate(RouteName.PRODUCT_DETAILS as never, {
+          product: item,
+        } as never)
+      }
     >
       <View style={styles.imageContainer}>
         <Card.Cover
@@ -76,7 +81,11 @@ const CatalogScreen = ({ navigation }: any) => {
       <Card.Actions style={styles.cardActions}>
         <Button 
           mode="contained" 
-          onPress={() => navigation.navigate('ProductDetails', { product: item })}
+          onPress={() =>
+            navigation.navigate(RouteName.PRODUCT_DETAILS as never, {
+              product: item,
+            } as never)
+          }
           buttonColor={theme.colors.primary}
           textColor={theme.colors.onPrimary}
           style={styles.viewButton}

@@ -6,6 +6,7 @@ import PaymentForm from '../components/PaymentForm';
 import { useTranslation } from 'react-i18next';
 import DirectLinkButton from '../components/DirectLinkButton';
 import { createOrder } from '../api/api';
+import RouteName from '../navigation/routes';
 
 const CartScreen = ({ navigation, route }: any) => {
   const theme = useTheme();
@@ -68,7 +69,9 @@ const CartScreen = ({ navigation, route }: any) => {
       const res = await createOrder(payload);
       const orderId = res.order_id;
       setCartItems([]);
-      navigation.navigate('OrderStatus', { orderId: String(orderId) });
+      navigation.navigate(RouteName.ORDER_STATUS as never, {
+        orderId: String(orderId),
+      } as never);
     } catch (err) {
       console.error('Failed to create order', err);
     } finally {
@@ -89,7 +92,7 @@ const CartScreen = ({ navigation, route }: any) => {
               <Text style={[styles.emptyText, { color: theme.colors.onSurface }]}>{t('cart.empty')}</Text>
               <Button
                 mode="contained"
-                onPress={() => navigation.navigate(t('navigation.catalog'))}
+                onPress={() => navigation.navigate(RouteName.CATALOG as never)}
                 style={styles.shopButton}
                 buttonColor={theme.colors.primary}
                 textColor={theme.colors.onPrimary}
@@ -189,7 +192,7 @@ const CartScreen = ({ navigation, route }: any) => {
                 {t('payment.title')}:
               </Text>
               <DirectLinkButton
-                screenName="PaymentScreen"
+                screenName={RouteName.PAYMENT_SCREEN}
                 params={{ amount: calculateTotal().toString() }}
                 style={styles.directLinkButton}
               >
