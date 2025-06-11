@@ -8,8 +8,8 @@ def test_catalog_filters(client, sample_data):
     assert rv.status_code == 200
     data = rv.get_json()
     assert len(data) == 9
-    # ensure category name and id are present
-    assert {'category', 'category_id'} <= set(data[0].keys())
+    # ensure category name, id and image are present
+    assert {'category', 'category_id', 'image'} <= set(data[0].keys())
 
     # by category
     food_cat = sample_data['categories']['Food']
@@ -77,3 +77,5 @@ def test_catalog_categories_hierarchy(client, sample_data):
     drinks = next(c for c in data if c['name'] == 'Drinks')
     child_names = {c['name'] for c in drinks['children']}
     assert 'Alcohol' in child_names
+    assert 'image' in drinks
+    assert 'image' in drinks['children'][0]

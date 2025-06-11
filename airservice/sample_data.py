@@ -13,7 +13,6 @@ def load_demo_data(app):
                 "Accessories": Category(name="Accessories", image="categories/accessories.jpg"),
                 "Services": Category(name="Services", image="categories/services.jpg"),
             }
-            cats["Alcohol"] = Category(name="Alcohol", parent=cats["Drinks"], image="categories/alcohol.jpg")
             db.session.add_all(cats.values())
             db.session.flush()
 
@@ -30,6 +29,7 @@ def load_demo_data(app):
                 ),
                 Item(
                     name="Priority Boarding",
+                    image="priority_boarding.png",
                     price=12.0,
                     is_service=True,
                     category=cats["Services"],

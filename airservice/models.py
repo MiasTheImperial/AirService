@@ -31,6 +31,7 @@ class Item(db.Model):
     name_en = db.Column(db.String(120))
     image = db.Column(db.String(255))
     description = db.Column(db.Text)
+    image = db.Column(db.String(200))
     price = db.Column(db.Float, nullable=False)
     available = db.Column(db.Boolean, default=True)
     is_service = db.Column(db.Boolean, default=False)

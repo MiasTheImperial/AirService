@@ -65,6 +65,8 @@ def catalog():
                     type: string
                   description:
                     type: string
+                  image:
+                    type: string
                   price:
                     type: number
                   available:
@@ -140,6 +142,8 @@ def catalog_categories():
                     type: integer
                   name:
                     type: string
+                  image:
+                    type: string
                   children:
                     type: array
                     items:
@@ -148,6 +152,8 @@ def catalog_categories():
                         id:
                           type: integer
                         name:
+                          type: string
+                        image:
                           type: string
                         children:
                           type: array

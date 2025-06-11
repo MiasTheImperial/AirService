@@ -147,6 +147,8 @@ def admin_items():
                 type: string
               description:
                 type: string
+              image:
+                type: string
               price:
                 type: number
               available:
@@ -202,6 +204,8 @@ def admin_item_detail(item_id):
                 type: string
               description:
                 type: string
+              image:
+                type: string
               price:
                 type: number
               available:
@@ -244,6 +248,8 @@ def admin_categories():
             properties:
               name:
                 type: string
+              image:
+                type: string
               parent_id:
                 type: integer
               image:
@@ -268,9 +274,7 @@ def admin_categories():
         logging.info('category_created %s', cat.name)
         return jsonify({'id': cat.id}), 201
     cats = Category.query.all()
-
     return jsonify([{ 'id': c.id, 'name': c.name, 'image': url_for('serve_image', filename=c.image) if c.image else None, 'parent_id': c.parent_id } for c in cats])
-
 
 
 @admin_bp.route('/categories/<int:cat_id>', methods=['PUT', 'DELETE'])
@@ -293,6 +297,8 @@ def admin_category_detail(cat_id):
             properties:
               name:
                 type: string
+              image:
+                type: string
               parent_id:
                 type: integer
               image:
@@ -314,6 +320,8 @@ def admin_category_detail(cat_id):
             return jsonify(err.messages), 400
         if 'name' in data:
             cat.name = data['name']
+        if 'image' in data:
+            cat.image = data['image']
         if 'parent_id' in data:
             cat.parent_id = data['parent_id']
         if 'image' in data:
