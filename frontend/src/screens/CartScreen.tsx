@@ -6,6 +6,7 @@ import PaymentForm from '../components/PaymentForm';
 import { useTranslation } from 'react-i18next';
 import DirectLinkButton from '../components/DirectLinkButton';
 import { createOrder } from '../api/api';
+import { formatPrice } from '../utils/currency';
 import RouteName from '../navigation/routes';
 
 const CartScreen = ({ navigation, route }: any) => {
@@ -118,7 +119,7 @@ const CartScreen = ({ navigation, route }: any) => {
                     <View style={styles.itemInfo}>
                       <Text style={[styles.itemName, { color: theme.colors.onSurface }]}>{item.name}</Text>
                       <Text style={[styles.itemPrice, { color: theme.colors.onSurfaceVariant }]}>
-                        {item.price * item.quantity} {t('common.currency')}
+                        {formatPrice(item.price * item.quantity)}
                       </Text>
                     </View>
                     <View style={styles.quantityControls}>
@@ -171,7 +172,7 @@ const CartScreen = ({ navigation, route }: any) => {
             <View style={styles.totalContainer}>
               <Text style={[styles.totalText, { color: theme.colors.onSurface }]}>{t('common.total')}:</Text>
               <Text style={[styles.totalAmount, { color: theme.colors.primary }]}>
-                {calculateTotal()} {t('common.currency')}
+                {formatPrice(calculateTotal())}
               </Text>
             </View>
 
@@ -196,7 +197,7 @@ const CartScreen = ({ navigation, route }: any) => {
                 params={{ amount: calculateTotal().toString() }}
                 style={styles.directLinkButton}
               >
-                {t('payment.payNow')} ({calculateTotal()} {t('common.currency')})
+                {t('payment.payNow')} ({formatPrice(calculateTotal())})
               </DirectLinkButton>
             </View>
           </>

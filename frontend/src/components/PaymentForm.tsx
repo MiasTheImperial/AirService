@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, useTheme } from 'react-native-paper';
 import { PaymentMethod } from '../types';
 import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../utils/currency';
 
 interface PaymentFormProps {
   onPaymentComplete: (paymentMethod: PaymentMethod) => void;
@@ -124,7 +125,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   return (
     <View style={styles.container}>
       <Text style={[styles.title, { color: theme.colors.onSurface }]}>{t('payment.title')}</Text>
-      <Text style={[styles.amount, { color: theme.colors.primary }]}>{t('common.total')}: {amount} {t('common.currency')}</Text>
+      <Text style={[styles.amount, { color: theme.colors.primary }]}>{t('common.total')}: {formatPrice(amount)}</Text>
 
       <TextInput
         label={t('payment.cardholderName')}
