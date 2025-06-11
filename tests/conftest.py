@@ -63,15 +63,12 @@ def sample_data(app):
         db.session.add_all(cats.values())
         db.session.flush()
         items = [
-            Item(name='Sandwich', price=5.0, category=cats['Food'], image='products/sandwich.jpg'),
-            Item(name='Salad', price=7.0, category=cats['Food'], image='products/salad.jpg'),
-            Item(name='Water', price=1.5, category=cats['Drinks'], image='products/water.jpg'),
-            Item(name='Wine', price=8.0, category=cats['Alcohol'], image='products/wine.jpg'),
-            Item(name='Coffee', price=3.0, category=cats['Drinks'], image='products/coffee.jpg'),
-            Item(name='Blanket', price=15.0, category=cats['Accessories'], image='products/blanket.jpg'),
-            Item(name='Headphones', price=25.0, category=cats['Accessories'], image='products/headphones.jpg'),
-            Item(name='WiFi', price=10.0, is_service=True, category=cats['Services'], image='products/wifi.jpg'),
-            Item(name='Priority Boarding', price=12.0, is_service=True, category=cats['Services'], image='products/priority.jpg'),
+            Item(name='Паста Карбонара', price=680.0, category=cats['Food'], image='products/carbonara.jpg'),
+            Item(name='Вегетарианский салат', price=450.0, category=cats['Food'], image='products/vegeterian_salad.jpg'),
+            Item(name='Минеральная вода', price=150.0, category=cats['Drinks'], image='products/mineral_water_no_gas.jpg'),
+            Item(name='Вино красное сухое', price=750.0, category=cats['Alcohol'], image='products/red_wine.jpg'),
+            Item(name='Кофе Американо', price=280.0, category=cats['Drinks'], image='products/americano_coffee.jpg'),
+            Item(name='WiFi', price=10.0, is_service=True, category=cats['Services'], image='products/internet_wi-fi.jpg'),
         ]
         db.session.add_all(items)
         db.session.commit()
@@ -87,13 +84,12 @@ def populate_orders(app, sample_data):
     """Create 5 varied orders per month for 3 years."""
     with app.app_context():
         goods_list = [
-            sample_data['items']['Sandwich'],
-            sample_data['items']['Water'],
-            sample_data['items']['Blanket'],
+            sample_data['items']['Паста Карбонара'],
+            sample_data['items']['Минеральная вода'],
+            sample_data['items']['Вегетарианский салат'],
         ]
         service_list = [
             sample_data['items']['WiFi'],
-            sample_data['items']['Priority Boarding'],
         ]
         for year in [2021, 2022, 2023]:
             for month in range(1, 13):

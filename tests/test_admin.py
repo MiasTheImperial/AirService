@@ -65,21 +65,21 @@ def test_sales_report_multiple_years(client, populate_orders):
     rv = client.get('/admin/reports/sales?year=2022', headers=auth_header())
     data = rv.get_json()
     assert len(data) == 12
-    assert data['2022-01']['goods'] == 28.0
-    assert data['2022-01']['services'] == 54.0
+    assert data['2022-01']['goods'] == 2110.0
+    assert data['2022-01']['services'] == 50.0
 
     rv = client.get('/admin/reports/sales?year=2023', headers=auth_header())
     data = rv.get_json()
-    assert data['2023-12']['goods'] == 28.0
-    assert data['2023-12']['services'] == 54.0
+    assert data['2023-12']['goods'] == 2110.0
+    assert data['2023-12']['services'] == 50.0
 
 
 def test_sales_report_all_years(client, populate_orders):
     rv = client.get('/admin/reports/sales', headers=auth_header())
     data = rv.get_json()
     assert len(data) == 36
-    assert data['2021-01']['goods'] == 28.0
-    assert data['2023-12']['services'] == 54.0
+    assert data['2021-01']['goods'] == 2110.0
+    assert data['2023-12']['services'] == 50.0
 
 
 def test_admin_requires_auth(client):
