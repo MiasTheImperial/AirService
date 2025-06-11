@@ -19,7 +19,7 @@ class User(db.Model):
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
-    image = db.Column(db.String(200))
+    image = db.Column(db.String(255))
     parent_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     parent = db.relationship('Category', remote_side=[id])
 
@@ -29,6 +29,7 @@ class Item(db.Model):
     name = db.Column(db.String(120), nullable=False)
     name_ru = db.Column(db.String(120))
     name_en = db.Column(db.String(120))
+    image = db.Column(db.String(255))
     description = db.Column(db.Text)
     image = db.Column(db.String(200))
     price = db.Column(db.Float, nullable=False)

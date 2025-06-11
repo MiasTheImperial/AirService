@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, url_for
 
 from ..models import Item, Category
 
@@ -113,7 +113,7 @@ def catalog():
             'id': i.id,
             'name': name,
             'description': i.description,
-            'image': i.image,
+            'image': url_for('serve_image', filename=i.image) if i.image else None,
             'price': i.price,
             'available': i.available,
             'service': i.is_service,
@@ -160,7 +160,7 @@ def catalog_categories():
                           items: {}
     """
     cats = Category.query.order_by(Category.id).all()
-    nodes = {c.id: {'id': c.id, 'name': c.name, 'image': c.image, 'children': []} for c in cats}
+    nodes = {c.id: {'id': c.id, 'name': c.name, 'image': url_for('serve_image', filename=c.image) if c.image else None, 'children': []} for c in cats}
     roots = []
     for c in cats:
         node = nodes[c.id]

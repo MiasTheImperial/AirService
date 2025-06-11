@@ -3,7 +3,7 @@ import json
 import logging
 import os
  
-from flask import Blueprint, jsonify, request, abort, current_app
+from flask import Blueprint, jsonify, request, abort, current_app, url_for
 from werkzeug.security import check_password_hash
 from marshmallow import ValidationError
 
@@ -143,6 +143,8 @@ def admin_items():
             properties:
               name:
                 type: string
+              image:
+                type: string
               description:
                 type: string
               image:
@@ -171,10 +173,11 @@ def admin_items():
         return jsonify({'id': item.id}), 201
     items = Item.query.all()
     return jsonify([{ 'id': i.id, 'name': i.name, 'description': i.description,
-                      'image': i.image,
+                      'image': url_for('serve_image', filename=i.image) if i.image else None,
                       'price': i.price, 'available': i.available,
                       'service': i.is_service,
-                      'category_id': i.category_id } for i in items])
+                      'category_id': i.category_id,
+                      'image': i.image } for i in items])
 
 
 @admin_bp.route('/items/<int:item_id>', methods=['PUT', 'DELETE'])
@@ -196,6 +199,8 @@ def admin_item_detail(item_id):
             type: object
             properties:
               name:
+                type: string
+              image:
                 type: string
               description:
                 type: string
@@ -247,6 +252,8 @@ def admin_categories():
                 type: string
               parent_id:
                 type: integer
+              image:
+                type: string
     responses:
       200:
         description: Category list
@@ -259,17 +266,15 @@ def admin_categories():
             data = CategorySchema().load(request.get_json() or {})
         except ValidationError as err:
             return jsonify(err.messages), 400
-        cat = Category(
-            name=data['name'],
-            image=data.get('image'),
-            parent_id=data.get('parent_id'),
-        )
+        cat = Category(name=data['name'],
+                       parent_id=data.get('parent_id'),
+                       image=data.get('image'))
         db.session.add(cat)
         db.session.commit()
         logging.info('category_created %s', cat.name)
         return jsonify({'id': cat.id}), 201
     cats = Category.query.all()
-    return jsonify([{ 'id': c.id, 'name': c.name, 'image': c.image, 'parent_id': c.parent_id } for c in cats])
+    return jsonify([{ 'id': c.id, 'name': c.name, 'image': url_for('serve_image', filename=c.image) if c.image else None, 'parent_id': c.parent_id } for c in cats])
 
 
 @admin_bp.route('/categories/<int:cat_id>', methods=['PUT', 'DELETE'])
@@ -296,6 +301,8 @@ def admin_category_detail(cat_id):
                 type: string
               parent_id:
                 type: integer
+              image:
+                type: string
     responses:
       200:
         description: Category updated
@@ -317,6 +324,8 @@ def admin_category_detail(cat_id):
             cat.image = data['image']
         if 'parent_id' in data:
             cat.parent_id = data['parent_id']
+        if 'image' in data:
+            cat.image = data['image']
         db.session.commit()
         logging.info('category_updated %s', cat.id)
         return jsonify({'id': cat.id})

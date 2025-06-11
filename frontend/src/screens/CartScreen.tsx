@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Modal } from 'react-native';
+import { View, StyleSheet, ScrollView, Modal, Image } from 'react-native';
 import { Card, Button, Text, TextInput, Divider, useTheme } from 'react-native-paper';
 import { OrderItem, PaymentMethod } from '../types';
 import PaymentForm from '../components/PaymentForm';
@@ -109,6 +109,14 @@ const CartScreen = ({ navigation, route }: any) => {
               <Card key={item.productId} style={[styles.card, { backgroundColor: theme.colors.surface }]}>
                 <Card.Content>
                   <View style={styles.itemRow}>
+                    <Image
+                      style={styles.itemImage}
+                      source={
+                        item.image
+                          ? { uri: item.image }
+                          : require('../assets/icon.png')
+                      }
+                    />
                     <View style={styles.itemInfo}>
                       <Text style={[styles.itemName, { color: theme.colors.onSurface }]}>{item.name}</Text>
                       <Text style={[styles.itemPrice, { color: theme.colors.onSurfaceVariant }]}>
@@ -242,6 +250,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  itemImage: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+    borderRadius: 4,
   },
   itemInfo: {
     flex: 1,

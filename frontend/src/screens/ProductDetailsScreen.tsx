@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Button, Text, Card, Snackbar, Divider, List, useTheme } from 'react-native-paper';
 import { MaterialCommunityIcon } from '../components/CustomIcons';
-import { Product } from '../types';
+import { Product, OrderItem } from '../types';
 import { useTranslation } from 'react-i18next';
 
 const ProductDetailsScreen = ({ route, navigation }: any) => {
@@ -23,10 +23,18 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
     // In a real app, this would dispatch to a cart state manager or context
     // For now, we'll just show a snackbar
     setSnackbarVisible(true);
-    
+
+    const item: OrderItem = {
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      quantity,
+      image: product.image,
+    };
+
     // Navigate back to catalog after a short delay
     setTimeout(() => {
-      navigation.navigate('Cart');
+      navigation.navigate('Cart', { newItem: item });
     }, 1500);
   };
 
