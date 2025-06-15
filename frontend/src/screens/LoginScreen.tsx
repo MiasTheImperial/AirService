@@ -71,7 +71,7 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
     <Surface style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.logoContainer}>
         <Image
-          source={{ uri: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=300' }}
+          source={{ uri: require('../assets/air_service.jpg') }}
           style={styles.logo}
         />
         <Text style={[styles.title, { color: theme.colors.onBackground }]}>Авиа-Сервис</Text>
