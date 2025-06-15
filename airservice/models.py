@@ -18,7 +18,8 @@ class User(db.Model):
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
+    name_ru = db.Column(db.String(120), nullable=False)
+    name_en = db.Column(db.String(120), nullable=False)
     image = db.Column(db.String(255))
     parent_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     parent = db.relationship('Category', remote_side=[id])
@@ -26,11 +27,11 @@ class Category(db.Model):
 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
     name_ru = db.Column(db.String(120))
     name_en = db.Column(db.String(120))
     image = db.Column(db.String(255))
-    description = db.Column(db.Text)
+    description_ru = db.Column(db.Text)
+    description_en = db.Column(db.Text)
     price = db.Column(db.Float, nullable=False)
     available = db.Column(db.Boolean, default=True)
     is_service = db.Column(db.Boolean, default=False)
