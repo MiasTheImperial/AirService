@@ -46,7 +46,7 @@ def upgrade():
             {
                 'email': 'user@example.com',
                 'password_hash': generate_password_hash('password'),
-                'seat': '5A',
+                'seat': '12A',
                 'is_admin': False,
             },
         ]

@@ -14,7 +14,7 @@ def test_login_and_order_uses_account_seat(client, app, sample_data):
         user = User(
             email="user@example.com",
             password_hash=generate_password_hash("password"),
-            seat="5A",
+            seat="12A",
         )
         db.session.add(user)
         db.session.commit()
@@ -25,7 +25,7 @@ def test_login_and_order_uses_account_seat(client, app, sample_data):
     )
     assert rv.status_code == 200
     data = rv.get_json()
-    assert data["seat"] == "5A"
+    assert data["seat"] == "12A"
     assert not data["is_admin"]
 
     item_id = sample_data["items"]["Паста Карбонара"]
@@ -39,4 +39,4 @@ def test_login_and_order_uses_account_seat(client, app, sample_data):
 
     rv = client.get(f"/orders/{order_id}")
     assert rv.status_code == 200
-    assert rv.get_json()["seat"] == "5A"
+    assert rv.get_json()["seat"] == "12A"
