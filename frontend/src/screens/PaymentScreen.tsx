@@ -5,14 +5,18 @@ import PaymentForm from '../components/PaymentForm';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import RouteName from '../navigation/routes';
+import { createOrder } from '../api/api';
+import { PaymentMethod } from '../types';
 
 // Интерфейс для параметров маршрута
 interface PaymentScreenProps {
   route?: {
     params?: {
       amount?: number;
-    }
-  }
+      seatNumber: string;
+      items: { item_id: number; quantity: number }[];
+    };
+  };
 }
 
 /**
@@ -27,11 +31,24 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
   // Устанавливаем сумму по умолчанию, если она не была передана
   const amount = route?.params?.amount || 1000;
   
-  const handlePaymentComplete = (paymentMethod: any) => {
-    // Переходим на экран статуса заказа после успешной оплаты
-    navigation.navigate(RouteName.ORDER_STATUS as never, {
-      orderId: `order-${Date.now()}`
-    } as never);
+  const handlePaymentComplete = async (paymentMethod: PaymentMethod) => {
+    const params = route?.params;
+    if (!params?.seatNumber || !params?.items) {
+      console.error('Missing seat number or items for order creation');
+      return;
+    }
+
+    try {
+      const res = await createOrder({
+        seat: params.seatNumber,
+        items: params.items,
+        payment_method: paymentMethod.type,
+      });
+      const orderId = res.order_id;
+      navigation.navigate(RouteName.ORDER_STATUS as never, { orderId } as never);
+    } catch (err) {
+      console.error('Failed to create order', err);
+    }
   };
   
   const handleCancel = () => {

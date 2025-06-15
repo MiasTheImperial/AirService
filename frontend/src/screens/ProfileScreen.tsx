@@ -126,7 +126,12 @@ const ProfileScreen = ({ navigation, route }: any) => {
             titleStyle={{ color: theme.colors.onSurface }}
             descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
             left={props => <List.Icon {...props} icon="credit-card" color={theme.colors.primary} />}
-            onPress={() => navigation.navigate(RouteName.PAYMENT_SCREEN as never)}
+            onPress={() =>
+              navigation.navigate(
+                RouteName.PAYMENT_SCREEN as never,
+                { seatNumber, items: [] } as never
+              )
+            }
           />
           
           <Divider style={{ backgroundColor: theme.colors.outline }} />

@@ -194,7 +194,14 @@ const CartScreen = ({ navigation, route }: any) => {
               </Text>
               <DirectLinkButton
                 screenName={RouteName.PAYMENT_SCREEN}
-                params={{ amount: calculateTotal().toString() }}
+                params={{
+                  amount: calculateTotal().toString(),
+                  seatNumber,
+                  items: cartItems.map((i) => ({
+                    item_id: Number(i.productId),
+                    quantity: i.quantity,
+                  })),
+                } as any}
                 style={styles.directLinkButton}
               >
                 {t('payment.payNow')} ({formatPrice(calculateTotal())})
