@@ -116,9 +116,6 @@ const CatalogScreen = ({ navigation }: any) => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <View style={[styles.header, { backgroundColor: theme.colors.surface }]}>
-        <Text style={[styles.title, { color: theme.colors.onSurface }]}>{t('catalog.title')}</Text>
-      </View>
       
       <Searchbar
         placeholder={t('common.search')}
@@ -187,13 +184,6 @@ const CatalogScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    padding: 15,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
   },
   searchBar: {
     margin: 10,
