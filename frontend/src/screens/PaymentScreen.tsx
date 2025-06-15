@@ -12,9 +12,10 @@ import { PaymentMethod } from '../types';
 interface PaymentScreenProps {
   route?: {
     params?: {
-      amount?: number | string;
-      seatNumber: string;
-      items: { item_id: number; quantity: number }[];
+      amount?: number;
+      seatNumber?: string;
+      items?: { item_id: number; quantity: number }[];
+      onOrderCreated?: () => void;
     };
   };
 }
@@ -34,20 +35,22 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
       ? Number(route.params.amount)
       : 1000;
   
-  const handlePaymentComplete = async (paymentMethod: PaymentMethod) => {
-    const params = route?.params;
-    if (!params?.seatNumber || !params?.items) {
-      console.error('Missing seat number or items for order creation');
-      return;
-    }
-
+  const handlePaymentComplete = async (paymentMethod: any) => {
     try {
+      const seat = route?.params?.seatNumber;
+      const items = route?.params?.items;
+      if (!seat || !items) {
+        console.error('Missing seat number or items for order creation');
+        return;
+      }
+
       const res = await createOrder({
-        seat: params.seatNumber,
-        items: params.items,
+        seat,
+        items,
         payment_method: paymentMethod.type,
       });
       const orderId = res.order_id;
+      route?.params?.onOrderCreated?.();
       navigation.navigate(RouteName.ORDER_STATUS as never, { orderId } as never);
     } catch (err) {
       console.error('Failed to create order', err);
