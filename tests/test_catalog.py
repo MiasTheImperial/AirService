@@ -124,7 +124,7 @@ def test_catalog_price_and_service_filters(client, sample_data):
 
 
 def test_catalog_categories_hierarchy(client, sample_data):
-    rv = client.get('/catalog/categories')
+    rv = client.get('/catalog/categories', headers={'Accept-Language': 'en'})
     assert rv.status_code == 200
     data = rv.get_json()
     # root categories
