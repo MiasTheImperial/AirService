@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { Card, Text, Switch, Button, List, Divider, useTheme } from 'react-native-paper';
 import { useThemeContext } from '../theme/ThemeProvider';
 import { useTranslation } from 'react-i18next';
+import { useIsFocused } from '@react-navigation/native';
 import LanguageSelector from '../components/LanguageSelector';
 import { listOrders } from '../api/api';
 import RouteName from '../navigation/routes';
@@ -13,6 +14,7 @@ const ProfileScreen = ({ navigation, route }: any) => {
   const { isDarkTheme, toggleTheme } = useThemeContext();
   const theme = useTheme();
   const { t } = useTranslation();
+  const isFocused = useIsFocused();
   
   // Mock user data
   const user = {
@@ -32,8 +34,10 @@ const ProfileScreen = ({ navigation, route }: any) => {
         console.error('Ошибка при получении заказов:', err);
       }
     };
-    fetchOrders();
-  }, []);
+    if (isFocused) {
+      fetchOrders();
+    }
+  }, [isFocused, seatNumber]);
 
   const handleLogout = async () => {
     try {
