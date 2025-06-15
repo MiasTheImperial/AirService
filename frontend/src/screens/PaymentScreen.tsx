@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import RouteName from '../navigation/routes';
 import { createOrder } from '../api/api';
+import { PaymentMethod } from '../types';
 
 // Интерфейс для параметров маршрута
 interface PaymentScreenProps {
@@ -29,7 +30,10 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
   const navigation = useNavigation();
   
   // Устанавливаем сумму по умолчанию, если она не была передана
-  const amount = route?.params?.amount || 1000;
+  const amount =
+    route?.params?.amount !== undefined
+      ? Number(route.params.amount)
+      : 1000;
   
   const handlePaymentComplete = async (paymentMethod: any) => {
     try {

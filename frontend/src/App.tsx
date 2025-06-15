@@ -387,7 +387,7 @@ const RootStackNavigator = () => {
         name={RouteName.PAYMENT_SCREEN}
         component={PaymentScreen}
         options={{ title: t('payment.title') }}
-        initialParams={{ seatNumber }}
+        initialParams={seatNumber ? { seatNumber } : undefined}
       />
       <Stack.Screen
         name={RouteName.ORDER_HISTORY_SCREEN}

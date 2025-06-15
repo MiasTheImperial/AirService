@@ -86,6 +86,19 @@ pytest -q
 
 Набор тестов охватывает весь REST API, проверки локализации, администраторские операции, SSE‑уведомления и вспомогательные сервисы. Перед запуском тестов автоматически компилируются файлы переводов.
 
+## Генерация блок-схем
+
+Для визуализации основных алгоритмов можно использовать скрипт `scripts/generate_flowcharts.py`. Он создаёт картинки в формате PNG с использованием `graphviz`.
+
+```bash
+pip install graphviz
+python scripts/generate_flowcharts.py
+```
+
+После выполнения появятся изображения `order_flowchart.png`, `sse_flowchart.png`,
+`catalog_flowchart.png`, `integration_flowchart.png` и
+`admin_update_flowchart.png`.
+
 ## Лицензия
 
 Проект распространяется под лицензией MIT.
