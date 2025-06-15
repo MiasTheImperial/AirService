@@ -44,7 +44,11 @@ declare global {
       ProductDetailsScreen: { id: string };
       OrderStatusScreen: { id: string };
       OrderDetailsScreen: { id: string };
-      PaymentScreen: { amount?: number };
+      PaymentScreen: {
+        amount?: number | string;
+        seatNumber: string;
+        items: { item_id: number; quantity: number }[];
+      };
       OrderHistoryScreen: undefined;
       SupportScreen: undefined;
     }
