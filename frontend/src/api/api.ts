@@ -1,5 +1,6 @@
 import Constants from 'expo-constants';
 import { Product, Category, OrderStatus } from '../types';
+import i18n from '../i18n/i18n';
 
 const API_URL = Constants.expoConfig?.extra?.apiUrl as string;
 
@@ -11,8 +12,13 @@ async function handleResponse(res: Response) {
   return res.json();
 }
 
+function fetchWithLang(url: string, options: RequestInit = {}) {
+  const headers = { 'Accept-Language': i18n.language, ...(options.headers || {}) } as Record<string, string>;
+  return fetch(url, { ...options, headers });
+}
+
 export async function login(email: string, password: string) {
-  const res = await fetch(`${API_URL}/auth/login`, {
+  const res = await fetchWithLang(`${API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
@@ -21,7 +27,7 @@ export async function login(email: string, password: string) {
 }
 
 export async function getCatalog(): Promise<Product[]> {
-  const res = await fetch(`${API_URL}/catalog`);
+  const res = await fetchWithLang(`${API_URL}/catalog`);
   const data = await handleResponse(res);
   return data.map((item: any) => ({
     id: String(item.id),
@@ -47,7 +53,7 @@ function flattenCategories(nodes: any[]): any[] {
 }
 
 export async function getCategories(): Promise<Category[]> {
-  const res = await fetch(`${API_URL}/catalog/categories`);
+  const res = await fetchWithLang(`${API_URL}/catalog/categories`);
   const data = await handleResponse(res);
   const flat = flattenCategories(data);
   return flat.map((c: any) => ({
@@ -72,7 +78,7 @@ export async function createOrder(
   if (auth) {
     headers['Authorization'] = `Basic ${btoa(`${auth.email}:${auth.password}`)}`;
   }
-  const res = await fetch(`${API_URL}/orders`, {
+  const res = await fetchWithLang(`${API_URL}/orders`, {
     method: 'POST',
     headers,
     body: JSON.stringify(payload),
@@ -116,14 +122,14 @@ function mapOrder(data: any) {
 }
 
 export async function getOrder(id: string) {
-  const res = await fetch(`${API_URL}/orders/${id}`);
+  const res = await fetchWithLang(`${API_URL}/orders/${id}`);
   const data = await handleResponse(res);
   return mapOrder(data);
 }
 
 export async function listOrders({ seat, status }: { seat: string; status?: string }) {
   const statusQuery = status ? `&status=${status}` : '';
-  const res = await fetch(`${API_URL}/orders?seat=${seat}${statusQuery}`);
+  const res = await fetchWithLang(`${API_URL}/orders?seat=${seat}${statusQuery}`);
   const data = await handleResponse(res);
   return Array.isArray(data) ? data.map(mapOrder) : data;
 }
