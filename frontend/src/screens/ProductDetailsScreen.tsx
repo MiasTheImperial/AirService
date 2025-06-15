@@ -11,6 +11,7 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
   const { product } = route.params;
   const [quantity, setQuantity] = useState(1);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [pendingItem, setPendingItem] = useState<OrderItem | null>(null);
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -23,9 +24,7 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
 
   const handleAddToCart = () => {
     // In a real app, this would dispatch to a cart state manager or context
-    // For now, we'll just show a snackbar
-    setSnackbarVisible(true);
-
+    // For now, we'll just show a snackbar and store the item temporarily
     const item: OrderItem = {
       productId: product.id,
       name: product.name,
@@ -34,10 +33,8 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
       image: product.image,
     };
 
-    // Navigate back to catalog after a short delay
-    setTimeout(() => {
-      navigation.navigate(RouteName.CART as never, { newItem: item } as never);
-    }, 1500);
+    setPendingItem(item);
+    setSnackbarVisible(true);
   };
 
   return (
@@ -188,18 +185,26 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
         duration={1500}
         action={{
           label: t('navigation.cart'),
-          onPress: () => navigation.navigate(RouteName.CART as never),
+          onPress: () => {
+            setSnackbarVisible(false);
+            if (pendingItem) {
+              navigation.navigate(RouteName.CART as never, { newItem: pendingItem } as never);
+              setPendingItem(null);
+            }
+          },
         }}
         style={{ backgroundColor: theme.colors.surfaceVariant }}
         theme={{
           colors: {
             accent: theme.colors.primary,
             surface: theme.colors.surfaceVariant,
-            onSurface: theme.colors.onSurfaceVariant
-          }
+            onSurface: theme.colors.onSurfaceVariant,
+          },
         }}
       >
-        {t('cart.added', { count: quantity })}
+        <Text style={{ color: theme.colors.onSurfaceVariant }}>
+          {t('cart.added', { count: quantity })}
+        </Text>
       </Snackbar>
     </ScrollView>
   );
