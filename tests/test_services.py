@@ -30,7 +30,7 @@ def test_update_order_status(app, sample_data):
 
 def test_item_service_crud(app):
     with app.app_context(), patch('airservice.services.item_service.logging'):
-        item = item_service.create_item({'name': 'Tea', 'price': 2.0})
+        item = item_service.create_item({'name_ru': 'Чай', 'name_en': 'Tea', 'price': 2.0})
         assert db.session.get(Item, item.id)
         item_service.update_item(item, {'price': 3.0})
         assert db.session.get(Item, item.id).price == 3.0

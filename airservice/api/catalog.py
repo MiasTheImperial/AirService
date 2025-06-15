@@ -99,25 +99,28 @@ def catalog():
     query = request.args.get('q')
     if query:
         like = f"%{query}%"
-        qs = qs.filter(Item.name.ilike(like) | Item.description.ilike(like))
+        qs = qs.filter(
+            Item.name_ru.ilike(like) |
+            Item.name_en.ilike(like) |
+            Item.description_ru.ilike(like) |
+            Item.description_en.ilike(like)
+        )
     items = qs.all()
     lang = request.args.get('lang')
     data = []
     for i in items:
-        name = i.name
-        if lang == 'ru' and i.name_ru:
-            name = i.name_ru
-        elif lang == 'en' and i.name_en:
-            name = i.name_en
+        lang_item = 'en' if lang == 'en' else 'ru'
+        name = i.name_en if lang_item == 'en' else i.name_ru
+        desc = i.description_en if lang_item == 'en' else i.description_ru
         data.append({
             'id': i.id,
             'name': name,
-            'description': i.description,
+            'description': desc,
             'image': url_for('serve_image', filename=i.image) if i.image else None,
             'price': i.price,
             'available': i.available,
             'service': i.is_service,
-            'category': i.category.name if i.category else None,
+            'category': i.category.name_en if lang_item == 'en' else (i.category.name_ru if i.category else None),
             'category_id': i.category.id if i.category else None,
         })
     return jsonify(data)
@@ -159,8 +162,17 @@ def catalog_categories():
                           type: array
                           items: {}
     """
+    lang = request.args.get('lang')
     cats = Category.query.order_by(Category.id).all()
-    nodes = {c.id: {'id': c.id, 'name': c.name, 'image': url_for('serve_image', filename=c.image) if c.image else None, 'children': []} for c in cats}
+    nodes = {
+        c.id: {
+            'id': c.id,
+            'name': c.name_en if lang != 'ru' else c.name_ru,
+            'image': url_for('serve_image', filename=c.image) if c.image else None,
+            'children': [],
+        }
+        for c in cats
+    }
     roots = []
     for c in cats:
         node = nodes[c.id]
