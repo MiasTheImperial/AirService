@@ -9,7 +9,7 @@ import { formatPrice } from '../utils/currency';
 
 const OrderHistoryScreen = ({ navigation, route }: any) => {
   const theme = useTheme();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const seatNumber = route.params?.seatNumber as string;
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +32,7 @@ const OrderHistoryScreen = ({ navigation, route }: any) => {
     };
 
     loadOrders();
-  }, []);
+  }, [i18n.language]);
 
   // Фильтрация заказов по статусу
   const filteredOrders = selectedFilter

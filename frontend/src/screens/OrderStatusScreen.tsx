@@ -9,7 +9,7 @@ import { formatPrice } from '../utils/currency';
 
 const OrderStatusScreen = ({ route, navigation }: any) => {
   const theme = useTheme();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +30,7 @@ const OrderStatusScreen = ({ route, navigation }: any) => {
     };
 
     loadOrder();
-  }, [route.params.orderId]);
+  }, [route.params.orderId, i18n.language]);
 
   const getStatusColor = (status: OrderStatus) => {
     switch (status) {
