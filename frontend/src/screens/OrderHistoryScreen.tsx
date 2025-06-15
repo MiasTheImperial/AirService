@@ -121,7 +121,7 @@ const OrderHistoryScreen = ({ navigation, route }: any) => {
         </View>
         
         <Text style={[styles.orderDate, { color: theme.colors.onSurfaceVariant }]}>
-          {formatDate(item.createdAt)}
+          {formatDate(item.created_at)}
         </Text>
         
         <View style={styles.orderItems}>
