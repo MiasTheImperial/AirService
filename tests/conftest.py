@@ -53,64 +53,71 @@ def sample_data(app):
     """Populate DB with categories and items."""
     with app.app_context():
         cats = {
-            'Food': Category(name='Food', image='categories/food.jpg'),
-            'Drinks': Category(name='Drinks', image='categories/drinks.jpg'),
-            'Accessories': Category(name='Accessories', image='categories/accessories.jpg'),
-            'Services': Category(name='Services', image='categories/services.jpg'),
-            'Snacks': Category(name='Snacks', image='categories/snacks.jpg'),
-            'Desserts': Category(name='Desserts', image='categories/desserts.jpg'),
-            'Cosmetics': Category(name='Cosmetics', image='categories/cosmetics.jpg'),
-            'Toys': Category(name='Toys', image='categories/toys.jpg'),
-            'Books': Category(name='Books', image='categories/books.jpg'),
-            'Parfumes': Category(name='Parfumes', image='categories/parfumes.jpg'),
+            'Food': Category(name_ru='Еда', name_en='Food', image='categories/food.jpg'),
+            'Drinks': Category(name_ru='Напитки', name_en='Drinks', image='categories/drinks.jpg'),
+            'Accessories': Category(name_ru='Аксессуары', name_en='Accessories', image='categories/accessories.jpg'),
+            'Services': Category(name_ru='Услуги', name_en='Services', image='categories/services.jpg'),
+            'Snacks': Category(name_ru='Закуски', name_en='Snacks', image='categories/snacks.jpg'),
+            'Desserts': Category(name_ru='Десерты', name_en='Desserts', image='categories/desserts.jpg'),
+            'Cosmetics': Category(name_ru='Косметика', name_en='Cosmetics', image='categories/cosmetics.jpg'),
+            'Toys': Category(name_ru='Игрушки', name_en='Toys', image='categories/toys.jpg'),
+            'Books': Category(name_ru='Книги', name_en='Books', image='categories/books.jpg'),
+            'Parfumes': Category(name_ru='Парфюмерия', name_en='Parfumes', image='categories/parfumes.jpg'),
         }
         # subcategory for hierarchy tests
-        cats['Alcohol'] = Category(name='Alcohol', parent=cats['Drinks'], image='categories/alcohol.jpg')
+        cats['Alcohol'] = Category(name_ru='Алкоголь', name_en='Alcohol', parent=cats['Drinks'], image='categories/alcohol.jpg')
         db.session.add_all(cats.values())
         db.session.flush()
         items_data = [
-            ('Куриное филе с овощами', 750.0, 'Food', 'products/chicken_filet.jpg'),
-            ('Паста Карбонара', 680.0, 'Food', 'products/carbonara.jpg'),
-            ('Стейк из говядины', 1200.0, 'Food', 'products/marbled_beef.jpg'),
-            ('Рыба с овощами на пару', 850.0, 'Food', 'products/steamed_fish.jpg'),
-            ('Вегетарианский салат', 450.0, 'Food', 'products/vegeterian_salad.jpg'),
-            ('Борщ', 480.0, 'Food', 'products/borsch.jpg'),
-            ('Свежевыжатый апельсиновый сок', 350.0, 'Drinks', 'products/orange_juice.jpg'),
-            ('Минеральная вода', 150.0, 'Drinks', 'products/mineral_water_no_gas.jpg'),
-            ('Кофе Американо', 280.0, 'Drinks', 'products/americano_coffee.jpg'),
-            ('Чай зеленый', 220.0, 'Drinks', 'products/green_tea.jpg'),
-            ('Смузи ягодный', 380.0, 'Drinks', 'products/smoozi.jpg'),
-            ('Вино красное сухое', 750.0, 'Alcohol', 'products/red_wine.jpg'),
-            ('Пиво светлое', 450.0, 'Alcohol', 'products/beer_white.jpg'),
-            ('Виски', 950.0, 'Alcohol', 'products/whiskey.jpg'),
-            ('Орешки ассорти', 320.0, 'Snacks', 'products/nuts_assorty.jpg'),
-            ('Чипсы картофельные', 280.0, 'Snacks', 'products/potato_chips.jpg'),
-            ('Сырная тарелка', 680.0, 'Snacks', 'products/cheese_plate.jpg'),
-            ('Тирамису', 420.0, 'Desserts', 'products/tiramisu.jpg'),
-            ('Чизкейк', 390.0, 'Desserts', 'products/raspberry_cheesecake.jpg'),
-            ('Шоколадный фондан', 450.0, 'Desserts', 'products/chocolate_fondan.jpg'),
-            ('Дорожная подушка', 980.0, 'Accessories', 'products/travel_pillow.jpg'),
-            ('Маска для сна', 450.0, 'Accessories', 'products/sleep_mask.jpg'),
-            ('Беруши', 280.0, 'Accessories', 'products/ear_plugs.jpg'),
-            ('Наушники', 3500.0, 'Accessories', 'products/wireless_headphones.jpg'),
-            ('Увлажняющий крем', 850.0, 'Cosmetics', 'products/soothening_cream.jpg'),
-            ('Набор миниатюр', 1200.0, 'Cosmetics', 'products/miniatur_set.jpg'),
-            ('Мягкая игрушка', 680.0, 'Toys', 'products/soft_toy.jpg'),
-            ('Набор для раскрашивания', 450.0, 'Toys', 'products/safe_paint_set.jpg'),
-            ('Роман "Мастер и Маргарита"', 550.0, 'Books', 'products/master_and_margarita.jpg'),
-            ('Журнал о путешествиях', 320.0, 'Books', 'products/travel_journal.jpg'),
-            ('WiFi', 10.0, 'Services', 'products/internet_wi-fi.jpg', True),
+            ('Куриное филе с овощами', 'Grilled chicken fillet', 750.0, 'Food', 'products/chicken_filet.jpg'),
+            ('Паста Карбонара', 'Carbonara pasta', 680.0, 'Food', 'products/carbonara.jpg'),
+            ('Стейк из говядины', 'Beef steak', 1200.0, 'Food', 'products/marbled_beef.jpg'),
+            ('Рыба с овощами на пару', 'Steamed fish', 850.0, 'Food', 'products/steamed_fish.jpg'),
+            ('Вегетарианский салат', 'Vegetarian salad', 450.0, 'Food', 'products/vegeterian_salad.jpg'),
+            ('Борщ', 'Borscht', 480.0, 'Food', 'products/borsch.jpg'),
+            ('Свежевыжатый апельсиновый сок', 'Fresh orange juice', 350.0, 'Drinks', 'products/orange_juice.jpg'),
+            ('Минеральная вода', 'Mineral water', 150.0, 'Drinks', 'products/mineral_water_no_gas.jpg'),
+            ('Кофе Американо', 'Americano coffee', 280.0, 'Drinks', 'products/americano_coffee.jpg'),
+            ('Чай зеленый', 'Green tea', 220.0, 'Drinks', 'products/green_tea.jpg'),
+            ('Смузи ягодный', 'Berry smoothie', 380.0, 'Drinks', 'products/smoozi.jpg'),
+            ('Вино красное сухое', 'Red wine', 750.0, 'Alcohol', 'products/red_wine.jpg'),
+            ('Пиво светлое', 'Light beer', 450.0, 'Alcohol', 'products/beer_white.jpg'),
+            ('Виски', 'Whiskey', 950.0, 'Alcohol', 'products/whiskey.jpg'),
+            ('Орешки ассорти', 'Assorted nuts', 320.0, 'Snacks', 'products/nuts_assorty.jpg'),
+            ('Чипсы картофельные', 'Potato chips', 280.0, 'Snacks', 'products/potato_chips.jpg'),
+            ('Сырная тарелка', 'Cheese platter', 680.0, 'Snacks', 'products/cheese_plate.jpg'),
+            ('Тирамису', 'Tiramisu', 420.0, 'Desserts', 'products/tiramisu.jpg'),
+            ('Чизкейк', 'Cheesecake', 390.0, 'Desserts', 'products/raspberry_cheesecake.jpg'),
+            ('Шоколадный фондан', 'Chocolate fondant', 450.0, 'Desserts', 'products/chocolate_fondan.jpg'),
+            ('Дорожная подушка', 'Travel pillow', 980.0, 'Accessories', 'products/travel_pillow.jpg'),
+            ('Маска для сна', 'Sleep mask', 450.0, 'Accessories', 'products/sleep_mask.jpg'),
+            ('Беруши', 'Earplugs', 280.0, 'Accessories', 'products/ear_plugs.jpg'),
+            ('Наушники', 'Headphones', 3500.0, 'Accessories', 'products/wireless_headphones.jpg'),
+            ('Увлажняющий крем', 'Moisturizing cream', 850.0, 'Cosmetics', 'products/soothening_cream.jpg'),
+            ('Набор миниатюр', 'Travel-size set', 1200.0, 'Cosmetics', 'products/miniatur_set.jpg'),
+            ('Мягкая игрушка', 'Soft toy', 680.0, 'Toys', 'products/soft_toy.jpg'),
+            ('Набор для раскрашивания', 'Painting kit', 450.0, 'Toys', 'products/safe_paint_set.jpg'),
+            ('Роман "Мастер и Маргарита"', 'Master and Margarita', 550.0, 'Books', 'products/master_and_margarita.jpg'),
+            ('Журнал о путешествиях', 'Travel magazine', 320.0, 'Books', 'products/travel_journal.jpg'),
+            ('WiFi', 'WiFi', 10.0, 'Services', 'products/internet_wi-fi.jpg', True),
         ]
         items = [
-            Item(name=name, price=price, category=cats[cat], image=image, is_service=(rest[0] if rest else False))
-            for name, price, cat, image, *rest in items_data
+            Item(
+                name_ru=ru,
+                name_en=en,
+                price=price,
+                category=cats[cat],
+                image=image,
+                is_service=(rest[0] if rest else False),
+            )
+            for ru, en, price, cat, image, *rest in items_data
         ]
         db.session.add_all(items)
         db.session.commit()
         # return primitive IDs to avoid detached instances
         return {
             'categories': {k: c.id for k, c in cats.items()},
-            'items': {i.name: i.id for i in items},
+            'items': {i.name_ru: i.id for i in items},
         }
 
 

@@ -3,13 +3,17 @@ from conftest import auth_header
 
 def test_admin_item_crud(client, app, sample_data):
     cat = sample_data['categories']['Food']
-    rv = client.post('/admin/items', json={'name': 'Soup', 'price': 4.0, 'category_id': cat}, headers=auth_header())
+    rv = client.post(
+        '/admin/items',
+        json={'name_ru': 'Суп', 'name_en': 'Soup', 'price': 4.0, 'category_id': cat},
+        headers=auth_header(),
+    )
     assert rv.status_code == 201
     item_id = rv.get_json()['id']
 
     rv = client.get('/admin/items', headers=auth_header())
     items = rv.get_json()
-    assert any(i['id'] == item_id or i['name'] == 'Soup' for i in items)
+    assert any(i['id'] == item_id or i['name_en'] == 'Soup' for i in items)
 
     rv = client.put(f'/admin/items/{item_id}', json={'price': 4.5}, headers=auth_header())
     assert rv.status_code == 200
@@ -25,15 +29,23 @@ def test_admin_item_crud(client, app, sample_data):
 
 
 def test_admin_category_crud(client, app):
-    rv = client.post('/admin/categories', json={'name': 'Extras'}, headers=auth_header())
+    rv = client.post(
+        '/admin/categories',
+        json={'name_ru': 'Дополнительно', 'name_en': 'Extras'},
+        headers=auth_header(),
+    )
     assert rv.status_code == 201
     cat_id = rv.get_json()['id']
 
-    rv = client.put(f'/admin/categories/{cat_id}', json={'name': 'Extra'}, headers=auth_header())
+    rv = client.put(
+        f'/admin/categories/{cat_id}',
+        json={'name_en': 'Extra'},
+        headers=auth_header(),
+    )
     assert rv.status_code == 200
 
     rv = client.get('/admin/categories', headers=auth_header())
-    names = {c['name'] for c in rv.get_json()}
+    names = {c['name_en'] for c in rv.get_json()}
     assert 'Extra' in names
 
     rv = client.delete(f'/admin/categories/{cat_id}', headers=auth_header())

@@ -83,13 +83,21 @@ def list_orders():
         except ValueError:
             pass
     orders = qs.all()
+    lang = request.args.get('lang')
     return jsonify([
         {
             'id': o.id,
             'seat': o.seat,
             'status': o.status,
-            'items': [{'name': i.item.name, 'quantity': i.quantity} for i in o.items]
-        } for o in orders
+            'items': [
+                {
+                    'name': oi.item.name_en if lang == 'en' else oi.item.name_ru,
+                    'quantity': oi.quantity,
+                }
+                for oi in o.items
+            ],
+        }
+        for o in orders
     ])
 
 
@@ -141,13 +149,15 @@ def admin_items():
           schema:
             type: object
             properties:
-              name:
+              name_ru:
+                type: string
+              name_en:
                 type: string
               image:
                 type: string
-              description:
+              description_ru:
                 type: string
-              image:
+              description_en:
                 type: string
               price:
                 type: number
@@ -172,12 +182,22 @@ def admin_items():
         item = item_service.create_item(data)
         return jsonify({'id': item.id}), 201
     items = Item.query.all()
-    return jsonify([{ 'id': i.id, 'name': i.name, 'description': i.description,
-                      'image': url_for('serve_image', filename=i.image) if i.image else None,
-                      'price': i.price, 'available': i.available,
-                      'service': i.is_service,
-                      'category_id': i.category_id,
-                      'image': i.image } for i in items])
+    return jsonify([
+        {
+            'id': i.id,
+            'name_ru': i.name_ru,
+            'name_en': i.name_en,
+            'description_ru': i.description_ru,
+            'description_en': i.description_en,
+            'image': url_for('serve_image', filename=i.image) if i.image else None,
+            'price': i.price,
+            'available': i.available,
+            'service': i.is_service,
+            'category_id': i.category_id,
+            'image': i.image,
+        }
+        for i in items
+    ])
 
 
 @admin_bp.route('/items/<int:item_id>', methods=['PUT', 'DELETE'])
@@ -246,7 +266,9 @@ def admin_categories():
           schema:
             type: object
             properties:
-              name:
+              name_ru:
+                type: string
+              name_en:
                 type: string
               image:
                 type: string
@@ -266,15 +288,27 @@ def admin_categories():
             data = CategorySchema().load(request.get_json() or {})
         except ValidationError as err:
             return jsonify(err.messages), 400
-        cat = Category(name=data['name'],
-                       parent_id=data.get('parent_id'),
-                       image=data.get('image'))
+        cat = Category(
+            name_ru=data['name_ru'],
+            name_en=data['name_en'],
+            parent_id=data.get('parent_id'),
+            image=data.get('image'),
+        )
         db.session.add(cat)
         db.session.commit()
-        logging.info('category_created %s', cat.name)
+        logging.info('category_created %s', cat.id)
         return jsonify({'id': cat.id}), 201
     cats = Category.query.all()
-    return jsonify([{ 'id': c.id, 'name': c.name, 'image': url_for('serve_image', filename=c.image) if c.image else None, 'parent_id': c.parent_id } for c in cats])
+    return jsonify([
+        {
+            'id': c.id,
+            'name_ru': c.name_ru,
+            'name_en': c.name_en,
+            'image': url_for('serve_image', filename=c.image) if c.image else None,
+            'parent_id': c.parent_id,
+        }
+        for c in cats
+    ])
 
 
 @admin_bp.route('/categories/<int:cat_id>', methods=['PUT', 'DELETE'])
@@ -318,14 +352,14 @@ def admin_category_detail(cat_id):
             data = CategorySchema(partial=True).load(request.get_json() or {})
         except ValidationError as err:
             return jsonify(err.messages), 400
-        if 'name' in data:
-            cat.name = data['name']
+        if 'name_ru' in data:
+            cat.name_ru = data['name_ru']
+        if 'name_en' in data:
+            cat.name_en = data['name_en']
         if 'image' in data:
             cat.image = data['image']
         if 'parent_id' in data:
             cat.parent_id = data['parent_id']
-        if 'image' in data:
-            cat.image = data['image']
         db.session.commit()
         logging.info('category_updated %s', cat.id)
         return jsonify({'id': cat.id})
