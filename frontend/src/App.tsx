@@ -44,7 +44,12 @@ declare global {
       ProductDetailsScreen: { id: string };
       OrderStatusScreen: { id: string };
       OrderDetailsScreen: { id: string };
-      PaymentScreen: { amount?: number };
+      PaymentScreen: {
+        amount?: number;
+        seatNumber?: string;
+        items?: { item_id: number; quantity: number }[];
+        onOrderCreated?: () => void;
+      };
       OrderHistoryScreen: undefined;
       SupportScreen: undefined;
     }
@@ -382,6 +387,7 @@ const RootStackNavigator = () => {
         name={RouteName.PAYMENT_SCREEN}
         component={PaymentScreen}
         options={{ title: t('payment.title') }}
+        initialParams={{ seatNumber }}
       />
       <Stack.Screen
         name={RouteName.ORDER_HISTORY_SCREEN}
