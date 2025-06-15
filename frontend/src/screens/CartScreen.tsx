@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   shopButton: {
-    width: '100%',
+    width: '150%',
     alignSelf: 'center',
   },
   itemRow: {
