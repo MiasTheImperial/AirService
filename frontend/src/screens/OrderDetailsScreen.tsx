@@ -7,7 +7,7 @@ import { Order, OrderItem, OrderStatus } from '../types';
 import { formatPrice } from '../utils/currency';
 
 const OrderDetailsScreen = ({ route }: any) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +27,7 @@ const OrderDetailsScreen = ({ route }: any) => {
     };
 
     loadOrder();
-  }, [route.params.orderId]);
+  }, [route.params.orderId, i18n.language]);
 
   const getStatusLabel = (status: OrderStatus) => {
     switch (status) {

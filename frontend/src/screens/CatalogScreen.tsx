@@ -8,7 +8,7 @@ import { formatPrice } from '../utils/currency';
 import RouteName from '../navigation/routes';
 
 const CatalogScreen = ({ navigation }: any) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const theme = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -31,7 +31,7 @@ const CatalogScreen = ({ navigation }: any) => {
       }
     };
     loadData();
-  }, []);
+  }, [i18n.language]);
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
