@@ -83,7 +83,7 @@ def list_orders():
         except ValueError:
             pass
     orders = qs.all()
-    lang = request.args.get('lang')
+    lang = request.args.get('lang') or request.accept_languages.best_match(['ru', 'en']) or 'ru'
     return jsonify([
         {
             'id': o.id,

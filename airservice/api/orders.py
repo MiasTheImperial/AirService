@@ -122,7 +122,7 @@ def get_order(order_id):
     order = order_service.get_order(order_id)
     if not order:
         abort(404)
-    lang = request.args.get('lang')
+    lang = request.args.get('lang') or request.accept_languages.best_match(['ru', 'en']) or 'ru'
     items = [
         {
             'item_id': oi.item.id,
@@ -154,7 +154,7 @@ def list_orders():
     if status_f:
         qs = qs.filter(Order.status == status_f)
     orders = qs.order_by(Order.created_at).all()
-    lang = request.args.get('lang')
+    lang = request.args.get('lang') or request.accept_languages.best_match(['ru', 'en']) or 'ru'
     response = []
     for o in orders:
         items = [

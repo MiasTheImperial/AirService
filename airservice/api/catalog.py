@@ -106,7 +106,7 @@ def catalog():
             Item.description_en.ilike(like)
         )
     items = qs.all()
-    lang = request.args.get('lang')
+    lang = request.args.get('lang') or request.accept_languages.best_match(['ru', 'en']) or 'ru'
     data = []
     for i in items:
         lang_item = 'en' if lang == 'en' else 'ru'
@@ -162,7 +162,7 @@ def catalog_categories():
                           type: array
                           items: {}
     """
-    lang = request.args.get('lang')
+    lang = request.args.get('lang') or request.accept_languages.best_match(['ru', 'en']) or 'ru'
     cats = Category.query.order_by(Category.id).all()
     nodes = {
         c.id: {
