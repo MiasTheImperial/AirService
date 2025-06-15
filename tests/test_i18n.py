@@ -35,3 +35,10 @@ def test_invalid_item_ids_en(client, sample_data):
     assert 'Invalid item IDs' in rv.get_json()['error']
 
 
+def test_catalog_default_language(client, sample_data):
+    rv = client.get('/catalog')
+    assert rv.status_code == 200
+    names = {i['name'] for i in rv.get_json()}
+    assert 'Борщ' in names
+
+
