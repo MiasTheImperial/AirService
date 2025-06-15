@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Text, Chip, Divider, Button, ActivityIndicator, useTheme } from 'react-native-paper';
 import { Order, OrderStatus } from '../types';
+import { addOpacity } from '../utils/color';
 import { useTranslation } from 'react-i18next';
 import { listOrders } from '../api/api';
 import RouteName from '../navigation/routes';
@@ -112,8 +113,8 @@ const OrderHistoryScreen = ({ navigation, route }: any) => {
           <Text style={[styles.orderId, { color: theme.colors.onSurface }]}>
             {t('orderStatus.orderNumber')} #{item.id}
           </Text>
-          <Chip 
-            style={{ backgroundColor: getStatusColor(item.status) + '20' }}
+          <Chip
+            style={{ backgroundColor: addOpacity(getStatusColor(item.status), 0.2) }}
             textStyle={{ color: getStatusColor(item.status) }}
           >
             {getStatusText(item.status)}
@@ -187,10 +188,10 @@ const OrderHistoryScreen = ({ navigation, route }: any) => {
             <Chip
               selected={selectedFilter === item.value}
               onPress={() => setSelectedFilter(item.value)}
-              style={[styles.filterChip, { 
-                backgroundColor: selectedFilter === item.value 
-                  ? theme.colors.primary + '20' 
-                  : theme.colors.surfaceVariant 
+              style={[styles.filterChip, {
+                backgroundColor: selectedFilter === item.value
+                  ? addOpacity(theme.colors.primary, 0.2)
+                  : theme.colors.surfaceVariant
               }]}
               textStyle={{ 
                 color: selectedFilter === item.value 
