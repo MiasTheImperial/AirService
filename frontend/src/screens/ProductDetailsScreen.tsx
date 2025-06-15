@@ -184,7 +184,10 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
         onDismiss={() => {
           setSnackbarVisible(false);
           if (!snackbarActionPressed) {
-            navigation.navigate(RouteName.CATALOG as never);
+            navigation.navigate(
+              RouteName.MAIN_APP as never,
+              { screen: RouteName.CATALOG } as never
+            );
           }
         }}
         duration={1500}
@@ -193,7 +196,10 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
           onPress: () => {
             setSnackbarActionPressed(true);
             setSnackbarVisible(false);
-            navigation.navigate(RouteName.CART as never);
+            navigation.navigate(
+              RouteName.MAIN_APP as never,
+              { screen: RouteName.CART } as never
+            );
           },
         }}
         style={{ backgroundColor: theme.colors.surfaceVariant }}
