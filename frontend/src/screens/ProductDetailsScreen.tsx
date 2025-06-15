@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-nat
 import { Button, Text, Card, Snackbar, Divider, List, useTheme } from 'react-native-paper';
 import { MaterialCommunityIcon } from '../components/CustomIcons';
 import { Product, OrderItem } from '../types';
+import { useCart } from '../contexts/CartContext';
 import RouteName from '../navigation/routes';
 import { useTranslation } from 'react-i18next';
 import { formatPrice } from '../utils/currency';
@@ -11,7 +12,8 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
   const { product } = route.params;
   const [quantity, setQuantity] = useState(1);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [pendingItem, setPendingItem] = useState<OrderItem | null>(null);
+  const [snackbarActionPressed, setSnackbarActionPressed] = useState(false);
+  const { addItem } = useCart();
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -23,8 +25,6 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
   };
 
   const handleAddToCart = () => {
-    // In a real app, this would dispatch to a cart state manager or context
-    // For now, we'll just show a snackbar and store the item temporarily
     const item: OrderItem = {
       productId: product.id,
       name: product.name,
@@ -32,8 +32,8 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
       quantity,
       image: product.image,
     };
-
-    setPendingItem(item);
+    addItem(item);
+    setSnackbarActionPressed(false);
     setSnackbarVisible(true);
   };
 
@@ -181,16 +181,19 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
 
       <Snackbar
         visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
+        onDismiss={() => {
+          setSnackbarVisible(false);
+          if (!snackbarActionPressed) {
+            navigation.navigate(RouteName.CATALOG as never);
+          }
+        }}
         duration={1500}
         action={{
           label: t('navigation.cart'),
           onPress: () => {
+            setSnackbarActionPressed(true);
             setSnackbarVisible(false);
-            if (pendingItem) {
-              navigation.navigate(RouteName.CART as never, { newItem: pendingItem } as never);
-              setPendingItem(null);
-            }
+            navigation.navigate(RouteName.CART as never);
           },
         }}
         style={{ backgroundColor: theme.colors.surfaceVariant }}
