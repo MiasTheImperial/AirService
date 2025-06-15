@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Button, Text, Card, Snackbar, Divider, List, useTheme } from 'react-native-paper';
 import { MaterialCommunityIcon } from '../components/CustomIcons';
@@ -12,7 +12,7 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
   const { product } = route.params;
   const [quantity, setQuantity] = useState(1);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarActionPressed, setSnackbarActionPressed] = useState(false);
+  const snackbarActionPressedRef = useRef(false);
   const { addItem } = useCart();
   const { t } = useTranslation();
   const theme = useTheme();
@@ -33,7 +33,7 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
       image: product.image,
     };
     addItem(item);
-    setSnackbarActionPressed(false);
+    snackbarActionPressedRef.current = false;
     setSnackbarVisible(true);
   };
 
@@ -183,17 +183,24 @@ const ProductDetailsScreen = ({ route, navigation }: any) => {
         visible={snackbarVisible}
         onDismiss={() => {
           setSnackbarVisible(false);
-          if (!snackbarActionPressed) {
-            navigation.navigate(RouteName.CATALOG as never);
+          if (!snackbarActionPressedRef.current) {
+            navigation.navigate(
+              RouteName.MAIN_APP as never,
+              { screen: RouteName.CATALOG } as never
+            );
           }
+          snackbarActionPressedRef.current = false;
         }}
         duration={1500}
         action={{
           label: t('navigation.cart'),
           onPress: () => {
-            setSnackbarActionPressed(true);
+            snackbarActionPressedRef.current = true;
             setSnackbarVisible(false);
-            navigation.navigate(RouteName.CART as never);
+            navigation.navigate(
+              RouteName.MAIN_APP as never,
+              { screen: RouteName.CART } as never
+            );
           },
         }}
         style={{ backgroundColor: theme.colors.surfaceVariant }}
