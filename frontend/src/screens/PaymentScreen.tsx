@@ -12,7 +12,7 @@ import { PaymentMethod } from '../types';
 interface PaymentScreenProps {
   route?: {
     params?: {
-      amount?: number;
+      amount?: number | string;
       seatNumber: string;
       items: { item_id: number; quantity: number }[];
     };
@@ -29,7 +29,10 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
   const navigation = useNavigation();
   
   // Устанавливаем сумму по умолчанию, если она не была передана
-  const amount = route?.params?.amount || 1000;
+  const amount =
+    route?.params?.amount !== undefined
+      ? Number(route.params.amount)
+      : 1000;
   
   const handlePaymentComplete = async (paymentMethod: PaymentMethod) => {
     const params = route?.params;
