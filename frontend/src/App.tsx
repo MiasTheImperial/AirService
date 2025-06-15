@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'react-native';
 
 import ThemeProvider, { useThemeContext } from './theme/ThemeProvider';
+import CartProvider from './contexts/CartContext';
 import { IoniconsIcon } from './components/CustomIcons';
 import CustomPaperProvider from './components/CustomPaperProvider';
 import { useTranslation } from 'react-i18next';
@@ -438,7 +439,9 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <AppContent />
+      <CartProvider>
+        <AppContent />
+      </CartProvider>
     </ThemeProvider>
   );
 };

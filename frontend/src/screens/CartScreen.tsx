@@ -1,47 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Modal, Image } from 'react-native';
 import { Card, Button, Text, TextInput, Divider, useTheme } from 'react-native-paper';
-import { OrderItem, PaymentMethod } from '../types';
+import { PaymentMethod } from '../types';
 import PaymentForm from '../components/PaymentForm';
 import { useTranslation } from 'react-i18next';
 import DirectLinkButton from '../components/DirectLinkButton';
 import { createOrder } from '../api/api';
 import { formatPrice } from '../utils/currency';
 import RouteName from '../navigation/routes';
+import { useCart } from '../contexts/CartContext';
 
 const CartScreen = ({ navigation, route }: any) => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const [cartItems, setCartItems] = useState<OrderItem[]>([]);
+  const { items: cartItems, updateQuantity, removeItem, clearCart } = useCart();
   const [seatNumber, setSeatNumber] = useState(route.params?.seatNumber || '');
   const [loading, setLoading] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-
-  useEffect(() => {
-    const newItem: OrderItem | undefined = route.params?.newItem;
-    if (newItem) {
-      setCartItems(items => [...items, newItem]);
-      navigation.setParams({ newItem: undefined });
-    }
-  }, [route.params?.newItem]);
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   const handleQuantityChange = (productId: string, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    setCartItems(items =>
-      items.map(item =>
-        item.productId === productId
-          ? { ...item, quantity: newQuantity }
-          : item
-      )
-    );
+    updateQuantity(productId, newQuantity);
   };
 
   const handleRemoveItem = (productId: string) => {
-    setCartItems(items => items.filter(item => item.productId !== productId));
+    removeItem(productId);
   };
 
   const handleCheckout = async () => {
@@ -69,7 +55,7 @@ const CartScreen = ({ navigation, route }: any) => {
       };
       const res = await createOrder(payload);
       const orderId = res.order_id;
-      setCartItems([]);
+      clearCart();
       navigation.navigate(RouteName.ORDER_STATUS as never, {
         orderId: String(orderId),
       } as never);
@@ -201,7 +187,7 @@ const CartScreen = ({ navigation, route }: any) => {
                     item_id: Number(i.productId),
                     quantity: i.quantity,
                   })),
-                  onOrderCreated: () => setCartItems([]),
+                  onOrderCreated: () => clearCart(),
                 }}
                 style={styles.directLinkButton}
               >
