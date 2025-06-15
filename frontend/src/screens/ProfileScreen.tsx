@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Card, Text, Switch, Button, List, Divider, useTheme } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useThemeContext } from '../theme/ThemeProvider';
 import { useTranslation } from 'react-i18next';
 import { useIsFocused } from '@react-navigation/native';
 import LanguageSelector from '../components/LanguageSelector';
 import { listOrders } from '../api/api';
 import RouteName from '../navigation/routes';
+import { useCart } from '../contexts/CartContext';
 
 const ProfileScreen = ({ navigation, route }: any) => {
   const seatNumber = route.params?.seatNumber as string;
@@ -15,6 +17,9 @@ const ProfileScreen = ({ navigation, route }: any) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const isFocused = useIsFocused();
+  const { clearCart } = useCart();
+
+  const STORAGE_KEY = 'cartItems';
   
   // Mock user data
   const user = {
@@ -42,6 +47,8 @@ const ProfileScreen = ({ navigation, route }: any) => {
   const handleLogout = async () => {
     try {
       // In a real app, this would call auth().signOut()
+      clearCart();
+      await AsyncStorage.removeItem(STORAGE_KEY);
       navigation.reset({
         index: 0,
         routes: [{ name: 'Login' }],
