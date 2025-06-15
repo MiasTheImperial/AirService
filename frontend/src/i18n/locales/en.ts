@@ -31,6 +31,7 @@ export default {
     quantity: 'Quantity',
     total: 'Total',
     currency: '$',
+    all: 'All',
   },
 
   // Navigation
@@ -38,6 +39,7 @@ export default {
     catalog: 'Catalog',
     cart: 'Cart',
     profile: 'Profile',
+    orderHistory: 'Order history',
     orders: 'Orders',
     settings: 'Settings',
     admin: 'Admin Panel',
@@ -182,6 +184,11 @@ export default {
     orderDelivered: 'Order delivered',
     orderCancelled: 'Order cancelled',
     confirmCancel: 'Are you sure you want to cancel your order?',
+    orderNotFound: 'Order not found',
+    moreItems: 'and {{count}} more items',
+    filterByStatus: 'Filter by status',
+    orderHistory: 'Order history',
+    noOrders: 'You have no orders yet',
   },
 
   // Order details screen

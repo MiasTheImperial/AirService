@@ -4,7 +4,6 @@ import { Card, Text, Switch, Button, List, Divider, useTheme } from 'react-nativ
 import { useThemeContext } from '../theme/ThemeProvider';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '../components/LanguageSelector';
-import DirectLinkButton from '../components/DirectLinkButton';
 import { listOrders } from '../api/api';
 import RouteName from '../navigation/routes';
 
@@ -143,44 +142,6 @@ const ProfileScreen = ({ navigation, route }: any) => {
         </Card.Content>
       </Card>
 
-      <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
-        <Card.Content>
-          <Text style={[styles.sectionTitle, { color: theme.colors.onSurface }]}>
-            Прямые ссылки на страницы
-          </Text>
-          
-          <View style={styles.linksContainer}>
-            <DirectLinkButton
-              screenName={RouteName.CATALOG_SCREEN}
-              style={styles.linkButton}
-            >
-              {t('navigation.catalog')}
-            </DirectLinkButton>
-            
-            <DirectLinkButton
-              screenName={RouteName.CART_SCREEN}
-              style={styles.linkButton}
-            >
-              {t('navigation.cart')}
-            </DirectLinkButton>
-            
-            <DirectLinkButton
-              screenName={RouteName.ORDER_HISTORY_SCREEN}
-              style={styles.linkButton}
-              params={{ seatNumber }}
-            >
-              {t('navigation.orderHistory')}
-            </DirectLinkButton>
-            
-            <DirectLinkButton
-              screenName={RouteName.PAYMENT_SCREEN}
-              style={styles.linkButton}
-            >
-              {t('payment.title')}
-            </DirectLinkButton>
-          </View>
-        </Card.Content>
-      </Card>
 
       <Button
         mode="outlined"
@@ -217,16 +178,6 @@ const styles = StyleSheet.create({
   logoutButton: {
     margin: 16,
     marginTop: 0,
-  },
-  linksContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-  linkButton: {
-    width: '48%',
-    marginBottom: 10,
   },
   badgeContainer: {
     justifyContent: 'center',
