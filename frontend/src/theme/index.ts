@@ -92,9 +92,6 @@ export const darkTheme = {
   dark: true, // Force dark mode
 };
 
-// Use dark theme as default theme
-export const defaultTheme = darkTheme;
-
 // For backward compatibility, but we'll only use dark theme
 export const lightTheme = {
   ...MD3LightTheme,
@@ -107,3 +104,6 @@ export const lightTheme = {
   },
   dark: false,
 };
+
+// Use dark theme as default theme
+export const defaultTheme = lightTheme;
