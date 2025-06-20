@@ -45,20 +45,22 @@ const darkThemeColors = {
 // Define colors for our light theme (white background with light-blue accents)
 const lightThemeColors = {
   ...MD3LightTheme.colors,
-  primary: '#90CAF9',
+  primary: '#64B5F6',
   onPrimary: '#000000',
   primaryContainer: '#E3F2FD',
   onPrimaryContainer: '#001E2F',
   inversePrimary: '#1E88E5',
   // Use lighter blues for chip backgrounds and other secondary accents
-  secondary: '#64B5F6',
+  secondary: '#42A5F5',
   onSecondary: '#000000',
   secondaryContainer: '#D8EAFE',
   onSecondaryContainer: '#001E2F',
-  tertiary: '#42A5F5',
+  tertiary: '#2196F3',
   onTertiary: '#FFFFFF',
   tertiaryContainer: '#D2E4FF',
   onTertiaryContainer: '#001E2F',
+  background: '#E3F2FD',
+  onBackground: '#001E2F',
 };
 
 // Configure font styles

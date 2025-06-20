@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Dimensions } from 'react-native';
-import { Card, Text, DataTable, Button, ActivityIndicator, Appbar } from 'react-native-paper';
+import { Card, Text, DataTable, Button, ActivityIndicator, Appbar, useTheme } from 'react-native-paper';
 import { AnalyticsData, Order, OrderStatus } from '../types';
 import RouteName from '../navigation/routes';
 import { formatPrice } from '../utils/currency';
@@ -9,6 +9,7 @@ const AdminPanel = ({ navigation }: any) => {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const theme = useTheme();
 
   useEffect(() => {
     // In a real app, this would fetch data from your backend
@@ -83,7 +84,7 @@ const AdminPanel = ({ navigation }: any) => {
         <Card style={styles.card}>
           <Card.Content>
             <Text style={styles.cardTitle}>Sales Overview</Text>
-            <Text style={styles.salesAmount}>
+            <Text style={[styles.salesAmount, { color: theme.colors.primary }] }>
               {formatPrice(analyticsData.totalSales)}
             </Text>
           </Card.Content>
@@ -190,19 +191,19 @@ const AdminPanel = ({ navigation }: any) => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }] }>
         <ActivityIndicator size="large" />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Appbar.Header>
         <Appbar.Content title="Admin Panel" />
       </Appbar.Header>
 
-      <View style={styles.tabContainer}>
+      <View style={[styles.tabContainer, { backgroundColor: theme.colors.surface }]}>
         <Button
           mode={activeTab === 'overview' ? 'contained' : 'outlined'}
           onPress={() => setActiveTab('overview')}
@@ -238,7 +239,6 @@ const AdminPanel = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   loadingContainer: {
     flex: 1,
@@ -248,7 +248,6 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
     padding: 10,
-    backgroundColor: '#fff',
   },
   tabButton: {
     flex: 1,
@@ -269,7 +268,6 @@ const styles = StyleSheet.create({
   salesAmount: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#2196F3',
     textAlign: 'center',
     marginVertical: 10,
   },
