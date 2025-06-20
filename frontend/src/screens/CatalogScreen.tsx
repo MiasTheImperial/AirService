@@ -121,8 +121,11 @@ const CatalogScreen = ({ navigation }: any) => {
         placeholder={t('common.search')}
         onChangeText={setSearchQuery}
         value={searchQuery}
-        style={styles.searchBar}
-        iconColor={theme.colors.onSurfaceVariant}
+        style={[
+          styles.searchBar,
+          { borderColor: theme.colors.primary, borderWidth: 1 },
+        ]}
+        iconColor={theme.colors.primary}
         inputStyle={{ color: theme.colors.onSurface }}
         placeholderTextColor={theme.colors.onSurfaceVariant}
       />

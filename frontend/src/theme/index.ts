@@ -49,6 +49,7 @@ const lightThemeColors = {
   onPrimary: '#000000',
   primaryContainer: '#E3F2FD',
   onPrimaryContainer: '#001E2F',
+  inversePrimary: '#1E88E5',
   // Use lighter blues for chip backgrounds and other secondary accents
   secondary: '#64B5F6',
   onSecondary: '#000000',
