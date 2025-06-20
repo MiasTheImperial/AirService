@@ -42,6 +42,15 @@ const darkThemeColors = {
   }
 };
 
+// Define colors for our light theme (white background with light-blue accents)
+const lightThemeColors = {
+  ...MD3LightTheme.colors,
+  primary: '#90CAF9',
+  onPrimary: '#000000',
+  primaryContainer: '#E3F2FD',
+  onPrimaryContainer: '#001E2F',
+};
+
 // Configure font styles
 const fontConfig = {
   fontFamily: 'System',
@@ -79,9 +88,7 @@ export const defaultTheme = darkTheme;
 // For backward compatibility, but we'll only use dark theme
 export const lightTheme = {
   ...MD3LightTheme,
-  colors: {
-    ...MD3LightTheme.colors,
-  },
+  colors: lightThemeColors,
   fonts: configureFonts({ config: fontConfig }),
   icons: customIconProviders,
   roundness: 12,
