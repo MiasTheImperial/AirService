@@ -32,6 +32,7 @@ export default {
     total: 'Total',
     currency: '$',
     all: 'All',
+    appName: 'Air Service',
   },
 
   // Navigation
@@ -59,6 +60,7 @@ export default {
     enterSeatNumber: 'Enter seat number',
     seatNumber: 'Seat number',
     invalidCredentials: 'Invalid credentials',
+    invalidEmail: 'Invalid email format',
     emailRequired: 'Email is required',
     passwordRequired: 'Password is required',
     seatRequired: 'Seat number is required',

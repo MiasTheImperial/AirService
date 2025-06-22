@@ -36,3 +36,11 @@ msgstr "Неверные данные"
 msgid "Invalid item IDs: %(ids)s"
 msgstr "Неверные ID товаров: %(ids)s"
 
+#: airservice/api/auth.py
+msgid "Invalid credentials"
+msgstr "Неверные учетные данные"
+
+#: airservice/api/auth.py
+msgid "Invalid email"
+msgstr "Неверный формат электронной почты"
+

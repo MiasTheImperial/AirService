@@ -35,3 +35,11 @@ msgstr "Invalid payload"
 msgid "Invalid item IDs: %(ids)s"
 msgstr "Invalid item IDs: %(ids)s"
 
+#: airservice/api/auth.py
+msgid "Invalid credentials"
+msgstr "Invalid credentials"
+
+#: airservice/api/auth.py
+msgid "Invalid email"
+msgstr "Invalid email"
+

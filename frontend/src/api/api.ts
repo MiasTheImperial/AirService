@@ -6,7 +6,13 @@ const API_URL = Constants.expoConfig?.extra?.apiUrl as string;
 
 async function handleResponse(res: Response) {
   if (!res.ok) {
-    const text = await res.text().catch(() => '');
+    let text = await res.text().catch(() => '');
+    try {
+      const data = JSON.parse(text);
+      text = data.error || data.message || text;
+    } catch {
+      // keep raw text
+    }
     throw new Error(text || `Request failed with status ${res.status}`);
   }
   return res.json();

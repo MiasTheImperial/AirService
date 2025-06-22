@@ -32,6 +32,7 @@ export default {
     total: 'Итого',
     currency: '₽',
     all: 'Все',
+    appName: 'Авиа-Сервис',
   },
 
   // Навигация
@@ -59,6 +60,7 @@ export default {
     enterSeatNumber: 'Введите номер места',
     seatNumber: 'Номер места',
     invalidCredentials: 'Неверные учетные данные',
+    invalidEmail: 'Неверный формат электронной почты',
     emailRequired: 'Введите электронную почту',
     passwordRequired: 'Введите пароль',
     seatRequired: 'Введите номер места',
