@@ -13,7 +13,9 @@ async function handleResponse(res: Response) {
     } catch {
       // keep raw text
     }
-    throw new Error(text || `Request failed with status ${res.status}`);
+    const err = new Error(text || `Request failed with status ${res.status}`) as Error & { status?: number };
+    err.status = res.status;
+    throw err;
   }
   return res.json();
 }

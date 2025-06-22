@@ -63,7 +63,13 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
         route.params.onLogin(false, seatNumber);
       }
     } catch (err: any) {
-      setError(err.message || t('auth.invalidCredentials'));
+      if (err.status === 401) {
+        setError(t('auth.invalidCredentials'));
+      } else if (err.status === 400) {
+        setError(t('auth.invalidEmail'));
+      } else {
+        setError(err.message || t('auth.invalidCredentials'));
+      }
     } finally {
       setLoading(false);
     }
