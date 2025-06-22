@@ -1,5 +1,8 @@
 from flask import Blueprint, request, jsonify, abort
 from werkzeug.security import check_password_hash
+from flask_babel import gettext
+from marshmallow import ValidationError
+from marshmallow.validate import Email
 
 from ..models import User
 
@@ -13,7 +16,12 @@ def login():
     password = data.get('password')
     if not email or not password:
         abort(400)
+
+    try:
+        Email()(email)
+    except ValidationError:
+        return jsonify({'error': gettext('Invalid email')}), 400
     user = User.query.filter_by(email=email).first()
     if not user or not check_password_hash(user.password_hash, password):
-        abort(401)
+        return jsonify({'error': gettext('Invalid credentials')}), 401
     return jsonify({'seat': user.seat, 'is_admin': user.is_admin})

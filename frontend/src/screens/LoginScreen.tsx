@@ -35,6 +35,13 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
           return;
         }
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          setError(t('auth.invalidEmail'));
+          setLoading(false);
+          return;
+        }
+
         if (!password) {
           setError(t('auth.passwordRequired'));
           setLoading(false);
@@ -74,7 +81,9 @@ const LoginScreen = ({ navigation, route }: LoginScreenProps) => {
           source={{ uri: require('../assets/air_service.jpg') }}
           style={styles.logo}
         />
-        <Text style={[styles.title, { color: theme.colors.onBackground }]}>Авиа-Сервис</Text>
+        <Text style={[styles.title, { color: theme.colors.onBackground }]}>
+          {t('common.appName')}
+        </Text>
       </View>
       
       {!isGuestMode ? (
