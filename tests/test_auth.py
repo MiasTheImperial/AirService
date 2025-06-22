@@ -49,7 +49,10 @@ def test_login_invalid_email_format(client):
         headers={"Accept-Language": "ru"},
     )
     assert rv.status_code == 400
-    assert rv.get_json()["error"] == "Неверный формат электронной почты"
+    assert (
+        rv.get_json()["error"]
+        == "Неверный формат электронной почты. Проверьте адрес и повторите попытку."
+    )
 
 
 def test_login_wrong_credentials(client, app):
@@ -68,4 +71,29 @@ def test_login_wrong_credentials(client, app):
         headers={"Accept-Language": "en"},
     )
     assert rv.status_code == 401
-    assert rv.get_json()["error"] == "Invalid credentials"
+    assert (
+        rv.get_json()["error"]
+        == "Invalid credentials. Please check your email and password and try again."
+    )
+
+
+def test_login_wrong_credentials_ru(client, app):
+    with app.app_context():
+        user = User(
+            email="demo@example.com",
+            password_hash=generate_password_hash("secret"),
+            seat="1A",
+        )
+        db.session.add(user)
+        db.session.commit()
+
+    rv = client.post(
+        "/auth/login",
+        json={"email": "demo@example.com", "password": "bad"},
+        headers={"Accept-Language": "ru"},
+    )
+    assert rv.status_code == 401
+    assert (
+        rv.get_json()["error"]
+        == "Неверные учётные данные. Проверьте почту и пароль и повторите попытку."
+    )

@@ -38,9 +38,9 @@ msgstr "Неверные ID товаров: %(ids)s"
 
 #: airservice/api/auth.py
 msgid "Invalid credentials"
-msgstr "Неверные учетные данные"
+msgstr "Неверные учётные данные. Проверьте почту и пароль и повторите попытку."
 
 #: airservice/api/auth.py
 msgid "Invalid email"
-msgstr "Неверный формат электронной почты"
+msgstr "Неверный формат электронной почты. Проверьте адрес и повторите попытку."
 
