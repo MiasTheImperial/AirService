@@ -37,9 +37,9 @@ msgstr "Invalid item IDs: %(ids)s"
 
 #: airservice/api/auth.py
 msgid "Invalid credentials"
-msgstr "Invalid credentials"
+msgstr "Invalid credentials. Please check your email and password and try again."
 
 #: airservice/api/auth.py
 msgid "Invalid email"
-msgstr "Invalid email"
+msgstr "Invalid email format. Please check the address and try again."
 
